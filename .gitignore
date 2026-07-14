@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+
+node_modules/
+dist/
+coverage/
+
+.superpowers/
+.playwright-mcp/
+/image-policy-plus-original-first.png
+/work/workbook_previews/
+
+__pycache__/
+*.py[cod]

@@ -14,7 +14,7 @@ export const LEGACY_REVIEW_REASONS = {
   RECOMMENDATION_STATUS_MISSING: "节目缺少正式推荐状态",
   RECOMMENDATION_STATUS_UNKNOWN: "节目包含未知的正式推荐状态",
   RECOMMENDATION_UNMARKED: "官方节目简介未标记该记录为正式推荐",
-  TITLE_CONFLICT: "同一原名和创作者对应多个标题",
+  TITLE_CONFLICT: "同一作品标识对应多个作品信息",
   TITLE_UNCONFIRMED: "旧记录标题无法从推荐原文中确认",
 } as const;
 

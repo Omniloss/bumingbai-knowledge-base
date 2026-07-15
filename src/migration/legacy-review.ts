@@ -80,25 +80,45 @@ export function createRecommendationReviewIssues(
 
 export function createWorkConflictReviewIssue(
   candidates: readonly Work[],
-  context: Pick<RecommendationReviewContext, "source" | "workId">,
+  context: Pick<RecommendationReviewContext, "source" | "workId"> & {
+    readonly people: PeopleIndex;
+  },
 ): ReviewIssue | undefined {
-  const titles = candidates
-    .map((candidate) => candidate.title)
-    .filter((title, index, values) => values.indexOf(title) === index)
+  const descriptions = candidates
+    .map((candidate) => describeWork(candidate, context.people))
+    .filter((value, index, values) => values.indexOf(value) === index)
     .toSorted();
-  if (titles.length < 2) return undefined;
+  if (descriptions.length < 2) return undefined;
   return {
     id: workConflictReviewIssueId(context.workId),
     entityId: context.workId,
     field: "title",
     reason: LEGACY_REVIEW_REASONS.TITLE_CONFLICT,
-    candidates: titles,
+    candidates: descriptions,
     source: preferredConflictSource(
       candidates.flatMap((candidate) => candidate.sources),
       context.source,
     ),
     status: "open",
   };
+}
+
+function describeWork(work: Work, people: PeopleIndex): string {
+  const creatorNames = work.creatorIds
+    .map((id) => people.get(id)?.name)
+    .filter((name): name is string => name !== undefined)
+    .join("、");
+  return [
+    `标题=${work.title}`,
+    `原名=${work.originalTitle ?? "无"}`,
+    `媒体类型=${work.mediaType}`,
+    `创作者=${creatorNames || "未知"}`,
+    `年份=${work.year ?? "未知"}`,
+    `主题=${work.topicIds.join("、") || "无"}`,
+    `体裁=${work.genres.join("、") || "无"}`,
+    `地区=${work.regions.join("、") || "无"}`,
+    `系列=${work.seriesId ?? "无"}`,
+  ].join(" | ");
 }
 
 export function createRecommendationStatusReviewIssue(

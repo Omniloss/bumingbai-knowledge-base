@@ -112,7 +112,7 @@ export function migrateRecommendation(
   });
   const workConflictIssue = createWorkConflictReviewIssue(
     workResult.conflictingWorks,
-    { source, workId: workResult.workId },
+    { people: workResult.people, source, workId: workResult.workId },
   );
   const recommendationStatusIssue = createRecommendationStatusReviewIssue(
     recommendationDecision,

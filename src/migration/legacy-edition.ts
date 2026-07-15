@@ -9,7 +9,10 @@ import { type MergeCandidate, resolveCandidates } from "./legacy-merge.js";
 import { includePeople, type PeopleIndex } from "./legacy-people.js";
 import type { LegacyRecommendation } from "./legacy-schema.js";
 import { splitNames } from "./legacy-shared.js";
-import type { MigrationConfidence } from "./legacy-status.js";
+import {
+  type MigrationConfidence,
+  WITHHELD_CONFIDENCE,
+} from "./legacy-status.js";
 
 type EditionRequest = {
   readonly item: LegacyRecommendation;
@@ -121,12 +124,28 @@ export function integrateEdition(
         editionPayloadKey,
       )
     : editionResolution;
+  const editions = new Map([...index.editions, [edition.id, edition] as const]);
+  const conflictingEditionIds = isbnResolution.conflict
+    ? isbnResolution.highestCandidates.map((candidate) => candidate.id)
+    : [];
+  const publishedEditions = new Map(
+    [...editions].map(([id, candidate]) => [
+      id,
+      conflictingEditionIds.includes(id)
+        ? {
+            ...candidate,
+            verificationStatus: WITHHELD_CONFIDENCE.verificationStatus,
+            publicationStatus: WITHHELD_CONFIDENCE.publicationStatus,
+          }
+        : candidate,
+    ]),
+  );
   return {
     edition,
     conflictingEditions: isbnResolution.conflict
       ? isbnResolution.highestCandidates
       : [],
-    editions: new Map([...index.editions, [edition.id, edition] as const]),
+    editions: publishedEditions,
     editionCandidates: new Map([
       ...index.editionCandidates,
       [createdEdition.id, editionResolution.candidates] as const,
@@ -171,6 +190,8 @@ export function describeEdition(edition: Edition, people: PeopleIndex): string {
     .filter((name): name is Person["name"] => name !== undefined)
     .join("、");
   return [
+    edition.workId,
+    edition.title,
     edition.isbn ?? "无 ISBN",
     edition.publisher ?? "未知出版社",
     translatorNames || "未知译者",

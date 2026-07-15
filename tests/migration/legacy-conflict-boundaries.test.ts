@@ -23,7 +23,11 @@ function isbnConflictView(catalog: Catalog): object {
       .toSorted((left, right) => left.workId.localeCompare(right.workId)),
     reviewIssues: catalog.reviewIssues
       .filter((issue) => issue.field === "isbn")
-      .map((issue) => ({ candidates: issue.candidates, source: issue.source })),
+      .map((issue) => ({
+        candidates: issue.candidates,
+        entityId: issue.entityId,
+        source: issue.source,
+      })),
   };
 }
 

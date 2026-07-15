@@ -22,7 +22,6 @@ type RecommendationReviewContext = {
 type EditionReviewContext = {
   readonly people: PeopleIndex;
   readonly source: SourceRef;
-  readonly workId: WorkId;
 };
 
 function preferredConflictSource(
@@ -171,9 +170,12 @@ export function createEditionConflictReviewIssue(
     .filter((value, index, values) => values.indexOf(value) === index)
     .toSorted();
   if (descriptions.length < 2) return undefined;
+  const entityId = conflictingCandidates.reduce((selected, candidate) =>
+    candidate.id < selected.id ? candidate : selected,
+  ).id;
   return {
     id: editionConflictReviewIssueId(identity),
-    entityId: context.workId,
+    entityId,
     field: "isbn",
     reason: LEGACY_REVIEW_REASONS.EDITION_CONFLICT,
     candidates: descriptions,

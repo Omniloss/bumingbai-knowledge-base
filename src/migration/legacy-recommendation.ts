@@ -148,7 +148,6 @@ export function migrateRecommendation(
           {
             people: editionResult.people,
             source,
-            workId: workResult.workId,
           },
         )
       : undefined;

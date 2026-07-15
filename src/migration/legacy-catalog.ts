@@ -31,7 +31,7 @@ export function buildCatalog(legacy: LegacyRoot, generatedAt: string): Catalog {
     editionCandidates: new Map(),
     editionCandidatesByIsbn: new Map(),
     recommendationEvidence: [],
-    reviewIssues: [],
+    reviewIssues: episodeMigration.reviewIssues,
   };
   const recommendationMigration = legacy.recommendations.reduce(
     (state, recommendation) =>

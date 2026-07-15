@@ -10,6 +10,12 @@ export const LEGACY_METADATA_STATUS = {
   RAW_ONLY: "仅保留节目原文，待人工书目核验",
 } as const;
 
+export const LEGACY_GUEST_EVIDENCE = {
+  OFFICIAL_TRANSCRIPT: "官方文字稿说话人标签",
+  OFFICIAL_DESCRIPTION: "官方节目简介明确说明",
+  EPISODE_TITLE: "节目标题明确列名或角色",
+} as const;
+
 const LegacyDateSchema = z
   .string()
   .min(1)
@@ -56,6 +62,21 @@ const LegacyMetadataStatusSchema = z
     return { kind: "unknown", raw } as const;
   });
 
+const LegacyGuestEvidenceSchema = z
+  .string()
+  .optional()
+  .default("")
+  .transform((raw) => {
+    if (
+      raw === LEGACY_GUEST_EVIDENCE.OFFICIAL_TRANSCRIPT ||
+      raw === LEGACY_GUEST_EVIDENCE.OFFICIAL_DESCRIPTION ||
+      raw === LEGACY_GUEST_EVIDENCE.EPISODE_TITLE
+    ) {
+      return { kind: "confirmed", raw } as const;
+    }
+    return { kind: "withheld", raw } as const;
+  });
+
 const LegacyEpisodeSchema = z
   .object({
     episode_number: z.coerce.number().int().positive().nullable(),
@@ -65,6 +86,7 @@ const LegacyEpisodeSchema = z
     official_url: z.string().url(),
     transcript_url: OptionalUrlSchema,
     guest_or_participants: z.string().trim().optional().default(""),
+    guest_evidence: LegacyGuestEvidenceSchema,
     recommendation_status: LegacyEpisodeRecommendationStatusSchema,
   })
   .readonly();
@@ -116,6 +138,7 @@ export const LegacyRootSchema = z
   .readonly();
 
 export type LegacyEpisode = z.infer<typeof LegacyEpisodeSchema>;
+export type LegacyGuestEvidence = z.infer<typeof LegacyGuestEvidenceSchema>;
 export type LegacyEpisodeRecommendationStatus = z.infer<
   typeof LegacyEpisodeRecommendationStatusSchema
 >;

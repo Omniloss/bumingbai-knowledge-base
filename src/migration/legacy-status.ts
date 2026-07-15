@@ -8,6 +8,7 @@ import type {
 export const LEGACY_REVIEW_REASONS = {
   CREATOR_MISSING: "旧记录没有可确认的创作者",
   EDITION_CONFLICT: "同一 ISBN 的版本信息冲突",
+  GUEST_UNCONFIRMED: "旧节目嘉宾身份未达到公开核验门槛",
   METADATA_RAW_ONLY: "旧记录仅保留节目原文，书目信息需要人工核验",
   METADATA_STATUS_MISSING: "旧记录缺少书目元数据状态",
   METADATA_STATUS_UNKNOWN: "旧记录包含未知的书目元数据状态",

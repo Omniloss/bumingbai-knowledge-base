@@ -1,0 +1,5264 @@
+[
+  {
+    "id": "issue_e29e6683c91a",
+    "entityId": "episode_d86580a57f7b",
+    "field": "guestIds",
+    "reason": "旧节目嘉宾身份未达到公开核验门槛",
+    "candidates": [
+      "听众投稿（多人，官方未逐一列名）"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/05/27/ep-215-sizhounian/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_bfb1d7d704cc",
+    "entityId": "episode_093434a3ee9e",
+    "field": "guestIds",
+    "reason": "旧节目嘉宾身份未达到公开核验门槛",
+    "candidates": [
+      "多位中国受访者（官方未逐一列名）"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/05/12/ep-211-meiguoyinxiang/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_ce1686f46e60",
+    "entityId": "episode_38dc5ba8b6ad",
+    "field": "guestIds",
+    "reason": "旧节目嘉宾身份未达到公开核验门槛",
+    "candidates": [
+      "未在标题或简介中明确列名"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/15/bmb-186-lizhiying/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_fc2f73c15c58",
+    "entityId": "episode_043066daf210",
+    "field": "guestIds",
+    "reason": "旧节目嘉宾身份未达到公开核验门槛",
+    "candidates": [
+      "听众来信（多人，官方未逐一列名）"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/05/27/ep-152-szn/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_fcc7e7c16d0b",
+    "entityId": "episode_dafea32cc956",
+    "field": "guestIds",
+    "reason": "旧节目嘉宾身份未达到公开核验门槛",
+    "candidates": [
+      "未在标题或简介中明确列名"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/replay048",
+      "retrievedAt": "2026-07-14T09:43:11.155Z"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_1f51e13181d7",
+    "entityId": "episode_6566230e3a3c",
+    "field": "guestIds",
+    "reason": "旧节目嘉宾身份未达到公开核验门槛",
+    "candidates": [
+      "听众来信（多人，官方未逐一列名）"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/12/ep-129-bumingbai/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_4390b1c15683",
+    "entityId": "episode_5a1c81613fa4",
+    "field": "guestIds",
+    "reason": "旧节目嘉宾身份未达到公开核验门槛",
+    "candidates": [
+      "未在标题或简介中明确列名"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043ab47809c35bd7acfee",
+      "retrievedAt": "2026-07-14T09:43:11.155Z"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_f5020358d2d8",
+    "entityId": "episode_d4f8cd7034d0",
+    "field": "guestIds",
+    "reason": "旧节目嘉宾身份未达到公开核验门槛",
+    "candidates": [
+      "未在标题或简介中明确列名"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/6800439eb4ef799a7a410517",
+      "retrievedAt": "2026-07-14T09:43:11.155Z"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_674a86c2452f",
+    "entityId": "episode_faf205420cc1",
+    "field": "guestIds",
+    "reason": "旧节目嘉宾身份未达到公开核验门槛",
+    "candidates": [
+      "未在标题或简介中明确列名"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043aa2bfb8508d613c64c",
+      "retrievedAt": "2026-07-14T09:43:11.155Z"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_71827019e0b3",
+    "entityId": "episode_98a3ab7c340e",
+    "field": "guestIds",
+    "reason": "旧节目嘉宾身份未达到公开核验门槛",
+    "candidates": [
+      "听众来信（多人，官方未逐一列名）"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043a7b4ef799a7a41069c",
+      "retrievedAt": "2026-07-14T09:43:11.155Z"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_034a5b74c30c",
+    "entityId": "episode_ada8a468684e",
+    "field": "guestIds",
+    "reason": "旧节目嘉宾身份未达到公开核验门槛",
+    "candidates": [
+      "江雪、张洁平"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/10/ep-019-jiang-xue-zhang-jieping/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_35356d3360d9",
+    "entityId": "episode_930d86b54141",
+    "field": "guestIds",
+    "reason": "旧节目嘉宾身份未达到公开核验门槛",
+    "candidates": [
+      "未在标题或简介中明确列名"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b047809c35bd7ad0e1",
+      "retrievedAt": "2026-07-14T09:43:11.155Z"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_f2f16e2ae6e9",
+    "entityId": "work_86b9b790cd1a",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/06/19/ep-220-xcg/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_9a9204ec4102",
+    "entityId": "work_734933b6a092",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/06/19/ep-220-xcg/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_ffad449f3d9b",
+    "entityId": "work_372e5ad1bf78",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/06/19/ep-220-xcg/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e4f4a8841b85",
+    "entityId": "work_39413b3841b4",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/05/31/ep-216-wenge03/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_c1863542f829",
+    "entityId": "work_6c3b34064498",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/05/31/ep-216-wenge03/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_50a387dd725d",
+    "entityId": "work_3740c93a8ab8",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/05/21/ep-213-dakekang/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_ae29192cc74c",
+    "entityId": "work_2cf1f253b73e",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/05/21/ep-213-dakekang/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_bbda6ab11efa",
+    "entityId": "work_8b5869002632",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/04/18/ep-207-liuzongyuan/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_2dde15982bd9",
+    "entityId": "work_ce7c44768144",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/04/18/ep-207-liuzongyuan/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_4ebdc15f4e7a",
+    "entityId": "work_d9ef45f64638",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/04/18/ep-207-liuzongyuan/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_451a28edad75",
+    "entityId": "work_d9ef45f64638",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/04/18/ep-207-liuzongyuan/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_3e9aa1b9b47b",
+    "entityId": "work_b8d78b79d96b",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/04/12/ep-206-chizi/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_658890629221",
+    "entityId": "work_3884dafcdb40",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/04/12/ep-206-chizi/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_5b18122177c0",
+    "entityId": "work_638755f3c0c6",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/03/12/ep-202-sunyun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_11de672667a6",
+    "entityId": "work_e73459adcff3",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/03/12/ep-202-sunyun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_8f1ebe05016d",
+    "entityId": "work_eff24af5522c",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/03/12/ep-202-sunyun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_69850f13270e",
+    "entityId": "work_faa71d9efc29",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/02/28/ep-199-zhaotong/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_afcca2a10265",
+    "entityId": "work_96a58e53a333",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/02/28/ep-199-zhaotong/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_2d3a229a2b2f",
+    "entityId": "work_8c46eb3549b4",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/02/28/ep-199-zhaotong/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_76d9a0bba5c2",
+    "entityId": "work_65a1a0ba0a2a",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/01/09/ep-190-leland/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_5b54a8067508",
+    "entityId": "work_c226efa1e012",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/01/01/ep-189-live10/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_6461ccaf0da5",
+    "entityId": "work_c226efa1e012",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/01/01/ep-189-live10/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e227f3233fea",
+    "entityId": "work_1ce3036f50c0",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/01/01/ep-189-live10/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_5bcac0e0a187",
+    "entityId": "work_1ce3036f50c0",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/01/01/ep-189-live10/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_9d59de842b3f",
+    "entityId": "work_843c75c22151",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/01/01/ep-189-live10/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_f191868cc682",
+    "entityId": "work_843c75c22151",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/01/01/ep-189-live10/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_1923c4cdb2c4",
+    "entityId": "work_a807e2d92381",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/01/01/ep-189-live10/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-6"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_12fa316d5923",
+    "entityId": "work_a807e2d92381",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/01/01/ep-189-live10/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-6"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_8aa66e6adca4",
+    "entityId": "work_d45a412448d9",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/01/01/ep-189-live10/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-7"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_8337669fc68c",
+    "entityId": "work_d45a412448d9",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/01/01/ep-189-live10/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-7"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_dc4398eb05fc",
+    "entityId": "work_b5ed25162329",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/01/01/ep-189-live10/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-8"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_4572409bc232",
+    "entityId": "work_b5ed25162329",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/01/01/ep-189-live10/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-8"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e941d7600f1c",
+    "entityId": "work_93a095b5fa8b",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2026/01/01/ep-189-live10/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-9"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_1de14ba8b7ce",
+    "entityId": "work_dc3f214ddfbd",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/29/ep-188-tangzhixue/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_306750cfef0f",
+    "entityId": "work_dc3f214ddfbd",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/29/ep-188-tangzhixue/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e9d15073daa0",
+    "entityId": "work_90d79ce8c7c6",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/29/ep-188-tangzhixue/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_1214b1ee91ca",
+    "entityId": "work_90d79ce8c7c6",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/29/ep-188-tangzhixue/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_57ee3756fda4",
+    "entityId": "work_7f8594b6dad7",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/29/ep-188-tangzhixue/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_0bbc00f70309",
+    "entityId": "work_7f8594b6dad7",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/29/ep-188-tangzhixue/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_978d9d6a342e",
+    "entityId": "work_4b73fbf0f87a",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/29/ep-188-tangzhixue/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_088c66826066",
+    "entityId": "work_4b73fbf0f87a",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/29/ep-188-tangzhixue/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_3bc6b76f71de",
+    "entityId": "work_489251aefb28",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/29/ep-188-tangzhixue/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-5"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_605f1a6d1c7f",
+    "entityId": "work_489251aefb28",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/29/ep-188-tangzhixue/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-5"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e92c1d28f46a",
+    "entityId": "work_c55aa0a9d21f",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/26/ep-187-yifuxian/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_18ef6acef132",
+    "entityId": "work_d445183c1705",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/26/ep-187-yifuxian/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_f8e3e581a681",
+    "entityId": "work_da5cc458eb95",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/13/ep-185-peiminxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_eaa28517f311",
+    "entityId": "work_da5cc458eb95",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/13/ep-185-peiminxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_97d45bdc7e2d",
+    "entityId": "work_55235d6b1177",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/13/ep-185-peiminxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_82f3bc1f78c7",
+    "entityId": "work_55235d6b1177",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/13/ep-185-peiminxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_a7627fcd7a5a",
+    "entityId": "work_054453b10979",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/13/ep-185-peiminxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_17814f3da848",
+    "entityId": "work_054453b10979",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/13/ep-185-peiminxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_641f5cf17ff0",
+    "entityId": "work_ff5d05e41a1c",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/13/ep-185-peiminxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_362f41d11dbd",
+    "entityId": "work_ff5d05e41a1c",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/13/ep-185-peiminxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_d85e80d9644f",
+    "entityId": "work_379cb099acd9",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/13/ep-185-peiminxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-5"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_b98a27f93a4e",
+    "entityId": "work_379cb099acd9",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/13/ep-185-peiminxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-5"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_9e385ded7773",
+    "entityId": "work_6dc2c963851f",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/13/ep-185-peiminxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-6"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_1ec7691955a4",
+    "entityId": "work_6dc2c963851f",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/13/ep-185-peiminxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-6"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_a042bbc36044",
+    "entityId": "work_8972caf1bdeb",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/07/ep-184-zhurikun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e1cd4c6a884b",
+    "entityId": "work_3df6ac908dc2",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/07/ep-184-zhurikun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_be8d8c064379",
+    "entityId": "work_3e81987cf7ee",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/01/ep-182-lilaoshi/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_1baab63f0e94",
+    "entityId": "work_723521b87731",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/12/01/ep-182-lilaoshi/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_ceea28501813",
+    "entityId": "work_788bbd27c897",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/11/01/ep-178-xuchenggang/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_68f08376a004",
+    "entityId": "work_eb234bbae894",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/11/01/ep-178-xuchenggang/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_0c08efc71008",
+    "entityId": "work_418da5ce96bf",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/10/25/ep-177-caixia/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_f7f0b882c649",
+    "entityId": "work_54e9e7bdb732",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/10/25/ep-177-caixia/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_32721c6295cc",
+    "entityId": "work_54e9e7bdb732",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/10/25/ep-177-caixia/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_38d12feafc0d",
+    "entityId": "work_df4af1436b5d",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/10/25/ep-177-caixia/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e86821a9c09a",
+    "entityId": "work_31fb55978d44",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/09/20/ep-170-ym/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_8b058ccbcf8b",
+    "entityId": "work_732091d77c9f",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/09/20/ep-170-ym/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_0539f78841a3",
+    "entityId": "work_ffacee5deb11",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/09/20/ep-170-ym/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_1cfa44a74b68",
+    "entityId": "work_ffacee5deb11",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/09/20/ep-170-ym/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_fe5d6067a75e",
+    "entityId": "work_05807b28375e",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/08/24/ep-166-xcg/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_a884a5e22c11",
+    "entityId": "work_7e2bd4a0f629",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/08/24/ep-166-xcg/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_5800c2c56c14",
+    "entityId": "work_7e2bd4a0f629",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/08/24/ep-166-xcg/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_3c7bf7ca156c",
+    "entityId": "work_094037976f01",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/08/24/ep-166-xcg/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_648596882f64",
+    "entityId": "work_62ca66efa5ae",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/08/18/ep-165-kotkin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_bcf7afd0e121",
+    "entityId": "work_a60a43a4a797",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/08/18/ep-165-kotkin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_59b2eaaa7011",
+    "entityId": "work_a60a43a4a797",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/08/18/ep-165-kotkin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_22eb30cc9040",
+    "entityId": "work_e958beb98ae3",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/08/14/ep-164-wl/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_7a85677ca203",
+    "entityId": "work_8bf78ac40c57",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/08/14/ep-164-wl/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_10e86a2c4e2b",
+    "entityId": "work_d435da6c265c",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/08/14/ep-164-wl/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_606303d71afa",
+    "entityId": "work_ea14468f892b",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/08/14/ep-164-wl/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_89791081a9e4",
+    "entityId": "work_75cd4781c09d",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/08/02/ep-162-wgg/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_51ba2da96c81",
+    "entityId": "work_dcaab6cbf338",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/08/02/ep-162-wgg/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_254560b8ae82",
+    "entityId": "work_f581c4174072",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/08/02/ep-162-wgg/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_7fb00c3337be",
+    "entityId": "work_97cd47725920",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/07/13/ep-159-linpeirui/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_9c6b1f818f4f",
+    "entityId": "work_21c897c6d698",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/07/13/ep-159-linpeirui/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_7fb441e11c72",
+    "entityId": "work_21c897c6d698",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/07/13/ep-159-linpeirui/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_3c3300352cee",
+    "entityId": "work_3c375d62ae03",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/06/14/ep-155-lihouchen/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_3da34930f5d6",
+    "entityId": "work_2932d4aae7fe",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/06/14/ep-155-lihouchen/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_a54f6643f62c",
+    "entityId": "work_2932d4aae7fe",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/06/14/ep-155-lihouchen/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_eefe6c57a53d",
+    "entityId": "work_2a09cdd86c87",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/06/14/ep-155-lihouchen/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e9c3d3cb24e9",
+    "entityId": "work_c68157a7e68d",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/154",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_f285eb10226a",
+    "entityId": "work_f4b60d13a21b",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/05/31/ep-153-tangzhixue/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_fb8cd67c0ad1",
+    "entityId": "work_f4b60d13a21b",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/05/31/ep-153-tangzhixue/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_9caeb0143439",
+    "entityId": "work_092f21a65204",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/05/31/ep-153-tangzhixue/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_9f8864fc6fb6",
+    "entityId": "work_dcba398e178f",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/05/31/ep-153-tangzhixue/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_67003fa37fb1",
+    "entityId": "work_91eada2af976",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/05/24/ep-151-victor/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_05e519e7ae39",
+    "entityId": "work_91eada2af976",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/05/24/ep-151-victor/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_7e47f200f201",
+    "entityId": "work_91eada2af976",
+    "field": "title",
+    "reason": "同一作品标识对应多个作品信息",
+    "candidates": [
+      "标题=Conclave | 原名=《Conclave》 | 媒体类型=film | 创作者=未知 | 年份=未知 | 主题=无 | 体裁=无 | 地区=无 | 系列=无",
+      "标题=秘密会议 | 原名=《Conclave》 | 媒体类型=film | 创作者=未知 | 年份=未知 | 主题=无 | 体裁=无 | 地区=无 | 系列=无"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/05/24/ep-151-victor/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_41d51e9ad52d",
+    "entityId": "work_383938b695d2",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/05/24/ep-151-victor/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_5cc150d2c437",
+    "entityId": "work_cd0d4524094a",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/05/24/ep-151-victor/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_ecd00ef81939",
+    "entityId": "work_cd0d4524094a",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/05/24/ep-151-victor/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_b05b1a318d56",
+    "entityId": "work_d35b64eb0e5a",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/liicu",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_53ffe113cca3",
+    "entityId": "work_92b6ffd9a8bd",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/liicu",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_70860ab33b3b",
+    "entityId": "work_24ccfb465957",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/liicu",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_f523289497f7",
+    "entityId": "work_fd8c74c35374",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/liicu",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_dea680e412f6",
+    "entityId": "work_fd8c74c35374",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/liicu",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_8deb00be6161",
+    "entityId": "work_eab04a70c4f5",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/04/19/ep-147-xiachaochuan/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_f9a3ad245717",
+    "entityId": "work_460ae164f619",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/04/19/ep-147-xiachaochuan/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_359c370d4d6c",
+    "entityId": "work_84587f03cfba",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/04/08/ep-145-huangyasheng/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_9b4263f8afdb",
+    "entityId": "work_c3215250860f",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bumingbai.net/2025/04/08/ep-145-huangyasheng/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_21c4f6f0bf8c",
+    "entityId": "work_54a216bea643",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/03/ep-141-peiminxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_5f68661ddd45",
+    "entityId": "work_cfc34c96e5e6",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/03/ep-140-xinwenmeiti/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_27186b9b68a9",
+    "entityId": "work_cfc34c96e5e6",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/03/ep-140-xinwenmeiti/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_43f2979b49af",
+    "entityId": "work_eda364003908",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/03/ep-140-xinwenmeiti/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_0f5202ab6d3d",
+    "entityId": "work_a2aaa9bb610e",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/03/ep-139-liuzongkun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_29f1f4ab0678",
+    "entityId": "work_26cc58b9b5db",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/03/ep-139-liuzongkun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_c09ffd70ed9a",
+    "entityId": "work_f2013d2c97a2",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/03/ep-139-liuzongkun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_13d66b6154d6",
+    "entityId": "work_eaf4d1804977",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/02/ep-138-zhanglun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_f8c7c24e5866",
+    "entityId": "work_475fe8f3b970",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/02/ep-137-xuchenggang/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_c5b3719ef760",
+    "entityId": "work_68fc36fd7707",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/02/ep-136-chenliangrong/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_342941168e10",
+    "entityId": "work_8d0a0db9b7dc",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/02/ep-136-chenliangrong/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_293390287c5d",
+    "entityId": "work_86e4fa6d2609",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/02/ep-135-anson/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e8b4d95d5efd",
+    "entityId": "work_7349f0078068",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/02/ep-135-anson/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_8acaffa8dfd7",
+    "entityId": "work_fe3c0dc641b3",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/02/ep-135-anson/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_933ccaaf7988",
+    "entityId": "work_c98ee40641c3",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/02/ep-134-wangweijia/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_9abfb85e8a42",
+    "entityId": "work_f0c20539b498",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/02/ep-134-wangweijia/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e3cb8ff1582f",
+    "entityId": "work_f0c20539b498",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/02/ep-134-wangweijia/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_1c3ad90bf963",
+    "entityId": "work_d0845cbcae6b",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/01/ep-133-jamie/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_b3f6b0ef9f19",
+    "entityId": "work_cd4fa5952b8c",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/01/ep-132-lihouchen/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_bc0546b039ae",
+    "entityId": "work_0659cbb70b47",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/01/ep-132-lihouchen/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_a8033c7879f6",
+    "entityId": "work_ff849e20dd04",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/01/ep-132-lihouchen/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_a3fe4a173441",
+    "entityId": "work_158d67a221de",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/01/ep-132-lihouchen/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_dc891f3e7a23",
+    "entityId": "work_75b703010f3b",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2025/01/ep-132-lihouchen/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-6"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_483e20f1a36c",
+    "entityId": "work_2aa01c143a4e",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/12/ep-127-maju/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_66f2030cb0b2",
+    "entityId": "work_8910956a22f2",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/12/ep-127-maju/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e39f6ceceb56",
+    "entityId": "work_8910956a22f2",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/12/ep-127-maju/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_21184f962849",
+    "entityId": "work_146f5ab57276",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/12/ep-127-maju/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_8164cf5aa128",
+    "entityId": "work_dac16966f568",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/11/ep-124-linpeirui/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_836bcd128529",
+    "entityId": "work_dac16966f568",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/11/ep-124-linpeirui/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_a1baff382a50",
+    "entityId": "work_deb91c9424f3",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/11/ep-124-linpeirui/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_ccdbb9580077",
+    "entityId": "work_9ba73e2ddc72",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/11/ep-124-linpeirui/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_52801400b983",
+    "entityId": "work_f37c5e41b7bf",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/11/ep-124-linpeirui/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-5"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_d8530c0f121e",
+    "entityId": "work_4458e1cd4432",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/11/ep-123-yumaochun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_214de2e5dffc",
+    "entityId": "work_49d4fa3972e9",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/11/ep-123-yumaochun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_d863558fe672",
+    "entityId": "work_49d4fa3972e9",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/11/ep-123-yumaochun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_29e5d88f635f",
+    "entityId": "work_1eb414cfe18c",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/11/ep-123-yumaochun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_2521436e0fe4",
+    "entityId": "work_01ec54f84fee",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/11/ep-123-yumaochun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-5"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_0e2fad65d09d",
+    "entityId": "work_967ce887685b",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/11/ep-123-yumaochun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-6"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_561a0de69411",
+    "entityId": "work_37e2ba4cf41a",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/11/ep-122-wangnanfu/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_43b70041b8df",
+    "entityId": "work_37e2ba4cf41a",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/11/ep-122-wangnanfu/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_64a3300ef7e0",
+    "entityId": "work_e33683f0eb99",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/11/ep-122-wangnanfu/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_6ac6eecb294f",
+    "entityId": "work_ad9976dc7abc",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/11/ep-122-wangnanfu/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_fd10204de22c",
+    "entityId": "work_1a224835c58d",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/10/ep-120-luoyufeng/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_4d635399510a",
+    "entityId": "work_1a224835c58d",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/10/ep-120-luoyufeng/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_2b8b4eac99e9",
+    "entityId": "work_7d681eabbd84",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/10/ep-120-luoyufeng/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_d9a47b22b307",
+    "entityId": "work_20a313e6297a",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/09/tibet-education-2/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_0dea84b9218a",
+    "entityId": "work_0f831fdcf71e",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/09/tibet-education-2/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_c41e1ccf24e4",
+    "entityId": "work_a0cbbd6af252",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/09/tibet-education-2/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_7fa88b2738f4",
+    "entityId": "work_0409a2d64bdc",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043aab4ef799a7a410723",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_afa18dc573b0",
+    "entityId": "work_c72b5de98fbc",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043aab4ef799a7a410723",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e9c8bfdbd003",
+    "entityId": "work_c72b5de98fbc",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043aab4ef799a7a410723",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_d1a2422f7e2c",
+    "entityId": "work_6ecc2dc6a951",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043aab4ef799a7a410723",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_fc3828534e01",
+    "entityId": "work_18ef3d7ff216",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/08/mike-forsythe/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_24a4fffa43ae",
+    "entityId": "work_959b28a20e30",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/08/mike-forsythe/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e78251310257",
+    "entityId": "work_c0b181eb28e6",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/07/peter-hessler/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_582ae5b245e1",
+    "entityId": "work_c4e49c9371ef",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/07/peter-hessler/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_cc5f79e76f88",
+    "entityId": "work_d36ae1681688",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043a147809c35bd7ace49",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_6718e4c3e127",
+    "entityId": "work_8efa6a047307",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043a147809c35bd7ace49",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_89053e7c65d1",
+    "entityId": "work_b41eaf5707fd",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043a147809c35bd7ace49",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_5435685e77f7",
+    "entityId": "work_1d0c6628b3e1",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/06/vicky-xu/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_b39709452087",
+    "entityId": "work_41739f6bebfa",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/06/ep-098-wang-chaohua/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_2504f693fbfd",
+    "entityId": "work_39b076cc76ad",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/06/ep-098-wang-chaohua/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_2e13994f07eb",
+    "entityId": "work_71e2a01ad711",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/06/ep-098-wang-chaohua/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e87b1cb35fa6",
+    "entityId": "work_71b9bc7a4f94",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/05/ep-097-ding-xueliang/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_dc4d85ed039b",
+    "entityId": "work_87767fe049be",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/05/ep-097-ding-xueliang/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_7f1027f07dc0",
+    "entityId": "work_b19d398ee1ff",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/05/ep-096-yan-geling/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e739faf30c32",
+    "entityId": "work_5bcbff8da606",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/05/ep-095-scott-kennedy/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_35c744b72cc6",
+    "entityId": "work_5bcbff8da606",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/05/ep-095-scott-kennedy/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_9bf606f176f7",
+    "entityId": "work_489d691988df",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/05/ep-095-scott-kennedy/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_0292bba2f3ad",
+    "entityId": "work_abe493649bbc",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/05/ep-095-scott-kennedy/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_77646777016a",
+    "entityId": "work_4cb3bb5753e7",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/04/ep-094-mr-c/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_42be72399a89",
+    "entityId": "work_4cb3bb5753e7",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/04/ep-094-mr-c/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_b8ae5ce7e582",
+    "entityId": "work_cc724fc40cdb",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/04/ep-094-mr-c/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_25e82582da40",
+    "entityId": "work_bde96c5b88a0",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bit.ly/bmb-093",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_f5e16418b57c",
+    "entityId": "work_661fb261c59a",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bit.ly/bmb-093",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_b52f3118b6a1",
+    "entityId": "work_525f2a8b1c02",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://bit.ly/bmb-093",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_6f822bdf1f78",
+    "entityId": "work_c380c2ef4f18",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/04/ep-092-zhang-jieping/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_081bb5e0e8e5",
+    "entityId": "work_70b05b145f30",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/03/ep-091-pei-minxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_6fb9920abbf0",
+    "entityId": "work_89e7aa549dfc",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/03/ep-091-pei-minxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_0ae4423cecf1",
+    "entityId": "work_6c501ac09d71",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/03/ep-091-pei-minxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_b258dab510ae",
+    "entityId": "work_f1510e876fd2",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/03/ep-090-wang-xiaoshuai/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_2935ce613d95",
+    "entityId": "work_5173717f9ff1",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/03/ep-090-wang-xiaoshuai/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_1c250943544a",
+    "entityId": "work_00153f5cc8e3",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/03/ep-090-wang-xiaoshuai/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_7a278b1907a5",
+    "entityId": "work_425061b96620",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043aeb4ef799a7a4107da",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_788773b13be5",
+    "entityId": "work_d08afca486bd",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043ad2bfb8508d613c6ec",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_60ad7c1a29b6",
+    "entityId": "work_2eceeb33b025",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043ad2bfb8508d613c6ec",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_173de86946c3",
+    "entityId": "work_2e7174a4eda4",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043ad2bfb8508d613c6ec",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_8afa25c2bd2e",
+    "entityId": "work_c4319b614cde",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043adedf0112e5cfd2e18",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_5adee8aefb0c",
+    "entityId": "work_2e6715c5aae3",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/01/ep-083-ha-jin-2/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_9e6f57fa49c7",
+    "entityId": "work_a7920b4b9496",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043abb4ef799a7a41074a",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_fdf07d41e9cf",
+    "entityId": "work_f0f02b30115f",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2024/01/ep-081-taiwan-election/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_57cf277d0673",
+    "entityId": "work_38a1470a4544",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043aeb4ef799a7a4107f3",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_ff1044b42477",
+    "entityId": "work_e9ba214fb200",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043aeb4ef799a7a4107f3",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_63fc394bf794",
+    "entityId": "work_a7f649e7e81d",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043aeb4ef799a7a4107f3",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e09f7329cc10",
+    "entityId": "work_a7f649e7e81d",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043aeb4ef799a7a4107f3",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_4531ec133abf",
+    "entityId": "work_8ffa4cd9c968",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b2b4ef799a7a410867",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_046f5ba0ecc5",
+    "entityId": "work_a7732c6cfae1",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b2b4ef799a7a410867",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_cfaa44153249",
+    "entityId": "work_6d797b9da944",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b2b4ef799a7a410867",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_85678a01f850",
+    "entityId": "work_e3b55ac743c4",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043a6b4ef799a7a41063f",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_109bac8fbca4",
+    "entityId": "work_7e49500832b1",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043a6b4ef799a7a41063f",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_f28f9a44e495",
+    "entityId": "work_56ddf005757e",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043ad5d1edf45d21e4d41",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_8cec1dcfe0ea",
+    "entityId": "work_1c603e6e6fc5",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043a9b4ef799a7a4106f1",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_0cb9857341c0",
+    "entityId": "work_fdef5e4f99a6",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043a9b4ef799a7a4106f1",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_38d3185a5166",
+    "entityId": "work_43990760e0ca",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043a6b4ef799a7a41065b",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_3afae568c791",
+    "entityId": "work_818eae693702",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043a6b4ef799a7a41065b",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_ffc6720337b5",
+    "entityId": "work_5a0f13bd6a61",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043a047809c35bd7ace06",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_2c85f90ccc13",
+    "entityId": "work_903d1d2df08f",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043a047809c35bd7ace06",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e973dab8cc3c",
+    "entityId": "work_740270c342e2",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043ad47809c35bd7ad058",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_bd1cc737c255",
+    "entityId": "work_740270c342e2",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043ad47809c35bd7ad058",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_743104fefa9b",
+    "entityId": "work_11748d025c2a",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043ad47809c35bd7ad058",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_281a26d402db",
+    "entityId": "work_e0fbc25dfc85",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/09/ep-063-anti-corruption-in-medical-sector/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_05320db700fa",
+    "entityId": "work_c86a3c1db095",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/09/ep-063-anti-corruption-in-medical-sector/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_b7a800c6b596",
+    "entityId": "work_166edd9c9037",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/09/ep-063-anti-corruption-in-medical-sector/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_817569720eb0",
+    "entityId": "work_56850a231562",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/08/ep-058-xu-chenggang-china-deflation/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_6b6bf9a1f9e2",
+    "entityId": "work_1ee7885f2760",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/10/ep-019-jiang-xue-zhang-jieping/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_0d04e4bcacf8",
+    "entityId": "work_53f340174d2b",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/07/ep-057-china-lgbt/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e23c6eb4a8a7",
+    "entityId": "work_df6f336ce817",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/07/ep-057-china-lgbt/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_3e01283f4001",
+    "entityId": "work_bdd9035d28b8",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/07/ep-057-china-lgbt/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_0c867afb083c",
+    "entityId": "work_52c501976638",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/07/ep-057-china-lgbt/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_44bdcaed49af",
+    "entityId": "work_52c501976638",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/07/ep-057-china-lgbt/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_df7a2446d146",
+    "entityId": "work_a48957cf47f1",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/07/ep-057-china-lgbt/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-5"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_672fb278a6ca",
+    "entityId": "work_a48957cf47f1",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/07/ep-057-china-lgbt/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-5"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_78186e16d122",
+    "entityId": "work_38d8b77378d6",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/07/ep-057-china-lgbt/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-6"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_ca2d82f4b6af",
+    "entityId": "work_38d8b77378d6",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/07/ep-057-china-lgbt/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-6"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_b855287e4e06",
+    "entityId": "work_e9360b874550",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043abedf0112e5cfd2dd5",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_331b6b4d080f",
+    "entityId": "work_34b6c394d579",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043abedf0112e5cfd2dd5",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_c355d7ee962c",
+    "entityId": "work_959ebf582382",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043abedf0112e5cfd2dd5",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_362377eb141b",
+    "entityId": "work_4c3ff766b3f1",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/07/ep-055-taiwan-cuisine-2/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e3ccd4947ccd",
+    "entityId": "work_481aa0d15562",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b52bfb8508d613c891",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_cb5c0246ffe8",
+    "entityId": "work_02ec2e6db93c",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/06/ep-050-chun-han-wong/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_ff6f3949deaf",
+    "entityId": "work_798a8095e638",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/05/ep-049-murong-xuecun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_c1446dc11131",
+    "entityId": "work_a8d217ede885",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/05/ep-047-zhao-suisheng/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_ca4dbc766f56",
+    "entityId": "work_561cb3b269c0",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/05/ep-047-zhao-suisheng/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_92f8adb8f014",
+    "entityId": "work_710c4434b30d",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/05/ep-047-zhao-suisheng/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_2f14a9d64d71",
+    "entityId": "work_95907d594420",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/05/ep-046-huang-yasheng/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_79fcb21d5c59",
+    "entityId": "work_8463cf755ddd",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/04/ep-044-lynette-ong/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_42f6edde06bc",
+    "entityId": "work_4723b51d98ac",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/04/ep-044-lynette-ong/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_7ea0ea754fae",
+    "entityId": "work_c603a172ddf8",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/04/ep-043-xu-zhiyong-ding-jiaxi/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_9ba8a396a509",
+    "entityId": "work_71b9e9c33f80",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/04/ep-043-xu-zhiyong-ding-jiaxi/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_6d3f22b0446a",
+    "entityId": "work_5e0cfe9f5d3e",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/04/ep-043-xu-zhiyong-ding-jiaxi/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-5"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_4849c4e56de3",
+    "entityId": "work_4351fe962a1d",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/04/ep-042-desmond-shum/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_403556f3f887",
+    "entityId": "work_182d8eb2ba14",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/03/ep-041-everything-everywhere-all-at-once/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_03b0b7bd86b8",
+    "entityId": "work_7bb7cb22f48b",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/03/ep-041-everything-everywhere-all-at-once/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_b13769d199a7",
+    "entityId": "work_db7b739fee4d",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/03/ep-041-everything-everywhere-all-at-once/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_8fad94418230",
+    "entityId": "work_e133e5606a7b",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/03/ep-041-everything-everywhere-all-at-once/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e85399cb9613",
+    "entityId": "work_5698546b3e53",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/02/ep-038-russia-ukraine-war-anniversary-taiwan/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_437120b622d2",
+    "entityId": "work_5698546b3e53",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/02/ep-038-russia-ukraine-war-anniversary-taiwan/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_3f0762b839ff",
+    "entityId": "work_e45aeeb9ef6e",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/02/ep-038-russia-ukraine-war-anniversary-taiwan/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_c7b230e25f55",
+    "entityId": "work_6a9feddc0f46",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/02/ep-038-russia-ukraine-war-anniversary-taiwan/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_c622fa8f7017",
+    "entityId": "work_df98a843ab01",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/02/ep-038-russia-ukraine-war-anniversary-taiwan/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-5"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_4da5bc7876a7",
+    "entityId": "work_8adfa98e660b",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/02/ep-038-russia-ukraine-war-anniversary-taiwan/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-6"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_d815b3c4f017",
+    "entityId": "work_8adfa98e660b",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/02/ep-038-russia-ukraine-war-anniversary-taiwan/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-6"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_8d1851b64886",
+    "entityId": "work_6c8a522f3a8c",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/02/ep-35-victor-shih-on-local-debt/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_9e720e16f0da",
+    "entityId": "work_5b57ba3b3804",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043ae2bfb8508d613c73b",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_8ad5ea65b8ea",
+    "entityId": "work_70dce653c856",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043aeedf0112e5cfd2e41",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_41692cc990be",
+    "entityId": "work_ac537e357a47",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b15d1edf45d21e4def",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_a39abfd71163",
+    "entityId": "work_9617aac01a35",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b15d1edf45d21e4def",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_da32651c3bcb",
+    "entityId": "work_b9b9be9a411c",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b15d1edf45d21e4def",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_4f12bed0ed5a",
+    "entityId": "work_b1fb68df5550",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/01/ep-032-wang-zhian/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_dd9558f7b5c0",
+    "entityId": "work_b8ae04eccd6e",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2023/01/ep-032-wang-zhian/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_8c4760439af4",
+    "entityId": "work_3954efcdd0de",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/12/the-last-generation-replay/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_be6968e26028",
+    "entityId": "work_956f57ca791a",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b95d1edf45d21e50b5",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_ff66612fd874",
+    "entityId": "work_77ccf083917e",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b95d1edf45d21e50b5",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_71cdce7aee1c",
+    "entityId": "work_8c45865e81bc",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b95d1edf45d21e50b5",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-6"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_a7a1ea24b6aa",
+    "entityId": "work_d6c0d671e918",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/12/ep-031-huang-yanzhong/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_b3bdec94c99c",
+    "entityId": "work_ccbfa5f90222",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/12/ep-031-huang-yanzhong/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_7c4c7a9f760b",
+    "entityId": "work_52399e566fa9",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/12/ep-031-huang-yanzhong/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_b714480a5a69",
+    "entityId": "work_f2f8befca97e",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/11/ep-026-sun-yun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_69b6cc7e3b82",
+    "entityId": "work_0b6aadde58af",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/11/ep-025-pei-minxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_17d091bdd8f6",
+    "entityId": "work_9c7b2ee3b510",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/11/ep-024-scott-kennedy",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_5043f321960f",
+    "entityId": "work_9d58801d320e",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/11/ep-024-scott-kennedy",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_11f1695c7887",
+    "entityId": "work_b4be4ad8c4d2",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/10/ep-023-kathy-the-protester/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_e4e67cea41ac",
+    "entityId": "work_34ff74e7469f",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/10/ep-023-kathy-the-protester/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_29e78418bcff",
+    "entityId": "edition_6bbeb0c915d1",
+    "field": "isbn",
+    "reason": "同一 ISBN 的版本信息冲突",
+    "candidates": [
+      "work_99f026976c56 | 第22条军规 | 9787805676296 | 译林出版社 | 扬恝、程爱民、邹惠玲 | 2006-6",
+      "work_e3baa4c98e66 | 第22条军规 | 9787805676296 | 译林出版社 | 扬恝、程爱民、邹惠玲 | 2006-6"
+    ],
+    "source": {
+      "kind": "external_reference",
+      "url": "https://book.douban.com/subject/1088812/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_218cc08c2392",
+    "entityId": "work_0790f918c20f",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/09/ep-018-victor-shih/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_bc6d2fc4e9dc",
+    "entityId": "work_db5905cc10b5",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/09/ep-018-victor-shih/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_75e800b8bdcc",
+    "entityId": "work_74faace1e098",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/09/ep-018-victor-shih/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_70defb3bec61",
+    "entityId": "work_74faace1e098",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/09/ep-018-victor-shih/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_09a6fee20b8a",
+    "entityId": "work_e1077e94b705",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/09/ep-015-ma-jie-on-metaverse-text/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_d18345ecaaf6",
+    "entityId": "work_d1700acc57f3",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/09/ep-015-ma-jie-on-metaverse-text/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_16a5b4615e2b",
+    "entityId": "work_2831333a641d",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/08/ep-014-cui-jingwen/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_263383231d2e",
+    "entityId": "work_51d07a8cb2f2",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/08/ep-013-paul-huang/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_31231ba0d7d7",
+    "entityId": "work_8a86916a08be",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/08/ep-013-paul-huang/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_f07326253b65",
+    "entityId": "work_90410a77fb1e",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/08/ep-013-paul-huang/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_45fa77ceea3b",
+    "entityId": "work_d533ac6f9819",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043ae47809c35bd7ad08b",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_889ae280949f",
+    "entityId": "work_21716e24fe49",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043ae47809c35bd7ad08b",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_f0f2fdb6a4b3",
+    "entityId": "work_dc0633d5aeef",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043ae47809c35bd7ad08b",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-5"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_393e033fe054",
+    "entityId": "work_b8674e005ae6",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b047809c35bd7ad117",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_382cdbc7ee1a",
+    "entityId": "work_b8674e005ae6",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b047809c35bd7ad117",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_5b7d250604a5",
+    "entityId": "work_84ba55a80f50",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b047809c35bd7ad117",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_ca752f82eba4",
+    "entityId": "work_84ba55a80f50",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b047809c35bd7ad117",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_ca01227fb906",
+    "entityId": "work_3c2f8c6fa8fa",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b0edf0112e5cfd2ea7",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_b54ef674abc4",
+    "entityId": "work_5589daf8133a",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b347809c35bd7ad1bf",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_a449fefefe1e",
+    "entityId": "work_dae52545e101",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b347809c35bd7ad1bf",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_fe14f91e4783",
+    "entityId": "work_5008caecd2dd",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b347809c35bd7ad1bf",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_9010d203dd27",
+    "entityId": "work_5008caecd2dd",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b347809c35bd7ad1bf",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_c94269ec7342",
+    "entityId": "edition_060063becc4c",
+    "field": "isbn",
+    "reason": "同一 ISBN 的版本信息冲突",
+    "candidates": [
+      "work_5df574f0def5 | 通往奴役之路 | 9787500421368 | 中国社会科学出版社 | 王明毅、冯兴元 | 1997-08-01",
+      "work_720c989f2e49 | 通往奴役之路 | 9787500421368 | 中国社会科学出版社 | 王明毅、冯兴元 | 1997-08-01",
+      "work_8e913881a26f | 通往奴役之路 | 9787500421368 | 中国社会科学出版社 | 王明毅、冯兴元 | 1997-08-01"
+    ],
+    "source": {
+      "kind": "external_reference",
+      "url": "https://book.douban.com/subject/1077528/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_dbb4a4111a85",
+    "entityId": "work_f56e0f9daf89",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043ae5d1edf45d21e4d61",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_ac894e6d593c",
+    "entityId": "work_bfd647c7f147",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043ad5d1edf45d21e4d27",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-6"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_3bff8ebf6ca9",
+    "entityId": "work_bfd647c7f147",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043ad5d1edf45d21e4d27",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-6"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_bb17837120c6",
+    "entityId": "work_5a7071da9f95",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b52bfb8508d613c8a7",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_bfe73fc39e9b",
+    "entityId": "work_5a7071da9f95",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b52bfb8508d613c8a7",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_c02e1e929eed",
+    "entityId": "work_46f554a07c26",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://shows.acast.com/bumingbai/episodes/680043b52bfb8508d613c8a7",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_3946780ca501",
+    "entityId": "work_3e52be9b6438",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/podcast/ep-002-pei-minxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_767c13849ff3",
+    "entityId": "work_3e52be9b6438",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/podcast/ep-002-pei-minxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_1205b52d896f",
+    "entityId": "work_241bdddb9cff",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/podcast/ep-002-pei-minxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_bc4d2f61af89",
+    "entityId": "work_241bdddb9cff",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/podcast/ep-002-pei-minxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_f7debe4500e6",
+    "entityId": "work_0588973b660a",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/podcast/ep-002-pei-minxin/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_75550dd846e3",
+    "entityId": "work_53e51da9eaff",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/05/ep-001-murong-xuecun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-1"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_35b09b90e94b",
+    "entityId": "work_58b32c5a7c3d",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/05/ep-001-murong-xuecun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-2"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_3d066fc98a5e",
+    "entityId": "work_59282c8b6136",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/05/ep-001-murong-xuecun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-3"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_d5e54d174205",
+    "entityId": "work_3b9e36b1be70",
+    "field": "creatorIds",
+    "reason": "旧记录没有可确认的创作者",
+    "candidates": [],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/05/ep-001-murong-xuecun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  },
+  {
+    "id": "issue_4a067ec7d5d8",
+    "entityId": "work_3b9e36b1be70",
+    "field": "metadataStatus",
+    "reason": "旧记录仅保留节目原文，书目信息需要人工核验",
+    "candidates": [
+      "仅保留节目原文，待人工书目核验"
+    ],
+    "source": {
+      "kind": "official_episode",
+      "url": "https://www.bumingbai.net/2022/05/ep-001-murong-xuecun/",
+      "retrievedAt": "2026-07-14T09:43:11.155Z",
+      "locator": "recommendation-4"
+    },
+    "status": "open"
+  }
+]

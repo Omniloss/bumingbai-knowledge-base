@@ -8,7 +8,7 @@ Goal: 用可替换的免费数据提供方补全作品标识和图片，生成�
 
 Architecture: 所有提供方只在构建期运行，并通过同一个 ProviderClient 接口和磁盘缓存隔离。提供方只能产生候选，Catalog 的来源、核验状态和发布规则仍是最终权威。硬关系直接计算，相似关系使用可解释权重，向量只补充主题信号。
 
-Tech Stack: TypeScript、Zod、Vitest、Open Library API、TMDB API、Wikidata API、Wikimedia Commons API、Cloudflare Workers AI、R2 可选镜像。
+Tech Stack: TypeScript、pnpm、Bun、Biome、Zod、Vitest、Open Library API、TMDB API、Wikidata API、Wikimedia Commons API、Cloudflare Workers AI、R2 可选镜像。
 
 ## Global Constraints
 
@@ -100,7 +100,7 @@ describe("provider cache", () => {
 Run:
 
 ```bash
-npx vitest run tests/providers/cache.test.ts
+pnpm exec vitest run tests/providers/cache.test.ts
 ```
 
 Expected: FAIL，cache 模块不存在。
@@ -179,7 +179,7 @@ export async function writeProviderCache<T>(
 Run:
 
 ```bash
-npx vitest run tests/providers/cache.test.ts
+pnpm exec vitest run tests/providers/cache.test.ts
 script/typecheck
 script/lint
 git add src/providers tests/providers/cache.test.ts
@@ -248,7 +248,7 @@ expect(result.records[0]?.image).toMatchObject({
 Run:
 
 ```bash
-npx vitest run tests/providers/open-library.test.ts tests/providers/tmdb.test.ts tests/providers/wikimedia.test.ts
+pnpm exec vitest run tests/providers/open-library.test.ts tests/providers/tmdb.test.ts tests/providers/wikimedia.test.ts
 ```
 
 Expected: FAIL，三个 client 尚不存在。
@@ -305,7 +305,7 @@ client 中拼接尺寸 URL。站点方法页必须显示 TMDB 标志和官方要
 Run:
 
 ```bash
-npx vitest run tests/providers
+pnpm exec vitest run tests/providers
 script/typecheck
 script/lint
 git add src/providers tests/providers tests/fixtures/providers
@@ -405,7 +405,7 @@ describe("selectHeroImage", () => {
 Run:
 
 ```bash
-npx vitest run tests/images/policy.test.ts
+pnpm exec vitest run tests/images/policy.test.ts
 ```
 
 Expected: FAIL，policy 模块不存在。
@@ -490,7 +490,7 @@ export function canUseAsThumbnail(asset: ImageAsset): boolean {
 Run:
 
 ```bash
-npx vitest run tests/images/policy.test.ts
+pnpm exec vitest run tests/images/policy.test.ts
 script/typecheck
 script/lint
 git add src/images tests/images src/domain/schemas/entities.ts
@@ -533,7 +533,7 @@ expect(relations.some((item) => item.fromWorkId === item.toWorkId)).toBe(false);
 Run:
 
 ```bash
-npx vitest run tests/relations/hard-relations.test.ts
+pnpm exec vitest run tests/relations/hard-relations.test.ts
 ```
 
 Expected: FAIL，hard-relations 模块不存在。
@@ -554,7 +554,7 @@ Expected: FAIL，hard-relations 模块不存在。
 Run:
 
 ```bash
-npx vitest run tests/relations/hard-relations.test.ts
+pnpm exec vitest run tests/relations/hard-relations.test.ts
 script/typecheck
 script/lint
 git add src/relations/hard-relations.ts tests/relations/hard-relations.test.ts
@@ -623,7 +623,7 @@ describe("scoreSimilarity", () => {
 Run:
 
 ```bash
-npx vitest run tests/relations/similarity.test.ts
+pnpm exec vitest run tests/relations/similarity.test.ts
 ```
 
 Expected: FAIL，similarity 模块不存在。
@@ -691,7 +691,7 @@ POST https://api.cloudflare.com/client/v4/accounts/{accountId}/ai/run/@cf/qwen/q
 Run:
 
 ```bash
-npx vitest run tests/providers/workers-ai.test.ts tests/relations/similarity.test.ts
+pnpm exec vitest run tests/providers/workers-ai.test.ts tests/relations/similarity.test.ts
 script/typecheck
 script/lint
 git add src/providers/workers-ai.ts src/relations/similarity.ts tests/providers tests/relations
@@ -737,7 +737,7 @@ expect(result.reviewIssues.every((issue) => issue.source.url.length > 0)).toBe(
 Run:
 
 ```bash
-npx vitest run tests/enrichment/enrich-catalog.test.ts
+pnpm exec vitest run tests/enrichment/enrich-catalog.test.ts
 ```
 
 Expected: FAIL，enrich-catalog 模块不存在。
@@ -773,7 +773,7 @@ export async function enrichCatalog(
 在 `AGENTS.md` 增加：
 
 ```markdown
-- 运行 `npx tsx tools/enrich-catalog.ts` 增量更新外部元数据、图片和作品关系。
+- 运行 `bun run tools/enrich-catalog.ts` 增量更新外部元数据、图片和作品关系。
 - 提供方响应只能生成候选，发生标题、创作者或年份冲突时必须写入审核队列。
 - Open Library 图片保持直连，Commons 图片逐文件保存许可，R2 只保存允许镜像的资产。
 ```
@@ -783,12 +783,12 @@ export async function enrichCatalog(
 Run:
 
 ```bash
-npx vitest run tests/providers tests/images tests/relations tests/enrichment
-npx tsx tools/enrich-catalog.ts
-npx tsx tools/validate-data.ts
+pnpm exec vitest run tests/providers tests/images tests/relations tests/enrichment
+bun run tools/enrich-catalog.ts
+bun run tools/validate-data.ts
 script/ci
 script/build
-npx playwright test tests/e2e/details.spec.ts
+pnpm exec playwright test tests/e2e/details.spec.ts
 ```
 
 Expected: 全部通过。离线无凭据运行仍能使用缓存完成构建。

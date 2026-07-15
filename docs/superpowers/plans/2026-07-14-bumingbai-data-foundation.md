@@ -8,12 +8,12 @@ Goal: 建立 schema 优先的数据层，把现有 237 期节目和 423 条扁�
 
 Architecture: 单一 Node.js 与 TypeScript 仓库。Zod schema 是运行时校验和 TypeScript 类型的单一事实来源。迁移器只读取现有 `work/bumingbai_structured.json`，输出分实体 JSON 和审核队列，不删除或改写原始输入。
 
-Tech Stack: Node.js、TypeScript、Zod、Vitest、tsx、ESLint、Prettier、markdownlint-cli2。
+Tech Stack: Node.js、TypeScript、pnpm、Bun、Zod、Vitest、Biome、markdownlint-cli2。
 
 ## Global Constraints
 
 - 只在功能分支提交，不推送到 `main`。
-- 所有 npm CLI 通过本地脚本或 `npx` 运行。
+- 依赖由 pnpm 管理，TypeScript CLI 由 Bun 直接执行，项目 CLI 通过 `pnpm exec` 或本地脚本运行。
 - 所有秘密读取环境变量，`.env` 不进入版本库。
 - `work/bumingbai_structured.json` 是迁移输入，不是公开数据契约。
 - 每条推荐保留原始文本、官方来源 URL 和核验状态。
@@ -28,10 +28,10 @@ Tech Stack: Node.js、TypeScript、Zod、Vitest、tsx、ESLint、Prettier、mark
 
 ```text
 package.json                         Node 命令和锁定依赖
-package-lock.json                    npm 锁文件
+pnpm-lock.yaml                       pnpm 锁文件
 .nvmrc                               CI 和本地 Node 主版本
 tsconfig.json                        TypeScript 严格配置
-eslint.config.js                     ESLint 配置
+biome.jsonc                          TypeScript、JavaScript、JSON 和 CSS 检查配置
 vitest.config.ts                     离线测试配置
 script/setup                         安装锁定依赖
 script/typecheck                     类型检查入口
@@ -61,10 +61,10 @@ data/review/issues.json              待核验队列
 Files:
 
 - Create: `package.json`
-- Create: `package-lock.json`
+- Create: `pnpm-lock.yaml`
 - Create: `.nvmrc`
 - Create: `tsconfig.json`
-- Create: `eslint.config.js`
+- Create: `biome.jsonc`
 - Create: `vitest.config.ts`
 - Create: `script/setup`
 - Create: `script/typecheck`
@@ -92,12 +92,12 @@ Expected: FAIL，因为 `script/` 入口尚不存在。
 Run:
 
 ```bash
-npm init -y
-npm install zod
-npm install --save-dev typescript tsx vitest eslint @eslint/js typescript-eslint prettier markdownlint-cli2 @types/node
+pnpm init
+pnpm add zod
+pnpm add -D typescript vitest @biomejs/biome markdownlint-cli2 @types/node
 ```
 
-Expected: `package-lock.json` 生成，安装命令退出码为 0。
+Expected: `pnpm-lock.yaml` 生成，安装命令退出码为 0。
 
 创建 `.nvmrc`，内容为：
 
@@ -113,56 +113,100 @@ Expected: `package-lock.json` 生成，安装命令退出码为 0。
 {
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . && prettier --check . && markdownlint-cli2 \"**/*.md\" \"#node_modules\"",
-    "test": "vitest run",
-    "ci": "npm run typecheck && npm run lint && npm test"
+    "lint": "biome check . && markdownlint-cli2 \"**/*.md\" \"#node_modules\"",
+    "test": "pnpm exec vitest run",
+    "ci": "pnpm run typecheck && pnpm run lint && pnpm run test"
   },
   "type": "module"
 }
 ```
 
-保留 npm 安装写入的 `dependencies` 和 `devDependencies`。
+保留 pnpm 安装写入的 `dependencies` 和 `devDependencies`。
 
 `tsconfig.json`：
 
 ```json
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-    "esModuleInterop": true,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": true,
     "forceConsistentCasingInFileNames": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
+    "noEmit": true,
     "types": ["node", "vitest/globals"]
   },
-  "include": ["src", "tools", "tests", "*.ts", "*.js"]
+  "include": ["src", "tools", "tests", "*.config.ts"]
 }
 ```
 
-`eslint.config.js`：
+`biome.jsonc`：
 
-```js
-import eslint from "@eslint/js";
-import tseslint from "typescript-eslint";
-
-export default tseslint.config(
-  { ignores: ["dist", "coverage", "data/catalog"] },
-  eslint.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
-  {
-    languageOptions: {
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
+```jsonc
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.3/schema.json",
+  "files": {
+    "ignoreUnknown": true,
+    "includes": ["**", "!!dist", "!!coverage", "!!data/catalog"]
   },
-);
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space"
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "complexity": {
+        "noBannedTypes": "error"
+      },
+      "correctness": {
+        "noUnusedImports": "error",
+        "noUnusedVariables": "error"
+      },
+      "style": {
+        "noDefaultExport": "error",
+        "noNonNullAssertion": "error",
+        "noParameterAssign": "error",
+        "useImportType": "error"
+      },
+      "suspicious": {
+        "noConfusingVoidType": "error",
+        "noExplicitAny": "error",
+        "noFallthroughSwitchClause": "error"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "astro.config.ts",
+        "playwright.config.ts",
+        "vitest.config.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noDefaultExport": "off"
+          }
+        }
+      }
+    }
+  ]
+}
 ```
+
+Biome 只检查和格式化 TypeScript、JavaScript、JSON 与 CSS。Markdown 继续由
+markdownlint-cli2 检查。
 
 `vitest.config.ts`：
 
@@ -187,7 +231,7 @@ export default defineConfig({
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-npm ci
+pnpm install --frozen-lockfile
 ```
 
 `script/typecheck`：
@@ -195,7 +239,7 @@ npm ci
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-npm run typecheck
+pnpm run typecheck
 ```
 
 `script/lint`：
@@ -203,7 +247,7 @@ npm run typecheck
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-npm run lint
+pnpm run lint
 ```
 
 `script/test`：
@@ -211,7 +255,7 @@ npm run lint
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-npm test
+pnpm run test
 ```
 
 `script/ci`：
@@ -219,7 +263,7 @@ npm test
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-npm run ci
+pnpm run ci
 ```
 
 Run:
@@ -243,7 +287,7 @@ Expected: 三个命令均退出 0。此时没有测试文件，`script/test` 可
 - [ ] Step 6: 提交脚手架
 
 ```bash
-git add package.json package-lock.json .nvmrc tsconfig.json eslint.config.js vitest.config.ts script
+git add package.json pnpm-lock.yaml .nvmrc tsconfig.json biome.jsonc vitest.config.ts script
 git commit -m "chore: add typed project command layer"
 ```
 
@@ -328,7 +372,7 @@ describe("CatalogSchema", () => {
 Run:
 
 ```bash
-npx vitest run tests/domain/schemas.test.ts
+pnpm exec vitest run tests/domain/schemas.test.ts
 ```
 
 Expected: FAIL，模块 `src/domain/schemas/catalog.js` 不存在。
@@ -585,7 +629,7 @@ export type ReviewIssue = z.infer<typeof ReviewIssueSchema>;
 Run:
 
 ```bash
-npx vitest run tests/domain/schemas.test.ts
+pnpm exec vitest run tests/domain/schemas.test.ts
 script/typecheck
 ```
 
@@ -649,7 +693,7 @@ describe("identity helpers", () => {
 Run:
 
 ```bash
-npx vitest run tests/domain/id.test.ts
+pnpm exec vitest run tests/domain/id.test.ts
 ```
 
 Expected: FAIL，模块 `src/domain/id.js` 不存在。
@@ -691,7 +735,7 @@ export function createSlug(value: string): string {
 Run:
 
 ```bash
-npx vitest run tests/domain/id.test.ts
+pnpm exec vitest run tests/domain/id.test.ts
 script/typecheck
 script/lint
 ```
@@ -797,7 +841,7 @@ describe("migrateLegacy", () => {
 Run:
 
 ```bash
-npx vitest run tests/migration/legacy.test.ts
+pnpm exec vitest run tests/migration/legacy.test.ts
 ```
 
 Expected: FAIL，`migrateLegacy` 不存在。
@@ -1124,7 +1168,7 @@ await writeFile(
 Run:
 
 ```bash
-npx vitest run tests/migration/legacy.test.ts
+pnpm exec vitest run tests/migration/legacy.test.ts
 script/typecheck
 script/lint
 ```
@@ -1203,7 +1247,7 @@ describe("canPublishRecommendation", () => {
 Run:
 
 ```bash
-npx vitest run tests/domain/publication.test.ts
+pnpm exec vitest run tests/domain/publication.test.ts
 ```
 
 Expected: FAIL，publication 模块不存在。
@@ -1246,7 +1290,7 @@ export type ValidationIssue = {
 Run:
 
 ```bash
-npx vitest run tests/domain/publication.test.ts
+pnpm exec vitest run tests/domain/publication.test.ts
 script/ci
 ```
 
@@ -1286,7 +1330,7 @@ Interfaces:
 Run:
 
 ```bash
-npx tsx tools/migrate-legacy.ts work/bumingbai_structured.json data/catalog
+bun run tools/migrate-legacy.ts work/bumingbai_structured.json data/catalog
 ```
 
 Expected: `data/catalog/episodes.json` 有 237 条记录，
@@ -1297,7 +1341,7 @@ Expected: `data/catalog/episodes.json` 有 237 条记录，
 Run:
 
 ```bash
-npx tsx tools/validate-data.ts
+bun run tools/validate-data.ts
 ```
 
 Expected: 第一次运行可能因旧数据错误退出 1。不得放宽 schema。逐项修正迁移规则或将无法确认的数据改为 `withheld` 并写入 ReviewIssue，直到退出 0。
@@ -1324,7 +1368,7 @@ it("preserves the complete legacy record counts", async () => {
 
 ```markdown
 - 运行 `script/ci` 验证类型、lint 和离线测试。
-- 运行 `npx tsx tools/migrate-legacy.ts` 重新生成 `data/catalog/`。
+- 运行 `bun run tools/migrate-legacy.ts` 重新生成 `data/catalog/`。
 - `data/catalog/` 是公开站点的规范化输入，`data/review/issues.json` 不直接公开候选事实。
 ```
 
@@ -1334,7 +1378,7 @@ Run:
 
 ```bash
 script/ci
-npx tsx tools/validate-data.ts
+bun run tools/validate-data.ts
 git diff --check
 ```
 

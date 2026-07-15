@@ -8,7 +8,7 @@ Goal: 把规范化目录发布为可搜索、可筛选、证据优先的 Astro �
 
 Architecture: Astro 在构建阶段通过只读 CatalogRepository 加载 Zod 校验后的 JSON。页面默认无客户端 JavaScript，搜索和筛选使用小型客户端组件。所有详情页由稳定 slug 生成，公开内容只读取 `publicationStatus: public` 的实体和证据。
 
-Tech Stack: Astro、TypeScript、Vitest、Playwright、axe-core、原生 CSS、静态 JSON 搜索索引。
+Tech Stack: Astro、TypeScript、pnpm、Bun、Biome、Vitest、Playwright、axe-core、原生 CSS、静态 JSON 搜索索引。
 
 ## Global Constraints
 
@@ -61,7 +61,7 @@ tests/e2e/accessibility.spec.ts     axe 和响应式检查
 Files:
 
 - Modify: `package.json`
-- Modify: `package-lock.json`
+- Modify: `pnpm-lock.yaml`
 - Modify: `tsconfig.json`
 - Create: `astro.config.ts`
 - Create: `playwright.config.ts`
@@ -92,9 +92,9 @@ Expected: FAIL，`script/build` 不存在。
 Run:
 
 ```bash
-npm install astro
-npm install --save-dev @playwright/test @axe-core/playwright
-npx playwright install chromium
+pnpm add astro
+pnpm add -D @playwright/test @axe-core/playwright
+pnpm exec playwright install chromium
 ```
 
 Expected: 安装退出 0，锁文件更新。
@@ -150,7 +150,7 @@ export default defineConfig({
     { name: "mobile", use: { ...devices["Pixel 7"] } },
   ],
   webServer: {
-    command: "npm run preview -- --host 127.0.0.1",
+    command: "pnpm run preview -- --host 127.0.0.1",
     port: 4321,
     reuseExistingServer: false,
   },
@@ -323,7 +323,7 @@ a {
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-npm run dev -- --host 127.0.0.1
+pnpm run dev -- --host 127.0.0.1
 ```
 
 `script/build`：
@@ -331,7 +331,7 @@ npm run dev -- --host 127.0.0.1
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-npm run build
+pnpm run build
 ```
 
 Run:
@@ -346,7 +346,7 @@ Expected: `dist/index.html` 存在，构建退出 0。
 - [ ] Step 6: 提交页面外壳
 
 ```bash
-git add package.json package-lock.json tsconfig.json astro.config.ts playwright.config.ts src script
+git add package.json pnpm-lock.yaml tsconfig.json astro.config.ts playwright.config.ts src script
 git commit -m "feat: add static site shell"
 ```
 
@@ -408,7 +408,7 @@ describe("CatalogRepository", () => {
 Run:
 
 ```bash
-npx vitest run tests/lib/catalog.test.ts
+pnpm exec vitest run tests/lib/catalog.test.ts
 ```
 
 Expected: FAIL，catalog 模块不存在。
@@ -501,7 +501,7 @@ export async function getWorkBySlug(slug: string) {
 Run:
 
 ```bash
-npx vitest run tests/lib/catalog.test.ts
+pnpm exec vitest run tests/lib/catalog.test.ts
 script/typecheck
 ```
 
@@ -561,7 +561,7 @@ Run:
 
 ```bash
 script/build
-npx playwright test tests/e2e/home.spec.ts --project=desktop
+pnpm exec playwright test tests/e2e/home.spec.ts --project=desktop
 ```
 
 Expected: FAIL，入口链接和索引页不存在。
@@ -618,7 +618,7 @@ Run:
 
 ```bash
 script/build
-npx playwright test tests/e2e/home.spec.ts --project=desktop
+pnpm exec playwright test tests/e2e/home.spec.ts --project=desktop
 script/ci
 ```
 
@@ -684,7 +684,7 @@ Run:
 
 ```bash
 script/build
-npx playwright test tests/e2e/details.spec.ts --project=desktop
+pnpm exec playwright test tests/e2e/details.spec.ts --project=desktop
 ```
 
 Expected: FAIL，详情路由不存在。
@@ -733,7 +733,7 @@ Run:
 
 ```bash
 script/build
-npx playwright test tests/e2e/details.spec.ts --project=desktop
+pnpm exec playwright test tests/e2e/details.spec.ts --project=desktop
 script/ci
 ```
 
@@ -786,7 +786,7 @@ describe("tokenizeForSearch", () => {
 Run:
 
 ```bash
-npx vitest run tests/lib/search.test.ts
+pnpm exec vitest run tests/lib/search.test.ts
 ```
 
 Expected: FAIL，search 模块不存在。
@@ -826,7 +826,7 @@ type SearchRecord = {
 
 ```json
 {
-  "build": "npx tsx tools/build-search-index.ts && astro build"
+  "build": "bun run tools/build-search-index.ts && astro build"
 }
 ```
 
@@ -858,9 +858,9 @@ test("search reaches a work from Chinese text", async ({ page }) => {
 Run:
 
 ```bash
-npx vitest run tests/lib/search.test.ts
+pnpm exec vitest run tests/lib/search.test.ts
 script/build
-npx playwright test tests/e2e/search.spec.ts --project=desktop
+pnpm exec playwright test tests/e2e/search.spec.ts --project=desktop
 ```
 
 Expected: 全部通过。
@@ -919,7 +919,7 @@ Run:
 
 ```bash
 script/build
-npx playwright test tests/e2e/accessibility.spec.ts
+pnpm exec playwright test tests/e2e/accessibility.spec.ts
 ```
 
 Expected: 首次运行暴露真实的对比度、标签、标题或移动布局问题。保存 trace，不删除断言。
@@ -941,7 +941,7 @@ Expected: 首次运行暴露真实的对比度、标签、标题或移动布局�
 
 ```markdown
 - 运行 `script/server` 启动 Astro 本地站点，运行 `script/build` 生成静态站点。
-- 浏览器验收使用 `npx playwright test`，桌面和移动项目都必须通过。
+- 浏览器验收使用 `pnpm exec playwright test`，桌面和移动项目都必须通过。
 - 页面只能读取 CatalogRepository，不得直接读取或绕过 `data/catalog/` schema。
 ```
 
@@ -952,7 +952,7 @@ Run:
 ```bash
 script/ci
 script/build
-npx playwright test
+pnpm exec playwright test
 ```
 
 Expected: 全部通过。

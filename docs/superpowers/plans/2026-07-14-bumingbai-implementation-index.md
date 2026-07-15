@@ -8,7 +8,7 @@ Goal: 按四个独立验收阶段交付公开、低成本、证据可追溯的�
 
 Architecture: 单一 Astro 与 TypeScript 仓库，先建立 Zod 数据契约，再构建静态页面，然后接入外部元数据、图片和推荐，最后启用分层同步和 Cloudflare 部署。每阶段都能独立测试和提交，后续阶段只能依赖前一阶段公开的接口。
 
-Tech Stack: Astro、TypeScript、Zod、Vitest、Playwright、GitHub Actions、Cloudflare Workers Static Assets、Open Library、TMDB、Wikidata、Commons、Workers AI。
+Tech Stack: Astro、TypeScript、pnpm、Bun、Biome、Zod、Vitest、Playwright、GitHub Actions、Cloudflare Workers Static Assets、Open Library、TMDB、Wikidata、Commons、Workers AI。
 
 ## Global Constraints
 

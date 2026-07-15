@@ -8,7 +8,7 @@ Goal: 每 6 小时检查官方更新，把低风险节目字段通过受限自�
 
 Architecture: 同步器先保存官方原始快照，再计算内容哈希和字段级差异。低风险与高风险变化写入不同文件和分支。GitHub Actions 只自动合并通过白名单检查的低风险拉取请求，Cloudflare 部署只消费主分支的已批准提交。
 
-Tech Stack: TypeScript、GitHub Actions、GitHub CLI、Astro、Wrangler JSONC、Cloudflare Workers Static Assets、Playwright。
+Tech Stack: TypeScript、pnpm、Bun、Biome、GitHub Actions、GitHub CLI、Astro、Wrangler JSONC、Cloudflare Workers Static Assets、Vitest、Playwright。
 
 ## Global Constraints
 
@@ -90,7 +90,7 @@ expect(episodes[0]).toMatchObject({
 Run:
 
 ```bash
-npx vitest run tests/sync/official-client.test.ts tests/sync/snapshot.test.ts
+pnpm exec vitest run tests/sync/official-client.test.ts tests/sync/snapshot.test.ts
 ```
 
 Expected: FAIL，同步模块不存在。
@@ -130,7 +130,7 @@ export type SyncChange = {
 安装 XML 解析依赖：
 
 ```bash
-npm install fast-xml-parser
+pnpm add fast-xml-parser
 ```
 
 `OfficialClient` 构造函数注入 fetch，公开方法：
@@ -177,10 +177,10 @@ export async function writeSnapshot(
 Run:
 
 ```bash
-npx vitest run tests/sync/official-client.test.ts tests/sync/snapshot.test.ts
+pnpm exec vitest run tests/sync/official-client.test.ts tests/sync/snapshot.test.ts
 script/typecheck
 script/lint
-git add src/sync tests/sync tests/fixtures/sync package.json package-lock.json
+git add src/sync tests/sync tests/fixtures/sync package.json pnpm-lock.yaml
 git commit -m "feat: capture official episode snapshots"
 ```
 
@@ -227,7 +227,7 @@ expect(parseRecommendationCandidates(officialHtml)).toEqual([
 Run:
 
 ```bash
-npx vitest run tests/sync/recommendation-parser.test.ts
+pnpm exec vitest run tests/sync/recommendation-parser.test.ts
 ```
 
 Expected: FAIL，parser 不存在。
@@ -237,7 +237,7 @@ Expected: FAIL，parser 不存在。
 安装 HTML 解析依赖：
 
 ```bash
-npm install linkedom
+pnpm add linkedom
 ```
 
 导出类型：
@@ -282,10 +282,10 @@ const RECOMMENDATION_HEADINGS = new Set([
 Run:
 
 ```bash
-npx vitest run tests/sync/recommendation-parser.test.ts
+pnpm exec vitest run tests/sync/recommendation-parser.test.ts
 script/typecheck
 script/lint
-git add src/sync/recommendation-parser.ts tests/sync/recommendation-parser.test.ts data/review/sync-candidates.json package.json package-lock.json
+git add src/sync/recommendation-parser.ts tests/sync/recommendation-parser.test.ts data/review/sync-candidates.json package.json pnpm-lock.yaml
 git commit -m "feat: queue official recommendation candidates"
 ```
 
@@ -346,7 +346,7 @@ describe("classifyField", () => {
 Run:
 
 ```bash
-npx vitest run tests/sync/classify-change.test.ts
+pnpm exec vitest run tests/sync/classify-change.test.ts
 ```
 
 Expected: FAIL，classifier 不存在。
@@ -391,7 +391,7 @@ data/review/sync-candidates.json
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
-npx tsx tools/sync-official.ts
+bun run tools/sync-official.ts
 ```
 
 Run:
@@ -405,7 +405,7 @@ chmod +x script/sync
 Run:
 
 ```bash
-npx vitest run tests/sync
+pnpm exec vitest run tests/sync
 script/typecheck
 script/lint
 git add src/sync tools script/sync tests/sync
@@ -435,14 +435,18 @@ expect(sync.on.schedule[0].cron).toBe("17 */6 * * *");
 expect(JSON.stringify(sync)).not.toContain("--no-verify");
 expect(JSON.stringify(sync)).not.toContain("push origin main");
 expect(ci.jobs.check.steps.map((step) => step.run)).toEqual(
-  expect.arrayContaining(["script/ci", "script/build", "npx playwright test"]),
+  expect.arrayContaining([
+    "script/ci",
+    "script/build",
+    "pnpm exec playwright test",
+  ]),
 );
 ```
 
-使用 `yaml` npm 包解析 workflow：
+使用 `yaml` 包解析 workflow：
 
 ```bash
-npm install --save-dev yaml
+pnpm add -D yaml
 ```
 
 - [ ] Step 2: 运行测试并确认失败
@@ -450,14 +454,18 @@ npm install --save-dev yaml
 Run:
 
 ```bash
-npx vitest run tests/contracts/workflows.test.ts
+pnpm exec vitest run tests/contracts/workflows.test.ts
 ```
 
 Expected: FAIL，workflow 文件不存在。
 
 - [ ] Step 3: 实现 CI workflow
 
-`.github/workflows/ci.yml` 使用 `pull_request`，权限只读。步骤固定为 checkout、setup-node、`npm ci`、`script/ci`、`script/build`、`npx playwright install --with-deps chromium`、`npx playwright test`。不得在 CI workflow 中配置部署秘密。
+`.github/workflows/ci.yml` 使用 `pull_request`，权限只读。步骤固定为
+`actions/checkout@v7`、`pnpm/action-setup@v6`、`oven-sh/setup-bun@v2`、
+`actions/setup-node@v7`、`pnpm install --frozen-lockfile`、`script/ci`、
+`script/build`、`pnpm exec playwright install --with-deps chromium`、
+`pnpm exec playwright test`。setup-node 的缓存设为 `pnpm`。不得在 CI workflow 中配置部署秘密。
 
 - [ ] Step 4: 实现同步 workflow
 
@@ -479,18 +487,20 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+      - uses: oven-sh/setup-bun@v2
       - uses: actions/setup-node@v7
         with:
           node-version-file: ".nvmrc"
-          cache: npm
-      - run: npm ci
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - run: script/sync
       - run: script/ci
       - run: script/build
       - name: Create or update sync pull request
         env:
           GH_TOKEN: ${{ github.token }}
-        run: npx tsx tools/open-sync-pr.ts
+        run: bun run tools/open-sync-pr.ts
 ```
 
 创建 `tools/open-sync-pr.ts`，它只推送 `automation/episode-sync` 或
@@ -503,9 +513,9 @@ jobs:
 Run:
 
 ```bash
-npx vitest run tests/contracts/workflows.test.ts
+pnpm exec vitest run tests/contracts/workflows.test.ts
 script/lint
-git add .github tests/contracts tools/open-sync-pr.ts package.json package-lock.json
+git add .github tests/contracts tools/open-sync-pr.ts package.json pnpm-lock.yaml
 git commit -m "ci: add layered catalog synchronization"
 ```
 
@@ -560,7 +570,7 @@ describe("parseSiteConfig", () => {
 Run:
 
 ```bash
-npx vitest run tests/config/site.test.ts
+pnpm exec vitest run tests/config/site.test.ts
 ```
 
 Expected: FAIL，site config 不存在。
@@ -600,23 +610,29 @@ PUBLIC_REPOSITORY_URL=
 安装最新 Wrangler：
 
 ```bash
-npm install --save-dev wrangler@latest
+pnpm add -D wrangler@latest
 ```
 
 - [ ] Step 4: 实现部署 workflow
 
-`.github/workflows/deploy.yml` 只在 `main` push 后运行。权限 `contents: read`。步骤为 npm ci、script/ci、script/build、Playwright 本地烟雾测试、`npx wrangler@latest deploy`。环境变量读取 `vars.PUBLIC_SITE_URL`、`vars.PUBLIC_REPOSITORY_URL` 和 secret `CLOUDFLARE_API_TOKEN`、`CLOUDFLARE_ACCOUNT_ID`。
+`.github/workflows/deploy.yml` 只在 `main` push 后运行。权限 `contents: read`。
+步骤使用 `actions/checkout@v7`、`pnpm/action-setup@v6`、
+`oven-sh/setup-bun@v2` 和 `actions/setup-node@v7`，然后运行
+`pnpm install --frozen-lockfile`、script/ci、script/build、Playwright 本地烟雾测试和
+`pnpm exec wrangler deploy`。环境变量读取 `vars.PUBLIC_SITE_URL`、
+`vars.PUBLIC_REPOSITORY_URL` 和 secret `CLOUDFLARE_API_TOKEN`、
+`CLOUDFLARE_ACCOUNT_ID`。
 
 - [ ] Step 5: 验证并提交
 
 Run:
 
 ```bash
-npx vitest run tests/config/site.test.ts
-npx wrangler@latest deploy --dry-run
+pnpm exec vitest run tests/config/site.test.ts
+pnpm exec wrangler deploy --dry-run
 script/ci
 script/build
-git add wrangler.jsonc .env.example .github/workflows/deploy.yml src/config tests/config package.json package-lock.json
+git add wrangler.jsonc .env.example .github/workflows/deploy.yml src/config tests/config package.json pnpm-lock.yaml
 git commit -m "ci: add workers static asset deployment"
 ```
 
@@ -669,7 +685,7 @@ Run:
 
 ```bash
 script/build
-npx playwright test tests/e2e/deployment-smoke.spec.ts
+pnpm exec playwright test tests/e2e/deployment-smoke.spec.ts
 ```
 
 Expected: FAIL，署名和纠错页尚不存在。
@@ -698,7 +714,7 @@ issueUrl.searchParams.set(
 - 同步失败时从 Actions 下载日志，运行 `script/sync` 重现。
 - 外部 API 故障时确认缓存未被删除，再运行离线构建。
 - 错误自动 PR 使用 `gh pr close` 关闭，不合并。
-- 错误部署使用 `npx wrangler@latest rollback` 查看和选择上一版本。
+- 错误部署使用 `pnpm exec wrangler rollback` 查看和选择上一版本。
 - 高风险候选按来源、标题、创作者、版本、图片许可顺序核验。
 - 商业化前停用 TMDB 自动同步并重新确认许可。
 
@@ -708,10 +724,10 @@ Run:
 
 ```bash
 script/ci
-npx tsx tools/validate-data.ts
+bun run tools/validate-data.ts
 script/build
-npx playwright test
-npx wrangler@latest deploy --dry-run
+pnpm exec playwright test
+pnpm exec wrangler deploy --dry-run
 git diff --check
 ```
 
@@ -731,7 +747,7 @@ Manual QA:
 
 ```markdown
 - `script/sync` 只写数据文件，Git 提交和 PR 由 workflow 中的专用工具处理。
-- Cloudflare 配置只使用 `wrangler.jsonc`，部署使用 `npx wrangler@latest`。
+- Cloudflare 配置只使用 `wrangler.jsonc`，部署使用 `pnpm exec wrangler`。
 - 同步或部署失败时按 `docs/operations.md` 恢复，禁止用不完整数据覆盖线上版本。
 ```
 

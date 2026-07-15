@@ -132,6 +132,7 @@ describe("canPublishRecommendation", () => {
     ["partial official", { verificationStatus: "partially_verified" }, true],
     ["withheld", { publicationStatus: "withheld" }, false],
     ["provider", { source: { ...SOURCE, kind: "provider_api" } }, false],
+    ["official RSS", { source: { ...SOURCE, kind: "official_rss" } }, false],
   ])("returns expected eligibility for %s", (_name, overrides, expected) => {
     expect(canPublishRecommendation(recommendation(overrides))).toBe(expected);
   });
@@ -232,5 +233,27 @@ describe("validateCatalog", () => {
     });
 
     expect(validateCatalog(input)).toEqual([]);
+  });
+
+  it("accepts a verified translation assessment backed by a source", () => {
+    // Given
+    const input = catalog({
+      works: [work({ publicationStatus: "withheld" })],
+      editions: [
+        edition({
+          translationAssessment: {
+            status: "verified",
+            summary: "译文准确",
+            sources: [SOURCE],
+          },
+        }),
+      ],
+    });
+
+    // When
+    const issues = validateCatalog(input);
+
+    // Then
+    expect(issues).toEqual([]);
   });
 });

@@ -17,6 +17,7 @@ const SOURCE = {
   url: "https://bumingbai.net/example",
   retrievedAt: GENERATED_AT,
 } as const;
+const RSS_SOURCE = { ...SOURCE, kind: "official_rss" } as const;
 
 const EMPTY_CATALOG = CatalogSchema.parse({
   schemaVersion: 1,
@@ -132,7 +133,18 @@ describe("canPublishRecommendation", () => {
     ["partial official", { verificationStatus: "partially_verified" }, true],
     ["withheld", { publicationStatus: "withheld" }, false],
     ["provider", { source: { ...SOURCE, kind: "provider_api" } }, false],
-    ["official RSS", { source: { ...SOURCE, kind: "official_rss" } }, false],
+    ["verified official RSS", { source: RSS_SOURCE }, true],
+    [
+      "partially verified official RSS",
+      { source: RSS_SOURCE, verificationStatus: "partially_verified" },
+      true,
+    ],
+    [
+      "external reference",
+      { source: { ...SOURCE, kind: "external_reference" } },
+      false,
+    ],
+    ["manual review", { source: { ...SOURCE, kind: "manual_review" } }, false],
   ])("returns expected eligibility for %s", (_name, overrides, expected) => {
     expect(canPublishRecommendation(recommendation(overrides))).toBe(expected);
   });
@@ -233,6 +245,27 @@ describe("validateCatalog", () => {
     });
 
     expect(validateCatalog(input)).toEqual([]);
+  });
+
+  it("accepts a public work backed only by verified official RSS evidence", () => {
+    // Given
+    const input = catalog({
+      episodes: [episode()],
+      works: [work()],
+      recommendationEvidence: [
+        recommendation({
+          source: RSS_SOURCE,
+          verificationStatus: "verified",
+          publicationStatus: "public",
+        }),
+      ],
+    });
+
+    // When
+    const issues = validateCatalog(input);
+
+    // Then
+    expect(issues).toEqual([]);
   });
 
   it("accepts a verified translation assessment backed by a source", () => {

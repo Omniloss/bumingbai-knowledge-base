@@ -33,7 +33,8 @@ export function canPublishRecommendation(
     (evidence.verificationStatus === "verified" ||
       evidence.verificationStatus === "partially_verified") &&
     (evidence.source.kind === "official_episode" ||
-      evidence.source.kind === "official_transcript")
+      evidence.source.kind === "official_transcript" ||
+      evidence.source.kind === "official_rss")
   );
 }
 

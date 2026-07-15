@@ -94,7 +94,7 @@ Run:
 ```bash
 pnpm init
 pnpm add zod
-pnpm add -D typescript vitest @biomejs/biome markdownlint-cli2 @types/node
+pnpm add -D typescript vitest @biomejs/biome markdownlint-cli2 @types/node@24
 ```
 
 Expected: `pnpm-lock.yaml` 生成，安装命令退出码为 0。

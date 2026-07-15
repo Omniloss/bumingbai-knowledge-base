@@ -85,7 +85,7 @@ const LegacyEpisodeSchema = z
     duration: z.string().trim().optional().default(""),
     official_url: z.string().url(),
     transcript_url: OptionalUrlSchema,
-    guest_or_participants: z.string().trim().optional().default(""),
+    guest_or_participants: z.string().optional().default(""),
     guest_evidence: LegacyGuestEvidenceSchema,
     recommendation_status: LegacyEpisodeRecommendationStatusSchema,
   })

@@ -46,12 +46,13 @@ function isPlaceholder(rawGuest: string): boolean {
 }
 
 export function migrateGuests(request: GuestMigrationRequest): GuestMigration {
-  if (request.rawGuest.length === 0) {
+  const normalizedGuest = request.rawGuest.trim();
+  if (normalizedGuest.length === 0) {
     return { people: request.people, ids: [], reviewIssues: [] };
   }
   if (
     isConfirmedEvidence(request.evidence) &&
-    !isPlaceholder(request.rawGuest)
+    !isPlaceholder(normalizedGuest)
   ) {
     const result = includePeople(request.people, {
       names: splitNames(request.rawGuest),

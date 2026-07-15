@@ -1,6 +1,7 @@
 # 不明白播客资料库项目规则
 
 - `work/bumingbai_structured.json` 是网站内容层的当前结构化数据源。
+- `work/bumingbai_structured.json` 必须与外部源逐字节一致；根 `.gitattributes` 对该文件使用 `-text`，更新后须同时核对外部源、工作树和 Git blob 的 SHA-256。
 - `src/domain/schemas/catalog.ts` 中的 `CatalogSchema` 是目录数据进入 TypeScript 层的边界契约；实体和品牌化 ID schema 分别维护在 `entities.ts` 和 `primitives.ts`，读取外部目录数据时必须先解析该契约。
 - `src/domain/id.ts` 统一生成稳定 ID 和 slug；已知实体前缀返回 `primitives.ts` 的品牌化 ID，任意其他前缀仍保持开放并返回普通字符串。
 - `src/migration/legacy.ts` 是旧 JSON 的单一迁移入口；外部输入只在该边界解析一次，迁移时间由调用方注入，无法确认的创作者、标题或版本信息必须进入 `reviewIssues`。只有官方简介明确标注的推荐证据可以公开；书目字段还必须有已抓取推荐链接的元数据状态，否则对应版本必须暂缓公开并进入审核。

@@ -101,7 +101,7 @@ describe("legacy guest evidence", () => {
     WITHHELD_GUEST_EVIDENCE,
   )("withholds a concrete guest when evidence is %s", (_label, guestEvidence) => {
     // Given
-    const rawGuest = "待核验嘉宾";
+    const rawGuest = "  待核验嘉宾  ";
 
     // When
     const catalog = migrateGuest(rawGuest, guestEvidence);
@@ -119,9 +119,9 @@ describe("legacy guest evidence", () => {
     ]);
   });
 
-  it("does not create a review issue when guest text is empty", () => {
+  it("does not create a review issue when guest text is whitespace only", () => {
     // Given
-    const rawGuest = "";
+    const rawGuest = " \t ";
 
     // When
     const catalog = migrateGuest(rawGuest, "未确认");

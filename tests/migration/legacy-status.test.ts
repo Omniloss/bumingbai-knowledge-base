@@ -135,4 +135,27 @@ describe("legacy status mapping", () => {
       )?.candidates,
     ).toEqual(status ? [status] : []);
   });
+
+  it.each([
+    undefined,
+    "",
+    "尚未定义的新元数据状态",
+  ])("withholds %s metadata status for explicit evidence", (status) => {
+    // Given
+    const raw = statusInput("官方简介明确标注", status);
+
+    // When
+    const catalog = migrateLegacy(raw, "2026-07-14T00:00:00.000Z");
+
+    // Then
+    expect(catalog.recommendationEvidence[0]?.publicationStatus).toBe("public");
+    expect(catalog.works[0]?.publicationStatus).toBe("public");
+    expect(catalog.editions[0]).toMatchObject({
+      verificationStatus: "pending_verification",
+      publicationStatus: "withheld",
+    });
+    expect(
+      catalog.reviewIssues.find((issue) => issue.field === "metadataStatus"),
+    ).toMatchObject({ candidates: status ? [status] : [], status: "open" });
+  });
 });

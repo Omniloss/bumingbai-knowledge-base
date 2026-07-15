@@ -7,6 +7,7 @@ import type {
   WorkId,
 } from "../domain/schemas/primitives.js";
 import { describeEdition, editionsConflict } from "./legacy-edition.js";
+import { mergeSources } from "./legacy-merge.js";
 import type { PeopleIndex } from "./legacy-people.js";
 import type { LegacyRecommendation } from "./legacy-schema.js";
 import { LEGACY_REVIEW_REASONS, type StatusDecision } from "./legacy-status.js";
@@ -23,6 +24,13 @@ type EditionReviewContext = {
   readonly source: SourceRef;
   readonly workId: WorkId;
 };
+
+function preferredConflictSource(
+  priorSources: readonly SourceRef[],
+  currentSource: SourceRef,
+): SourceRef {
+  return mergeSources(priorSources, [currentSource])[0] ?? currentSource;
+}
 
 export function createRecommendationReviewIssues(
   item: LegacyRecommendation,
@@ -67,8 +75,11 @@ export function createRecommendationReviewIssues(
             entityId: context.workId,
             field: "title",
             reason: LEGACY_REVIEW_REASONS.TITLE_CONFLICT,
-            candidates: [context.existingWork.title, item.title],
-            source: context.source,
+            candidates: [context.existingWork.title, item.title].toSorted(),
+            source: preferredConflictSource(
+              context.existingWork.sources,
+              context.source,
+            ),
             status: "open",
           },
         ]
@@ -124,8 +135,20 @@ export function createEditionConflictReviewIssue(
     candidates: [
       describeEdition(previous, context.people),
       describeEdition(current, context.people),
-    ],
-    source: context.source,
+    ].toSorted(),
+    source: preferredConflictSource(previous.sources, context.source),
     status: "open",
   };
+}
+
+export function appendReviewIssues(
+  existing: readonly ReviewIssue[],
+  incoming: readonly ReviewIssue[],
+): readonly ReviewIssue[] {
+  const uniqueIncoming = incoming.filter(
+    (issue, index, issues) =>
+      !existing.some((candidate) => candidate.id === issue.id) &&
+      issues.findIndex((candidate) => candidate.id === issue.id) === index,
+  );
+  return [...existing, ...uniqueIncoming];
 }

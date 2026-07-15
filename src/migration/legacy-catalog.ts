@@ -27,6 +27,8 @@ export function buildCatalog(legacy: LegacyRoot, generatedAt: string): Catalog {
     works: new Map<WorkId, Work>(),
     editions: new Map<EditionId, Edition>(),
     editionByIsbn: new Map<string, Edition>(),
+    conflictWorkIds: new Set<WorkId>(),
+    conflictEditionIds: new Set<EditionId>(),
     recommendationEvidence: [],
     reviewIssues: [],
   };

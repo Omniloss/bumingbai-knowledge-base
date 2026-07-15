@@ -1,4 +1,4 @@
-import { createSlug, createStableId } from "../domain/id.js";
+import { createStableId } from "../domain/id.js";
 import type {
   Edition,
   RecommendationEvidence,
@@ -6,35 +6,32 @@ import type {
   Work,
 } from "../domain/schemas/catalog.js";
 import type { EditionId, WorkId } from "../domain/schemas/primitives.js";
-import { createEdition } from "./legacy-edition.js";
+import { createEdition, integrateEdition } from "./legacy-edition.js";
 import { LegacyEpisodeReferenceError } from "./legacy-error.js";
 import { includePeople, type PeopleIndex } from "./legacy-people.js";
 import {
+  appendReviewIssues,
   createEditionConflictReviewIssue,
   createMetadataStatusReviewIssue,
   createRecommendationReviewIssues,
   createRecommendationStatusReviewIssue,
 } from "./legacy-review.js";
 import type { LegacyEpisode, LegacyRecommendation } from "./legacy-schema.js";
-import {
-  appendSource,
-  mapMediaType,
-  officialEpisodeSource,
-  splitNames,
-} from "./legacy-shared.js";
+import { officialEpisodeSource, splitNames } from "./legacy-shared.js";
 import {
   combineConfidence,
-  confidenceFromPublicationStatus,
   decideMetadataStatus,
   decideRecommendationStatus,
-  strongestConfidence,
 } from "./legacy-status.js";
+import { includeWork } from "./legacy-work.js";
 
 export type RecommendationState = {
   readonly people: PeopleIndex;
   readonly works: ReadonlyMap<WorkId, Work>;
   readonly editions: ReadonlyMap<EditionId, Edition>;
   readonly editionByIsbn: ReadonlyMap<string, Edition>;
+  readonly conflictWorkIds: ReadonlySet<WorkId>;
+  readonly conflictEditionIds: ReadonlySet<EditionId>;
   readonly recommendationEvidence: readonly RecommendationEvidence[];
   readonly reviewIssues: readonly ReviewIssue[];
 };
@@ -61,50 +58,19 @@ export function migrateRecommendation(
     episode.recommendation_status,
   );
   const metadataDecision = decideMetadataStatus(item.metadata_status);
-  const identityTitle = item.original_title || item.title;
-  const workId = createStableId("work", identityTitle, item.creator);
-  const mediaType = mapMediaType(item.media_type);
-  const creatorResult = includePeople(state.people, {
-    names: splitNames(item.creator),
-    role: ["documentary", "film", "television"].includes(mediaType)
-      ? "director"
-      : "author",
-    source,
-    confidence: recommendationDecision.confidence,
-  });
-  const existingWork = state.works.get(workId);
-  const workConfidence = existingWork
-    ? strongestConfidence(
-        confidenceFromPublicationStatus(existingWork.publicationStatus),
-        recommendationDecision.confidence,
-      )
-    : recommendationDecision.confidence;
-  const work: Work = existingWork
-    ? {
-        ...existingWork,
-        sources: appendSource(existingWork.sources, source),
-        verificationStatus: workConfidence.verificationStatus,
-        publicationStatus: workConfidence.publicationStatus,
-      }
-    : {
-        id: workId,
-        slug: `${createSlug(item.title)}-${workId.slice(-6)}`,
-        title: item.title,
-        ...(item.original_title ? { originalTitle: item.original_title } : {}),
-        mediaType,
-        creatorIds: creatorResult.ids,
-        topicIds: [],
-        genres: [],
-        regions: [],
-        verificationStatus: workConfidence.verificationStatus,
-        publicationStatus: workConfidence.publicationStatus,
-        sources: [source],
-      };
-  const works: ReadonlyMap<WorkId, Work> = new Map([
-    ...state.works,
-    [workId, work] as const,
-  ]);
-  const recommenderResult = includePeople(creatorResult.people, {
+  const workResult = includeWork(
+    {
+      people: state.people,
+      works: state.works,
+      conflictWorkIds: state.conflictWorkIds,
+    },
+    {
+      item,
+      source,
+      confidence: recommendationDecision.confidence,
+    },
+  );
+  const recommenderResult = includePeople(workResult.people, {
     names: splitNames(item.recommender),
     role: "guest",
     source,
@@ -119,7 +85,7 @@ export function migrateRecommendation(
   const evidence: RecommendationEvidence = {
     id: evidenceId,
     episodeId: createStableId("episode", String(item.episode_number)),
-    workId,
+    workId: workResult.workId,
     ...(recommenderResult.ids[0]
       ? { recommenderId: recommenderResult.ids[0] }
       : {}),
@@ -130,9 +96,9 @@ export function migrateRecommendation(
   };
   const recommendationReviewIssues = createRecommendationReviewIssues(item, {
     evidenceId,
-    existingWork,
+    existingWork: workResult.existingWork,
     source,
-    workId,
+    workId: workResult.workId,
   });
   const recommendationStatusIssue = createRecommendationStatusReviewIssue(
     recommendationDecision,
@@ -145,69 +111,52 @@ export function migrateRecommendation(
   );
   const editionResult = createEdition(recommenderResult.people, {
     item,
-    workId,
+    workId: workResult.workId,
     source,
     confidence: editionConfidence,
   });
-  const createdEdition = editionResult.edition;
-  const existingEdition = createdEdition
-    ? state.editions.get(createdEdition.id)
-    : undefined;
-  const mergedEditionConfidence = existingEdition
-    ? strongestConfidence(
-        confidenceFromPublicationStatus(existingEdition.publicationStatus),
-        editionConfidence,
-      )
-    : editionConfidence;
-  const edition = createdEdition
-    ? {
-        ...createdEdition,
-        verificationStatus: mergedEditionConfidence.verificationStatus,
-        publicationStatus: mergedEditionConfidence.publicationStatus,
-        sources: existingEdition
-          ? existingEdition.sources.reduce(
-              (sources, previousSource) =>
-                appendSource(sources, previousSource),
-              createdEdition.sources,
-            )
-          : createdEdition.sources,
-      }
-    : undefined;
-  const priorEdition = edition?.isbn
-    ? state.editionByIsbn.get(edition.isbn)
-    : undefined;
+  const editionIntegration = integrateEdition(
+    {
+      editions: state.editions,
+      editionByIsbn: state.editionByIsbn,
+      conflictEditionIds: state.conflictEditionIds,
+    },
+    editionResult.edition,
+    editionConfidence,
+  );
+  const edition = editionIntegration.edition;
+  const conflictingEdition = editionIntegration.conflictingEdition;
   const conflictIssue =
-    edition && priorEdition
-      ? createEditionConflictReviewIssue(priorEdition, edition, {
-          people: editionResult.people,
-          source,
-          workId,
-        })
+    editionResult.edition && conflictingEdition
+      ? createEditionConflictReviewIssue(
+          conflictingEdition,
+          editionResult.edition,
+          {
+            people: editionResult.people,
+            source,
+            workId: workResult.workId,
+          },
+        )
       : undefined;
   const metadataStatusIssue = createMetadataStatusReviewIssue(
     metadataDecision,
-    edition?.id ?? workId,
+    edition?.id ?? workResult.workId,
     source,
   );
-  const editions: ReadonlyMap<EditionId, Edition> = edition
-    ? new Map([...state.editions, [edition.id, edition] as const])
-    : state.editions;
-  const editionByIsbn: ReadonlyMap<string, Edition> =
-    edition?.isbn && !priorEdition
-      ? new Map([...state.editionByIsbn, [edition.isbn, edition] as const])
-      : state.editionByIsbn;
+  const incomingReviewIssues = [
+    ...recommendationReviewIssues,
+    ...(recommendationStatusIssue ? [recommendationStatusIssue] : []),
+    ...(metadataStatusIssue ? [metadataStatusIssue] : []),
+    ...(conflictIssue ? [conflictIssue] : []),
+  ];
   return {
     people: editionResult.people,
-    works,
-    editions,
-    editionByIsbn,
+    works: workResult.works,
+    editions: editionIntegration.editions,
+    editionByIsbn: editionIntegration.editionByIsbn,
+    conflictWorkIds: workResult.conflictWorkIds,
+    conflictEditionIds: editionIntegration.conflictEditionIds,
     recommendationEvidence: [...state.recommendationEvidence, evidence],
-    reviewIssues: [
-      ...state.reviewIssues,
-      ...recommendationReviewIssues,
-      ...(recommendationStatusIssue ? [recommendationStatusIssue] : []),
-      ...(metadataStatusIssue ? [metadataStatusIssue] : []),
-      ...(conflictIssue ? [conflictIssue] : []),
-    ],
+    reviewIssues: appendReviewIssues(state.reviewIssues, incomingReviewIssues),
   };
 }

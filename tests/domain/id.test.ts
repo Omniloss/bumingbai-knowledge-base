@@ -5,16 +5,25 @@ import {
   normalizeIdentityText,
 } from "../../src/domain/id.js";
 import {
+  type EditionId,
   EditionIdSchema,
+  type EpisodeId,
   EpisodeIdSchema,
+  type ImageAssetId,
   ImageAssetIdSchema,
+  type PersonId,
   PersonIdSchema,
+  type ProviderRecordId,
   ProviderRecordIdSchema,
+  type RecommendationEvidenceId,
   RecommendationEvidenceIdSchema,
+  type ReviewIssueId,
   ReviewIssueIdSchema,
+  type TopicId,
   TopicIdSchema,
   type WorkId,
   WorkIdSchema,
+  type WorkRelationId,
   WorkRelationIdSchema,
 } from "../../src/domain/schemas/primitives.js";
 
@@ -54,21 +63,37 @@ describe("identity helpers", () => {
 
     // Then
     expect(canonicalId).toMatch(/^work_[a-f0-9]{12}$/);
+    expect(canonicalId).toBe("work_62ba76f41098");
     expect(canonicalId).toBe(variantId);
   });
 
-  it("returns a branded WorkId for the work prefix", () => {
+  it("returns corresponding branded types for known literal prefixes", () => {
     // Given
-    const title = "Speak, Memory";
+    const identity = "catalog identity";
 
     // When
-    const workId = createStableId("work", title);
-    const episodeId = createStableId("episode", "101");
+    const editionId = createStableId("edition", identity);
+    const episodeId = createStableId("episode", identity);
+    const evidenceId = createStableId("evidence", identity);
+    const imageId = createStableId("image", identity);
+    const issueId = createStableId("issue", identity);
+    const personId = createStableId("person", identity);
+    const providerId = createStableId("provider", identity);
+    const relationId = createStableId("relation", identity);
+    const topicId = createStableId("topic", identity);
+    const workId = createStableId("work", identity);
 
     // Then
+    expectTypeOf(editionId).toEqualTypeOf<EditionId>();
+    expectTypeOf(episodeId).toEqualTypeOf<EpisodeId>();
+    expectTypeOf(evidenceId).toEqualTypeOf<RecommendationEvidenceId>();
+    expectTypeOf(imageId).toEqualTypeOf<ImageAssetId>();
+    expectTypeOf(issueId).toEqualTypeOf<ReviewIssueId>();
+    expectTypeOf(personId).toEqualTypeOf<PersonId>();
+    expectTypeOf(providerId).toEqualTypeOf<ProviderRecordId>();
+    expectTypeOf(relationId).toEqualTypeOf<WorkRelationId>();
+    expectTypeOf(topicId).toEqualTypeOf<TopicId>();
     expectTypeOf(workId).toEqualTypeOf<WorkId>();
-    expect(WorkIdSchema.safeParse(workId).success).toBe(true);
-    expect(EpisodeIdSchema.safeParse(episodeId).success).toBe(true);
   });
 
   it.each(

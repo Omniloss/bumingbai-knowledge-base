@@ -4,6 +4,7 @@
     "ignoreUnknown": true,
     "includes": [
       "**",
+      "!!.astro",
       "!!dist",
       "!!coverage",
       "!!data/catalog",

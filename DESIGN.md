@@ -30,7 +30,8 @@
 | --- | --- | --- | --- |
 | UI and body | `--font-sans` | `system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif` | 正文、导航和界面文字 |
 | Editorial display | `--font-serif` | `ui-serif, Georgia, serif` | 站名和主标题 |
-| Metadata | `--font-mono` | `ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace` | 后续资料元数据；Task 1 仅定义，不渲染 |
+| Metadata | `--font-mono` | `ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace` | 首页眉题和后续资料元数据 |
+| Site name weight | `--weight-site-name` | `700` | 页眉站名字重 |
 | Body | `--text-body` | `1rem` | 默认正文和导航 |
 | Display minimum | `--text-display-min` | `2rem` | 窄屏主标题下限 |
 | Display fluid | `--text-display-fluid` | `5vw` | 主标题随视口缩放 |
@@ -54,9 +55,11 @@
 | `--space-4` | `1rem` | 16px 页边距、页眉间距 |
 | `--space-8` | `2rem` | 32px 正文顶部间距 |
 | `--space-16` | `4rem` | 64px 主区段间距 |
+| `--space-hero-eyebrow-title` | `1.5rem` | 24px 眉题与主标题块间距 |
+| `--space-hero-title-copy` | `1.5rem` | 24px 主标题与正文块间距 |
 | `--content-max` | `72rem` | 内容最大宽度 |
 | `--hero-max` | `48rem` | 首页主标题阅读宽度 |
-| `--breakpoint-header` | `40rem` | 页眉从横向转为纵向的阈值 |
+| `breakpoint/header` | `40rem` | 页眉从横向转为纵向的文档阈值；在 `@media` 中写为字面值，不是 CSS 自定义属性 |
 | `--rule-thin` | `1px` | 结构规则线，不属于间距 |
 | `--focus-width` | `3px` | 可见焦点轮廓，不属于间距 |
 
@@ -65,6 +68,7 @@
 - 桌面页眉和正文共享 `--content-max` 的居中轴线。
 - 正文左右各保留 `--space-4` 的最小页边距。
 - 首页主区段限制为 `--hero-max`，不添加卡片容器。
+- `breakpoint/header` 是文档 token，不伪装成无法在普通 `@media` 查询中消费的 CSS 自定义属性。
 - `40rem` 以下页眉纵向排列，内容顺序和导航顺序保持不变。
 - 跳转链接默认使用离屏定位哨兵 `-9999px`。它不是布局间距，获得焦点后回到 `--space-4`。
 
@@ -75,7 +79,7 @@
 | `BaseLayout` | `html > body > skip-link + SiteHeader + main`; 单一亮色变体 | 暖纸背景、深墨正文、中文语言元数据 | 交由子链接处理 | 交由子链接处理 | 统一使用焦点红轮廓 | 不适用，布局不可禁用 | 不适用，无客户端加载 | 插槽可为空但保持语义外壳，不另造占位 UI | 不适用，无运行时数据边界 |
 | `SiteHeader` | `header > site-name + nav`; 横向和窄屏纵向两种响应布局 | 方角、无阴影、底部细规则线 | 链接变为海军蓝并显示下划线 | 链接变为焦点红 | 链接显示 3px 焦点红轮廓 | 不适用，静态锚点不伪造 disabled | 不适用，静态导航 | 不适用，固定导航始终存在 | 不适用，无运行时数据 |
 | Skip link | 正文入口锚点 | 离屏但保留在键盘顺序中 | 不单独定义 | 不单独定义 | 回到左上角，使用白纸底色和 3px 轮廓 | 不适用 | 不适用 | 不适用 | 不适用 |
-| Hero | `section > eyebrow + h1 + paragraph`; 单一首页变体 | 等宽语义眉题、系统衬线大标题、克制正文宽度 | 不适用，非交互 | 不适用 | 不适用 | 不适用 | 不适用，内容在构建时生成 | 固定内容不会为空 | 不适用，无运行时数据 |
+| Hero | `section > eyebrow + h1 + paragraph`; 单一首页变体 | 显式清除浏览器块边距，以两个 Hero 间距 token 建立等宽眉题、系统衬线大标题和正文的 4px 网格节奏 | 不适用，非交互 | 不适用 | 不适用 | 不适用 | 不适用，内容在构建时生成 | 固定内容不会为空 | 不适用，无运行时数据 |
 | `keep-together` phrase | 语义不可拆分的行内 `span`；单一排版变体 | 短语内部不换行，外部仍参与普通换行 | 不适用 | 不适用 | 不适用 | 不适用 | 不适用 | 不适用 | 不适用 |
 
 只实现当前静态外壳确实存在的 default、hover、active 和 focus。disabled、loading、empty 和 error 保留为明确的不适用状态，不添加控件、骨架屏、空状态卡片或错误横幅。
@@ -99,6 +103,7 @@
 | --- | --- | --- |
 | 0 | 无边框、无阴影 | 纸面正文和首页主区段 |
 | 1 | `--rule-thin solid var(--line)` | 页眉与正文之间的编辑规则线 |
+| Skip link | `--layer-skip-link` = `10` | 跳转链接获得焦点时置于页面内容上方 |
 | Focus | `--focus-width solid var(--focus)` | 键盘焦点，不表示视觉层级 |
 
 所有容器保持方角。禁止 `box-shadow`、渐变、圆角卡片、模糊、发光和模拟浮层；信息层级只由字体、留白和规则线建立。

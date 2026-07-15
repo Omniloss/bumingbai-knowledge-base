@@ -13,6 +13,7 @@ const BASE_EPISODE = {
   published_at: "Fri, 17 Jun 2022 09:00:00 GMT",
   official_url: "https://bumingbai.net/episodes/4",
   guest_or_participants: "测试嘉宾",
+  recommendation_status: "官方简介明确标注",
 } as const;
 
 const BASE_RECOMMENDATION = {
@@ -30,6 +31,7 @@ const BASE_RECOMMENDATION = {
   publication_year: "2015",
   isbn: "9787508652535",
   translation_quality: "未核实",
+  metadata_status: "已抓取推荐链接元数据",
 } as const;
 
 function createLegacyInput(
@@ -65,6 +67,9 @@ describe("migrateLegacy", () => {
     expect(catalog.recommendationEvidence[0]?.verificationStatus).toBe(
       "partially_verified",
     );
+    expect(catalog.recommendationEvidence[0]?.publicationStatus).toBe("public");
+    expect(catalog.works[0]?.publicationStatus).toBe("public");
+    expect(catalog.editions[0]?.publicationStatus).toBe("public");
     expect(catalog.editions[0]?.translationAssessment.status).toBe(
       "unverified",
     );

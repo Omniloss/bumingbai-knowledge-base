@@ -4,6 +4,7 @@ import type { PersonId } from "../domain/schemas/primitives.js";
 import { includePeople, type PeopleIndex } from "./legacy-people.js";
 import type { LegacyEpisode } from "./legacy-schema.js";
 import { officialEpisodeSource, splitNames } from "./legacy-shared.js";
+import { CONFIRMED_CONFIDENCE } from "./legacy-status.js";
 
 export type EpisodeMigration = {
   readonly episodes: readonly Episode[];
@@ -24,6 +25,7 @@ export function migrateEpisodes(
       names: splitNames(item.guest_or_participants),
       role: "guest",
       source,
+      confidence: CONFIRMED_CONFIDENCE,
     });
     const id = createStableId("episode", String(item.episode_number));
     const episode: Episode = {

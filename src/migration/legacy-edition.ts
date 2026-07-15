@@ -4,11 +4,13 @@ import type { SourceRef, WorkId } from "../domain/schemas/primitives.js";
 import { includePeople, type PeopleIndex } from "./legacy-people.js";
 import type { LegacyRecommendation } from "./legacy-schema.js";
 import { splitNames } from "./legacy-shared.js";
+import type { MigrationConfidence } from "./legacy-status.js";
 
 type EditionRequest = {
   readonly item: LegacyRecommendation;
   readonly workId: WorkId;
   readonly source: SourceRef;
+  readonly confidence: MigrationConfidence;
 };
 
 type EditionResult = {
@@ -30,6 +32,7 @@ export function createEdition(
     names: splitNames(item.translator),
     role: "translator",
     source,
+    confidence: request.confidence,
   });
   const id = createStableId(
     "edition",
@@ -61,8 +64,8 @@ export function createEdition(
         summary: "未核实，作品总评分不能代替翻译评价",
         sources: [],
       },
-      verificationStatus: "partially_verified",
-      publicationStatus: "public",
+      verificationStatus: request.confidence.verificationStatus,
+      publicationStatus: request.confidence.publicationStatus,
       sources: [source, ...externalSources],
     },
     people: translatorResult.people,

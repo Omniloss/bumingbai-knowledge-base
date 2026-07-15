@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+export const LEGACY_EPISODE_RECOMMENDATION_STATUS = {
+  EXPLICIT: "官方简介明确标注",
+  UNMARKED: "官方简介未出现推荐标记",
+} as const;
+
+export const LEGACY_METADATA_STATUS = {
+  FETCHED_LINK: "已抓取推荐链接元数据",
+  RAW_ONLY: "仅保留节目原文，待人工书目核验",
+} as const;
+
 const LegacyDateSchema = z
   .string()
   .min(1)
@@ -11,6 +21,36 @@ const OptionalUrlSchema = z
   .optional()
   .default("");
 
+const LegacyEpisodeRecommendationStatusSchema = z
+  .string()
+  .optional()
+  .default("")
+  .transform((raw) => {
+    if (raw === LEGACY_EPISODE_RECOMMENDATION_STATUS.EXPLICIT) {
+      return { kind: "explicit", raw } as const;
+    }
+    if (raw === LEGACY_EPISODE_RECOMMENDATION_STATUS.UNMARKED) {
+      return { kind: "unmarked", raw } as const;
+    }
+    if (raw.length === 0) return { kind: "missing", raw } as const;
+    return { kind: "unknown", raw } as const;
+  });
+
+const LegacyMetadataStatusSchema = z
+  .string()
+  .optional()
+  .default("")
+  .transform((raw) => {
+    if (raw === LEGACY_METADATA_STATUS.FETCHED_LINK) {
+      return { kind: "fetched_link", raw } as const;
+    }
+    if (raw === LEGACY_METADATA_STATUS.RAW_ONLY) {
+      return { kind: "raw_only", raw } as const;
+    }
+    if (raw.length === 0) return { kind: "missing", raw } as const;
+    return { kind: "unknown", raw } as const;
+  });
+
 const LegacyEpisodeSchema = z
   .object({
     episode_number: z.coerce.number().int().positive(),
@@ -20,7 +60,7 @@ const LegacyEpisodeSchema = z
     official_url: z.string().url(),
     transcript_url: OptionalUrlSchema,
     guest_or_participants: z.string().trim().optional().default(""),
-    recommendation_status: z.string().optional().default(""),
+    recommendation_status: LegacyEpisodeRecommendationStatusSchema,
   })
   .readonly();
 
@@ -42,7 +82,7 @@ const LegacyRecommendationSchema = z
     isbn: z.string().trim().optional().default(""),
     translation_quality: z.string().optional().default(""),
     metadata_source_url: OptionalUrlSchema,
-    metadata_status: z.string().optional().default(""),
+    metadata_status: LegacyMetadataStatusSchema,
   })
   .readonly();
 
@@ -55,5 +95,9 @@ export const LegacyRootSchema = z
   .readonly();
 
 export type LegacyEpisode = z.infer<typeof LegacyEpisodeSchema>;
+export type LegacyEpisodeRecommendationStatus = z.infer<
+  typeof LegacyEpisodeRecommendationStatusSchema
+>;
+export type LegacyMetadataStatus = z.infer<typeof LegacyMetadataStatusSchema>;
 export type LegacyRecommendation = z.infer<typeof LegacyRecommendationSchema>;
 export type LegacyRoot = z.infer<typeof LegacyRootSchema>;

@@ -6,13 +6,15 @@ import type {
   Work,
 } from "../domain/schemas/catalog.js";
 import type { EditionId, WorkId } from "../domain/schemas/primitives.js";
-import {
-  createEdition,
-  describeEdition,
-  editionsConflict,
-} from "./legacy-edition.js";
+import { createEdition } from "./legacy-edition.js";
 import { LegacyEpisodeReferenceError } from "./legacy-error.js";
 import { includePeople, type PeopleIndex } from "./legacy-people.js";
+import {
+  createEditionConflictReviewIssue,
+  createMetadataStatusReviewIssue,
+  createRecommendationReviewIssues,
+  createRecommendationStatusReviewIssue,
+} from "./legacy-review.js";
 import type { LegacyEpisode, LegacyRecommendation } from "./legacy-schema.js";
 import {
   appendSource,
@@ -20,6 +22,13 @@ import {
   officialEpisodeSource,
   splitNames,
 } from "./legacy-shared.js";
+import {
+  combineConfidence,
+  confidenceFromPublicationStatus,
+  decideMetadataStatus,
+  decideRecommendationStatus,
+  strongestConfidence,
+} from "./legacy-status.js";
 
 export type RecommendationState = {
   readonly people: PeopleIndex;
@@ -48,6 +57,10 @@ export function migrateRecommendation(
     context.retrievedAt,
     `recommendation-${item.recommendation_order}`,
   );
+  const recommendationDecision = decideRecommendationStatus(
+    episode.recommendation_status,
+  );
+  const metadataDecision = decideMetadataStatus(item.metadata_status);
   const identityTitle = item.original_title || item.title;
   const workId = createStableId("work", identityTitle, item.creator);
   const mediaType = mapMediaType(item.media_type);
@@ -57,12 +70,21 @@ export function migrateRecommendation(
       ? "director"
       : "author",
     source,
+    confidence: recommendationDecision.confidence,
   });
   const existingWork = state.works.get(workId);
+  const workConfidence = existingWork
+    ? strongestConfidence(
+        confidenceFromPublicationStatus(existingWork.publicationStatus),
+        recommendationDecision.confidence,
+      )
+    : recommendationDecision.confidence;
   const work: Work = existingWork
     ? {
         ...existingWork,
         sources: appendSource(existingWork.sources, source),
+        verificationStatus: workConfidence.verificationStatus,
+        publicationStatus: workConfidence.publicationStatus,
       }
     : {
         id: workId,
@@ -74,8 +96,8 @@ export function migrateRecommendation(
         topicIds: [],
         genres: [],
         regions: [],
-        verificationStatus: "partially_verified",
-        publicationStatus: "public",
+        verificationStatus: workConfidence.verificationStatus,
+        publicationStatus: workConfidence.publicationStatus,
         sources: [source],
       };
   const works: ReadonlyMap<WorkId, Work> = new Map([
@@ -86,6 +108,7 @@ export function migrateRecommendation(
     names: splitNames(item.recommender),
     role: "guest",
     source,
+    confidence: recommendationDecision.confidence,
   });
   const evidenceId = createStableId(
     "evidence",
@@ -102,80 +125,70 @@ export function migrateRecommendation(
       : {}),
     rawText: item.raw_entry,
     source,
-    verificationStatus: "partially_verified",
-    publicationStatus: "public",
+    verificationStatus: recommendationDecision.confidence.verificationStatus,
+    publicationStatus: recommendationDecision.confidence.publicationStatus,
   };
-  const creatorReviewIssues: readonly ReviewIssue[] = item.creator
-    ? []
-    : [
-        {
-          id: createStableId("issue", workId, "creatorIds"),
-          entityId: workId,
-          field: "creatorIds",
-          reason: "旧记录没有可确认的创作者",
-          candidates: [],
-          source,
-          status: "open",
-        },
-      ];
-  const titleMatches =
-    item.raw_entry.includes(item.title) ||
-    Boolean(
-      item.original_title && item.raw_entry.includes(item.original_title),
-    );
-  const titleIssue: readonly ReviewIssue[] = titleMatches
-    ? []
-    : [
-        {
-          id: createStableId("issue", evidenceId, "title"),
-          entityId: workId,
-          field: "title",
-          reason: "旧记录标题无法从推荐原文中确认",
-          candidates: [item.title, item.raw_entry],
-          source,
-          status: "open",
-        },
-      ];
-  const workTitleIssue: readonly ReviewIssue[] =
-    existingWork && existingWork.title !== item.title
-      ? [
-          {
-            id: createStableId("issue", workId, "conflicting-title"),
-            entityId: workId,
-            field: "title",
-            reason: "同一原名和创作者对应多个标题",
-            candidates: [existingWork.title, item.title],
-            source,
-            status: "open",
-          },
-        ]
-      : [];
+  const recommendationReviewIssues = createRecommendationReviewIssues(item, {
+    evidenceId,
+    existingWork,
+    source,
+    workId,
+  });
+  const recommendationStatusIssue = createRecommendationStatusReviewIssue(
+    recommendationDecision,
+    evidenceId,
+    source,
+  );
+  const editionConfidence = combineConfidence(
+    recommendationDecision.confidence,
+    metadataDecision.confidence,
+  );
   const editionResult = createEdition(recommenderResult.people, {
     item,
     workId,
     source,
+    confidence: editionConfidence,
   });
-  const edition = editionResult.edition;
+  const createdEdition = editionResult.edition;
+  const existingEdition = createdEdition
+    ? state.editions.get(createdEdition.id)
+    : undefined;
+  const mergedEditionConfidence = existingEdition
+    ? strongestConfidence(
+        confidenceFromPublicationStatus(existingEdition.publicationStatus),
+        editionConfidence,
+      )
+    : editionConfidence;
+  const edition = createdEdition
+    ? {
+        ...createdEdition,
+        verificationStatus: mergedEditionConfidence.verificationStatus,
+        publicationStatus: mergedEditionConfidence.publicationStatus,
+        sources: existingEdition
+          ? existingEdition.sources.reduce(
+              (sources, previousSource) =>
+                appendSource(sources, previousSource),
+              createdEdition.sources,
+            )
+          : createdEdition.sources,
+      }
+    : undefined;
   const priorEdition = edition?.isbn
     ? state.editionByIsbn.get(edition.isbn)
     : undefined;
-  const conflictIssue: readonly ReviewIssue[] =
-    edition && priorEdition && editionsConflict(priorEdition, edition)
-      ? [
-          {
-            id: createStableId("issue", edition.isbn ?? edition.id, "isbn"),
-            entityId: workId,
-            field: "isbn",
-            reason: "同一 ISBN 的版本信息冲突",
-            candidates: [
-              describeEdition(priorEdition, editionResult.people),
-              describeEdition(edition, editionResult.people),
-            ],
-            source,
-            status: "open",
-          },
-        ]
-      : [];
+  const conflictIssue =
+    edition && priorEdition
+      ? createEditionConflictReviewIssue(priorEdition, edition, {
+          people: editionResult.people,
+          source,
+          workId,
+        })
+      : undefined;
+  const metadataStatusIssue = createMetadataStatusReviewIssue(
+    metadataDecision,
+    edition?.id ?? workId,
+    source,
+  );
   const editions: ReadonlyMap<EditionId, Edition> = edition
     ? new Map([...state.editions, [edition.id, edition] as const])
     : state.editions;
@@ -191,10 +204,10 @@ export function migrateRecommendation(
     recommendationEvidence: [...state.recommendationEvidence, evidence],
     reviewIssues: [
       ...state.reviewIssues,
-      ...creatorReviewIssues,
-      ...titleIssue,
-      ...workTitleIssue,
-      ...conflictIssue,
+      ...recommendationReviewIssues,
+      ...(recommendationStatusIssue ? [recommendationStatusIssue] : []),
+      ...(metadataStatusIssue ? [metadataStatusIssue] : []),
+      ...(conflictIssue ? [conflictIssue] : []),
     ],
   };
 }

@@ -1,6 +1,7 @@
 # 不明白播客资料库项目规则
 
 - `work/bumingbai_structured.json` 是网站内容层的当前结构化数据源。
+- `src/domain/schemas/catalog.ts` 中的 `CatalogSchema` 是目录数据进入 TypeScript 层的边界契约；实体和品牌化 ID schema 分别维护在 `entities.ts` 和 `primitives.ts`，读取外部目录数据时必须先解析该契约。
 - `work/crawl_bumingbai.py` 只负责抓取官方 RSS、节目页和文字稿；`work/structure_bumingbai.py` 负责结构化与证据状态。
 - 不得把节目中顺带提及的作品当作正式推荐。正式推荐以官方“嘉宾推荐”等明确栏目为准。
 - 不得用作品总评分代替翻译质量评价。译本、译者或译评没有可靠来源时必须标记为未核实。

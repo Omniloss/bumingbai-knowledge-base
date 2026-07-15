@@ -4,6 +4,7 @@
 - `src/domain/schemas/catalog.ts` 中的 `CatalogSchema` 是目录数据进入 TypeScript 层的边界契约；实体和品牌化 ID schema 分别维护在 `entities.ts` 和 `primitives.ts`，读取外部目录数据时必须先解析该契约。
 - `src/domain/id.ts` 统一生成稳定 ID 和 slug；已知实体前缀返回 `primitives.ts` 的品牌化 ID，任意其他前缀仍保持开放并返回普通字符串。
 - `src/migration/legacy.ts` 是旧 JSON 的单一迁移入口；外部输入只在该边界解析一次，迁移时间由调用方注入，无法确认的创作者、标题或版本信息必须进入 `reviewIssues`。只有官方简介明确标注的推荐证据可以公开；书目字段还必须有已抓取推荐链接的元数据状态，否则对应版本必须暂缓公开并进入审核。
+- `Episode.number` 必须是正整数或明确的 `null`；无编号节目不得补造编号，其节目、推荐关联和证据 ID 必须共同使用官方 URL 与规范化发布时间作为身份，禁止只按 URL 关联。
 - `work/crawl_bumingbai.py` 只负责抓取官方 RSS、节目页和文字稿；`work/structure_bumingbai.py` 负责结构化与证据状态。
 - 不得把节目中顺带提及的作品当作正式推荐。正式推荐以官方“嘉宾推荐”等明确栏目为准。
 - 不得用作品总评分代替翻译质量评价。译本、译者或译评没有可靠来源时必须标记为未核实。

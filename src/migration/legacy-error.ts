@@ -1,8 +1,14 @@
+import type { LegacyEpisodeLookup } from "./legacy-episode-identity.js";
+
 export class LegacyEpisodeReferenceError extends Error {
   readonly name = "LegacyEpisodeReferenceError";
+  readonly episodeNumber: number | null;
 
-  constructor(readonly episodeNumber: number) {
-    super(`legacy recommendation references missing episode ${episodeNumber}`);
+  constructor(readonly lookup: LegacyEpisodeLookup) {
+    super(
+      `legacy recommendation references missing episode ${lookup.description} (stable lookup ${lookup.key})`,
+    );
+    this.episodeNumber = lookup.episodeNumber;
   }
 }
 

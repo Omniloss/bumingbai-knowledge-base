@@ -1,6 +1,6 @@
-import { createStableId } from "../domain/id.js";
 import type { Episode, Person } from "../domain/schemas/catalog.js";
 import type { PersonId } from "../domain/schemas/primitives.js";
+import { legacyEpisodeIdentity } from "./legacy-episode-identity.js";
 import { includePeople, type PeopleIndex } from "./legacy-people.js";
 import type { LegacyEpisode } from "./legacy-schema.js";
 import { officialEpisodeSource, splitNames } from "./legacy-shared.js";
@@ -27,10 +27,10 @@ export function migrateEpisodes(
       source,
       confidence: CONFIRMED_CONFIDENCE,
     });
-    const id = createStableId("episode", String(item.episode_number));
+    const identity = legacyEpisodeIdentity(item);
     const episode: Episode = {
-      id,
-      slug: `ep-${String(item.episode_number).padStart(3, "0")}`,
+      id: identity.id,
+      slug: identity.slug,
       number: item.episode_number,
       title: item.title,
       publishedAt: item.published_at,

@@ -21,6 +21,11 @@ const OptionalUrlSchema = z
   .optional()
   .default("");
 
+const OptionalLegacyDateSchema = z
+  .union([LegacyDateSchema, z.literal("")])
+  .optional()
+  .default("");
+
 const LegacyEpisodeRecommendationStatusSchema = z
   .string()
   .optional()
@@ -53,7 +58,7 @@ const LegacyMetadataStatusSchema = z
 
 const LegacyEpisodeSchema = z
   .object({
-    episode_number: z.coerce.number().int().positive(),
+    episode_number: z.coerce.number().int().positive().nullable(),
     title: z.string().trim().min(1),
     published_at: LegacyDateSchema,
     duration: z.string().trim().optional().default(""),
@@ -64,27 +69,43 @@ const LegacyEpisodeSchema = z
   })
   .readonly();
 
-const LegacyRecommendationSchema = z
-  .object({
+const LegacyRecommendationBaseSchema = z.object({
+  recommendation_order: z.coerce.number().int().positive(),
+  recommender: z.string().trim().optional().default(""),
+  raw_entry: z.string().min(1),
+  title: z.string().trim().min(1),
+  original_title: z.string().trim().optional().default(""),
+  creator: z.string().trim().optional().default(""),
+  media_type: z.string().trim().optional().default(""),
+  item_source_url: OptionalUrlSchema,
+  has_chinese_translation: z.string().optional().default(""),
+  translator: z.string().trim().optional().default(""),
+  publisher: z.string().trim().optional().default(""),
+  publication_year: z.string().trim().optional().default(""),
+  isbn: z.string().trim().optional().default(""),
+  translation_quality: z.string().optional().default(""),
+  metadata_source_url: OptionalUrlSchema,
+  metadata_status: LegacyMetadataStatusSchema,
+});
+
+const NumberedLegacyRecommendationSchema =
+  LegacyRecommendationBaseSchema.extend({
     episode_number: z.coerce.number().int().positive(),
-    recommendation_order: z.coerce.number().int().positive(),
-    recommender: z.string().trim().optional().default(""),
-    raw_entry: z.string().min(1),
-    title: z.string().trim().min(1),
-    original_title: z.string().trim().optional().default(""),
-    creator: z.string().trim().optional().default(""),
-    media_type: z.string().trim().optional().default(""),
-    item_source_url: OptionalUrlSchema,
-    has_chinese_translation: z.string().optional().default(""),
-    translator: z.string().trim().optional().default(""),
-    publisher: z.string().trim().optional().default(""),
-    publication_year: z.string().trim().optional().default(""),
-    isbn: z.string().trim().optional().default(""),
-    translation_quality: z.string().optional().default(""),
-    metadata_source_url: OptionalUrlSchema,
-    metadata_status: LegacyMetadataStatusSchema,
-  })
-  .readonly();
+    episode_official_url: OptionalUrlSchema,
+    episode_published_at: OptionalLegacyDateSchema,
+  }).readonly();
+
+const UnnumberedLegacyRecommendationSchema =
+  LegacyRecommendationBaseSchema.extend({
+    episode_number: z.null(),
+    episode_official_url: z.string().url(),
+    episode_published_at: LegacyDateSchema,
+  }).readonly();
+
+const LegacyRecommendationSchema = z.union([
+  NumberedLegacyRecommendationSchema,
+  UnnumberedLegacyRecommendationSchema,
+]);
 
 export const LegacyRootSchema = z
   .object({

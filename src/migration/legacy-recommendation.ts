@@ -1,4 +1,3 @@
-import { createStableId } from "../domain/id.js";
 import type {
   Edition,
   RecommendationEvidence,
@@ -7,6 +6,11 @@ import type {
 } from "../domain/schemas/catalog.js";
 import type { EditionId, WorkId } from "../domain/schemas/primitives.js";
 import { createEdition, integrateEdition } from "./legacy-edition.js";
+import {
+  legacyEpisodeIdentity,
+  legacyEvidenceId,
+  legacyRecommendationLookup,
+} from "./legacy-episode-identity.js";
 import { LegacyEpisodeReferenceError } from "./legacy-error.js";
 import type { MergeCandidate } from "./legacy-merge.js";
 import { includePeople, type PeopleIndex } from "./legacy-people.js";
@@ -48,7 +52,7 @@ export type RecommendationState = {
 };
 
 type RecommendationContext = {
-  readonly episodeByNumber: ReadonlyMap<number, LegacyEpisode>;
+  readonly episodeByIdentity: ReadonlyMap<string, LegacyEpisode>;
   readonly retrievedAt: string;
 };
 
@@ -57,8 +61,10 @@ export function migrateRecommendation(
   item: LegacyRecommendation,
   context: RecommendationContext,
 ): RecommendationState {
-  const episode = context.episodeByNumber.get(item.episode_number);
-  if (!episode) throw new LegacyEpisodeReferenceError(item.episode_number);
+  const lookup = legacyRecommendationLookup(item);
+  const episode = context.episodeByIdentity.get(lookup.key);
+  if (!episode) throw new LegacyEpisodeReferenceError(lookup);
+  const episodeIdentity = legacyEpisodeIdentity(episode);
 
   const source = officialEpisodeSource(
     episode.official_url,
@@ -87,15 +93,14 @@ export function migrateRecommendation(
     source,
     confidence: recommendationDecision.confidence,
   });
-  const evidenceId = createStableId(
-    "evidence",
-    String(item.episode_number),
-    String(item.recommendation_order),
+  const evidenceId = legacyEvidenceId(
+    episodeIdentity,
+    item.recommendation_order,
     item.raw_entry,
   );
   const evidence: RecommendationEvidence = {
     id: evidenceId,
-    episodeId: createStableId("episode", String(item.episode_number)),
+    episodeId: episodeIdentity.id,
     workId: workResult.workId,
     ...(recommenderResult.ids[0]
       ? { recommenderId: recommenderResult.ids[0] }

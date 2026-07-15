@@ -28,7 +28,7 @@ export const EpisodeSchema = z
   .object({
     id: EpisodeIdSchema,
     ...BaseEntityShape,
-    number: z.number().int().positive(),
+    number: z.number().int().positive().nullable(),
     title: z.string().min(1),
     publishedAt: IsoDateSchema,
     duration: z.string().min(1).optional(),

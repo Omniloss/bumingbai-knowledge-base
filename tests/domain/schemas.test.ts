@@ -3,7 +3,22 @@ import {
   CatalogSchema,
   type Episode,
 } from "../../src/domain/schemas/catalog.js";
+import { EpisodeSchema } from "../../src/domain/schemas/entities.js";
 import type { PersonId } from "../../src/domain/schemas/primitives.js";
+
+const EPISODE = {
+  id: "episode_111111111111",
+  slug: "special-111111",
+  number: null,
+  title: "无编号特别节目",
+  publishedAt: "2026-07-01T09:00:00.000Z",
+  officialUrl: "https://bumingbai.net/episodes/special",
+  guestIds: [],
+  topicIds: [],
+  verificationStatus: "partially_verified",
+  publicationStatus: "public",
+  sources: [],
+} as const;
 
 describe("CatalogSchema", () => {
   it("accepts an empty versioned catalog", () => {
@@ -92,5 +107,27 @@ describe("CatalogSchema", () => {
 
   it("infers readonly, domain-specific entity references", () => {
     expectTypeOf<Episode["guestIds"]>().toEqualTypeOf<readonly PersonId[]>();
+  });
+
+  it("accepts an explicitly unnumbered episode", () => {
+    // Given
+    const episode = EPISODE;
+
+    // When
+    const result = EpisodeSchema.safeParse(episode);
+
+    // Then
+    expect(result.success).toBe(true);
+  });
+
+  it.each([0, -1])("rejects invalid episode number %s", (number) => {
+    // Given
+    const episode = { ...EPISODE, number };
+
+    // When
+    const result = EpisodeSchema.safeParse(episode);
+
+    // Then
+    expect(result.success).toBe(false);
   });
 });

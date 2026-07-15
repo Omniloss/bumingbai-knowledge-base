@@ -6,6 +6,7 @@ import {
 } from "../domain/schemas/catalog.js";
 import type { EditionId, WorkId } from "../domain/schemas/primitives.js";
 import { migrateEpisodes } from "./legacy-episode.js";
+import { legacyEpisodeLookup } from "./legacy-episode-identity.js";
 import {
   migrateRecommendation,
   type RecommendationState,
@@ -17,9 +18,9 @@ export function buildCatalog(legacy: LegacyRoot, generatedAt: string): Catalog {
     legacy.episodes,
     legacy.retrieved_at,
   );
-  const episodeByNumber = new Map(
+  const episodeByIdentity = new Map(
     legacy.episodes.map(
-      (episode) => [episode.episode_number, episode] as const,
+      (episode) => [legacyEpisodeLookup(episode).key, episode] as const,
     ),
   );
   const initial: RecommendationState = {
@@ -35,7 +36,7 @@ export function buildCatalog(legacy: LegacyRoot, generatedAt: string): Catalog {
   const recommendationMigration = legacy.recommendations.reduce(
     (state, recommendation) =>
       migrateRecommendation(state, recommendation, {
-        episodeByNumber,
+        episodeByIdentity,
         retrievedAt: legacy.retrieved_at,
       }),
     initial,

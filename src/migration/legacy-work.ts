@@ -1,19 +1,11 @@
 import { createSlug, createStableId } from "../domain/id.js";
 import type { Work } from "../domain/schemas/catalog.js";
 import type { SourceRef, WorkId } from "../domain/schemas/primitives.js";
-import {
-  compareConfidence,
-  mergeSources,
-  selectCanonical,
-} from "./legacy-merge.js";
+import { type MergeCandidate, resolveCandidates } from "./legacy-merge.js";
 import { includePeople, type PeopleIndex } from "./legacy-people.js";
 import type { LegacyRecommendation } from "./legacy-schema.js";
 import { mapMediaType, splitNames } from "./legacy-shared.js";
-import {
-  confidenceFromPublicationStatus,
-  type MigrationConfidence,
-  WITHHELD_CONFIDENCE,
-} from "./legacy-status.js";
+import type { MigrationConfidence } from "./legacy-status.js";
 
 type WorkRequest = {
   readonly item: LegacyRecommendation;
@@ -24,12 +16,12 @@ type WorkRequest = {
 type WorkIndex = {
   readonly people: PeopleIndex;
   readonly works: ReadonlyMap<WorkId, Work>;
-  readonly conflictWorkIds: ReadonlySet<WorkId>;
+  readonly workCandidates: ReadonlyMap<WorkId, readonly MergeCandidate<Work>[]>;
 };
 
 type WorkResult = WorkIndex & {
   readonly workId: WorkId;
-  readonly existingWork: Work | undefined;
+  readonly conflictingWorks: readonly Work[];
 };
 
 function workPayloadKey(work: Work): string {
@@ -44,41 +36,6 @@ function workPayloadKey(work: Work): string {
     work.regions.join("\u001f"),
     work.seriesId ?? "",
   ].join("\u001e");
-}
-
-function mergeWork(
-  existing: Work,
-  candidate: Work,
-  candidateConfidence: MigrationConfidence,
-  hasConflict: boolean,
-): { readonly work: Work; readonly conflict: boolean } {
-  const existingConfidence = confidenceFromPublicationStatus(
-    existing.publicationStatus,
-  );
-  const order = compareConfidence(existingConfidence, candidateConfidence);
-  const payloadConflict =
-    workPayloadKey(existing) !== workPayloadKey(candidate);
-  const conflict = hasConflict || (order === "equal" && payloadConflict);
-  const selected =
-    conflict || order === "equal"
-      ? selectCanonical(existing, candidate, workPayloadKey)
-      : order === "left"
-        ? existing
-        : candidate;
-  const confidence = conflict
-    ? WITHHELD_CONFIDENCE
-    : order === "left"
-      ? existingConfidence
-      : candidateConfidence;
-  return {
-    work: {
-      ...selected,
-      verificationStatus: confidence.verificationStatus,
-      publicationStatus: confidence.publicationStatus,
-      sources: mergeSources(existing.sources, candidate.sources),
-    },
-    conflict,
-  };
 }
 
 export function includeWork(
@@ -111,22 +68,25 @@ export function includeWork(
     publicationStatus: request.confidence.publicationStatus,
     sources: [source],
   };
-  const existingWork = index.works.get(workId);
-  const mergeResult = existingWork
-    ? mergeWork(
-        existingWork,
-        candidate,
-        request.confidence,
-        index.conflictWorkIds.has(workId),
-      )
-    : { work: candidate, conflict: false };
+  const resolution = resolveCandidates(
+    index.workCandidates.get(workId) ?? [],
+    { entity: candidate, confidence: request.confidence },
+    workPayloadKey,
+  );
+  const work: Work = {
+    ...resolution.selected,
+    verificationStatus: resolution.confidence.verificationStatus,
+    publicationStatus: resolution.confidence.publicationStatus,
+    sources: resolution.sources,
+  };
   return {
     people: creatorResult.people,
-    works: new Map([...index.works, [workId, mergeResult.work] as const]),
+    works: new Map([...index.works, [workId, work] as const]),
+    workCandidates: new Map([
+      ...index.workCandidates,
+      [workId, resolution.candidates] as const,
+    ]),
     workId,
-    existingWork,
-    conflictWorkIds: mergeResult.conflict
-      ? new Set([...index.conflictWorkIds, workId])
-      : index.conflictWorkIds,
+    conflictingWorks: resolution.conflict ? resolution.highestCandidates : [],
   };
 }

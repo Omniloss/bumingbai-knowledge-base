@@ -3,6 +3,7 @@ import type { Edition, ReviewIssue, Work } from "../domain/schemas/catalog.js";
 import type {
   EntityId,
   RecommendationEvidenceId,
+  ReviewIssueId,
   SourceRef,
   WorkId,
 } from "../domain/schemas/primitives.js";
@@ -14,7 +15,6 @@ import { LEGACY_REVIEW_REASONS, type StatusDecision } from "./legacy-status.js";
 
 type RecommendationReviewContext = {
   readonly evidenceId: RecommendationEvidenceId;
-  readonly existingWork: Work | undefined;
   readonly source: SourceRef;
   readonly workId: WorkId;
 };
@@ -26,10 +26,18 @@ type EditionReviewContext = {
 };
 
 function preferredConflictSource(
-  priorSources: readonly SourceRef[],
-  currentSource: SourceRef,
+  candidateSources: readonly SourceRef[],
+  fallback: SourceRef,
 ): SourceRef {
-  return mergeSources(priorSources, [currentSource])[0] ?? currentSource;
+  return mergeSources([], candidateSources)[0] ?? fallback;
+}
+
+export function workConflictReviewIssueId(workId: WorkId): ReviewIssueId {
+  return createStableId("issue", workId, "conflicting-title");
+}
+
+export function editionConflictReviewIssueId(identity: string): ReviewIssueId {
+  return createStableId("issue", identity, "isbn");
 }
 
 export function createRecommendationReviewIssues(
@@ -67,24 +75,30 @@ export function createRecommendationReviewIssues(
           status: "open",
         },
       ];
-  const conflictIssues: readonly ReviewIssue[] =
-    context.existingWork && context.existingWork.title !== item.title
-      ? [
-          {
-            id: createStableId("issue", context.workId, "conflicting-title"),
-            entityId: context.workId,
-            field: "title",
-            reason: LEGACY_REVIEW_REASONS.TITLE_CONFLICT,
-            candidates: [context.existingWork.title, item.title].toSorted(),
-            source: preferredConflictSource(
-              context.existingWork.sources,
-              context.source,
-            ),
-            status: "open",
-          },
-        ]
-      : [];
-  return [...creatorIssues, ...titleIssues, ...conflictIssues];
+  return [...creatorIssues, ...titleIssues];
+}
+
+export function createWorkConflictReviewIssue(
+  candidates: readonly Work[],
+  context: Pick<RecommendationReviewContext, "source" | "workId">,
+): ReviewIssue | undefined {
+  const titles = candidates
+    .map((candidate) => candidate.title)
+    .filter((title, index, values) => values.indexOf(title) === index)
+    .toSorted();
+  if (titles.length < 2) return undefined;
+  return {
+    id: workConflictReviewIssueId(context.workId),
+    entityId: context.workId,
+    field: "title",
+    reason: LEGACY_REVIEW_REASONS.TITLE_CONFLICT,
+    candidates: titles,
+    source: preferredConflictSource(
+      candidates.flatMap((candidate) => candidate.sources),
+      context.source,
+    ),
+    status: "open",
+  };
 }
 
 export function createRecommendationStatusReviewIssue(
@@ -122,21 +136,31 @@ export function createMetadataStatusReviewIssue(
 }
 
 export function createEditionConflictReviewIssue(
-  previous: Edition,
-  current: Edition,
+  candidates: readonly Edition[],
+  identity: string,
   context: EditionReviewContext,
 ): ReviewIssue | undefined {
-  if (!editionsConflict(previous, current)) return undefined;
+  const conflictingCandidates = candidates.filter((candidate, index) =>
+    candidates.some(
+      (other, otherIndex) =>
+        index !== otherIndex && editionsConflict(candidate, other),
+    ),
+  );
+  const descriptions = conflictingCandidates
+    .map((candidate) => describeEdition(candidate, context.people))
+    .filter((value, index, values) => values.indexOf(value) === index)
+    .toSorted();
+  if (descriptions.length < 2) return undefined;
   return {
-    id: createStableId("issue", current.isbn ?? current.id, "isbn"),
+    id: editionConflictReviewIssueId(identity),
     entityId: context.workId,
     field: "isbn",
     reason: LEGACY_REVIEW_REASONS.EDITION_CONFLICT,
-    candidates: [
-      describeEdition(previous, context.people),
-      describeEdition(current, context.people),
-    ].toSorted(),
-    source: preferredConflictSource(previous.sources, context.source),
+    candidates: descriptions,
+    source: preferredConflictSource(
+      conflictingCandidates.flatMap((candidate) => candidate.sources),
+      context.source,
+    ),
     status: "open",
   };
 }
@@ -151,4 +175,13 @@ export function appendReviewIssues(
       issues.findIndex((candidate) => candidate.id === issue.id) === index,
   );
   return [...existing, ...uniqueIncoming];
+}
+
+export function replaceReviewIssue(
+  existing: readonly ReviewIssue[],
+  id: ReviewIssueId,
+  replacement: ReviewIssue | undefined,
+): readonly ReviewIssue[] {
+  const retained = existing.filter((issue) => issue.id !== id);
+  return replacement ? appendReviewIssues(retained, [replacement]) : retained;
 }

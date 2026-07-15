@@ -102,7 +102,7 @@ describe("legacy entity merge", () => {
       ],
     });
     expect(forward.reviewIssues.some((issue) => issue.field === "title")).toBe(
-      true,
+      false,
     );
     expect(conflictIssue(forward, "title")).toEqual(
       conflictIssue(reverse, "title"),
@@ -127,7 +127,7 @@ describe("legacy entity merge", () => {
       publicationStatus: "public",
     });
     expect(forward.reviewIssues.some((issue) => issue.field === "isbn")).toBe(
-      true,
+      false,
     );
     expect(conflictIssue(forward, "isbn")).toEqual(
       conflictIssue(reverse, "isbn"),

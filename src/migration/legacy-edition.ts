@@ -5,19 +5,11 @@ import type {
   SourceRef,
   WorkId,
 } from "../domain/schemas/primitives.js";
-import {
-  compareConfidence,
-  mergeSources,
-  selectCanonical,
-} from "./legacy-merge.js";
+import { type MergeCandidate, resolveCandidates } from "./legacy-merge.js";
 import { includePeople, type PeopleIndex } from "./legacy-people.js";
 import type { LegacyRecommendation } from "./legacy-schema.js";
 import { splitNames } from "./legacy-shared.js";
-import {
-  confidenceFromPublicationStatus,
-  type MigrationConfidence,
-  WITHHELD_CONFIDENCE,
-} from "./legacy-status.js";
+import type { MigrationConfidence } from "./legacy-status.js";
 
 type EditionRequest = {
   readonly item: LegacyRecommendation;
@@ -33,13 +25,19 @@ type EditionResult = {
 
 type EditionIndex = {
   readonly editions: ReadonlyMap<EditionId, Edition>;
-  readonly editionByIsbn: ReadonlyMap<string, Edition>;
-  readonly conflictEditionIds: ReadonlySet<EditionId>;
+  readonly editionCandidates: ReadonlyMap<
+    EditionId,
+    readonly MergeCandidate<Edition>[]
+  >;
+  readonly editionCandidatesByIsbn: ReadonlyMap<
+    string,
+    readonly MergeCandidate<Edition>[]
+  >;
 };
 
 type EditionIntegrationResult = EditionIndex & {
   readonly edition: Edition | undefined;
-  readonly conflictingEdition: Edition | undefined;
+  readonly conflictingEditions: readonly Edition[];
 };
 
 export function createEdition(
@@ -102,37 +100,43 @@ export function integrateEdition(
   confidence: MigrationConfidence,
 ): EditionIntegrationResult {
   if (!createdEdition) {
-    return { ...index, edition: undefined, conflictingEdition: undefined };
+    return { ...index, edition: undefined, conflictingEditions: [] };
   }
-  const existingEdition = index.editions.get(createdEdition.id);
-  const mergeResult = existingEdition
-    ? mergeEdition(
-        existingEdition,
-        createdEdition,
-        confidence,
-        index.conflictEditionIds.has(createdEdition.id),
+  const incoming = { entity: createdEdition, confidence };
+  const editionResolution = resolveCandidates(
+    index.editionCandidates.get(createdEdition.id) ?? [],
+    incoming,
+    editionPayloadKey,
+  );
+  const edition: Edition = {
+    ...editionResolution.selected,
+    verificationStatus: editionResolution.confidence.verificationStatus,
+    publicationStatus: editionResolution.confidence.publicationStatus,
+    sources: editionResolution.sources,
+  };
+  const isbnResolution = createdEdition.isbn
+    ? resolveCandidates(
+        index.editionCandidatesByIsbn.get(createdEdition.isbn) ?? [],
+        incoming,
+        editionPayloadKey,
       )
-    : { edition: createdEdition, conflict: false };
-  const priorEdition = createdEdition.isbn
-    ? index.editionByIsbn.get(createdEdition.isbn)
-    : undefined;
+    : editionResolution;
   return {
-    edition: mergeResult.edition,
-    conflictingEdition: existingEdition ?? priorEdition,
-    editions: new Map([
-      ...index.editions,
-      [mergeResult.edition.id, mergeResult.edition] as const,
+    edition,
+    conflictingEditions: isbnResolution.conflict
+      ? isbnResolution.highestCandidates
+      : [],
+    editions: new Map([...index.editions, [edition.id, edition] as const]),
+    editionCandidates: new Map([
+      ...index.editionCandidates,
+      [createdEdition.id, editionResolution.candidates] as const,
     ]),
-    editionByIsbn:
-      createdEdition.isbn && !priorEdition
-        ? new Map([
-            ...index.editionByIsbn,
-            [createdEdition.isbn, createdEdition] as const,
-          ])
-        : index.editionByIsbn,
-    conflictEditionIds: mergeResult.conflict
-      ? new Set([...index.conflictEditionIds, createdEdition.id])
-      : index.conflictEditionIds,
+    editionCandidatesByIsbn: createdEdition.isbn
+      ? new Map([
+          ...index.editionCandidatesByIsbn,
+          [createdEdition.isbn, isbnResolution.candidates] as const,
+        ])
+      : index.editionCandidatesByIsbn,
   };
 }
 
@@ -149,41 +153,6 @@ function editionPayloadKey(edition: Edition): string {
     edition.translationAssessment.status,
     edition.translationAssessment.summary,
   ].join("\u001e");
-}
-
-function mergeEdition(
-  existing: Edition,
-  candidate: Edition,
-  candidateConfidence: MigrationConfidence,
-  hasConflict: boolean,
-): { readonly edition: Edition; readonly conflict: boolean } {
-  const existingConfidence = confidenceFromPublicationStatus(
-    existing.publicationStatus,
-  );
-  const order = compareConfidence(existingConfidence, candidateConfidence);
-  const payloadConflict =
-    editionPayloadKey(existing) !== editionPayloadKey(candidate);
-  const conflict = hasConflict || (order === "equal" && payloadConflict);
-  const selected =
-    conflict || order === "equal"
-      ? selectCanonical(existing, candidate, editionPayloadKey)
-      : order === "left"
-        ? existing
-        : candidate;
-  const selectedConfidence = conflict
-    ? WITHHELD_CONFIDENCE
-    : order === "left"
-      ? existingConfidence
-      : candidateConfidence;
-  return {
-    edition: {
-      ...selected,
-      verificationStatus: selectedConfidence.verificationStatus,
-      publicationStatus: selectedConfidence.publicationStatus,
-      sources: mergeSources(existing.sources, candidate.sources),
-    },
-    conflict,
-  };
 }
 
 export function editionsConflict(left: Edition, right: Edition): boolean {

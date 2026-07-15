@@ -8,6 +8,7 @@ import type {
 import type { EditionId, WorkId } from "../domain/schemas/primitives.js";
 import { createEdition, integrateEdition } from "./legacy-edition.js";
 import { LegacyEpisodeReferenceError } from "./legacy-error.js";
+import type { MergeCandidate } from "./legacy-merge.js";
 import { includePeople, type PeopleIndex } from "./legacy-people.js";
 import {
   appendReviewIssues,
@@ -15,6 +16,10 @@ import {
   createMetadataStatusReviewIssue,
   createRecommendationReviewIssues,
   createRecommendationStatusReviewIssue,
+  createWorkConflictReviewIssue,
+  editionConflictReviewIssueId,
+  replaceReviewIssue,
+  workConflictReviewIssueId,
 } from "./legacy-review.js";
 import type { LegacyEpisode, LegacyRecommendation } from "./legacy-schema.js";
 import { officialEpisodeSource, splitNames } from "./legacy-shared.js";
@@ -28,10 +33,16 @@ import { includeWork } from "./legacy-work.js";
 export type RecommendationState = {
   readonly people: PeopleIndex;
   readonly works: ReadonlyMap<WorkId, Work>;
+  readonly workCandidates: ReadonlyMap<WorkId, readonly MergeCandidate<Work>[]>;
   readonly editions: ReadonlyMap<EditionId, Edition>;
-  readonly editionByIsbn: ReadonlyMap<string, Edition>;
-  readonly conflictWorkIds: ReadonlySet<WorkId>;
-  readonly conflictEditionIds: ReadonlySet<EditionId>;
+  readonly editionCandidates: ReadonlyMap<
+    EditionId,
+    readonly MergeCandidate<Edition>[]
+  >;
+  readonly editionCandidatesByIsbn: ReadonlyMap<
+    string,
+    readonly MergeCandidate<Edition>[]
+  >;
   readonly recommendationEvidence: readonly RecommendationEvidence[];
   readonly reviewIssues: readonly ReviewIssue[];
 };
@@ -62,7 +73,7 @@ export function migrateRecommendation(
     {
       people: state.people,
       works: state.works,
-      conflictWorkIds: state.conflictWorkIds,
+      workCandidates: state.workCandidates,
     },
     {
       item,
@@ -96,10 +107,13 @@ export function migrateRecommendation(
   };
   const recommendationReviewIssues = createRecommendationReviewIssues(item, {
     evidenceId,
-    existingWork: workResult.existingWork,
     source,
     workId: workResult.workId,
   });
+  const workConflictIssue = createWorkConflictReviewIssue(
+    workResult.conflictingWorks,
+    { source, workId: workResult.workId },
+  );
   const recommendationStatusIssue = createRecommendationStatusReviewIssue(
     recommendationDecision,
     evidenceId,
@@ -118,19 +132,19 @@ export function migrateRecommendation(
   const editionIntegration = integrateEdition(
     {
       editions: state.editions,
-      editionByIsbn: state.editionByIsbn,
-      conflictEditionIds: state.conflictEditionIds,
+      editionCandidates: state.editionCandidates,
+      editionCandidatesByIsbn: state.editionCandidatesByIsbn,
     },
     editionResult.edition,
     editionConfidence,
   );
   const edition = editionIntegration.edition;
-  const conflictingEdition = editionIntegration.conflictingEdition;
-  const conflictIssue =
-    editionResult.edition && conflictingEdition
+  const editionIdentity = edition?.isbn ?? edition?.id;
+  const editionConflictIssue =
+    editionIdentity && editionIntegration.conflictingEditions.length > 0
       ? createEditionConflictReviewIssue(
-          conflictingEdition,
-          editionResult.edition,
+          editionIntegration.conflictingEditions,
+          editionIdentity,
           {
             people: editionResult.people,
             source,
@@ -147,16 +161,31 @@ export function migrateRecommendation(
     ...recommendationReviewIssues,
     ...(recommendationStatusIssue ? [recommendationStatusIssue] : []),
     ...(metadataStatusIssue ? [metadataStatusIssue] : []),
-    ...(conflictIssue ? [conflictIssue] : []),
   ];
+  const stableReviewIssues = appendReviewIssues(
+    state.reviewIssues,
+    incomingReviewIssues,
+  );
+  const workReviewIssues = replaceReviewIssue(
+    stableReviewIssues,
+    workConflictReviewIssueId(workResult.workId),
+    workConflictIssue,
+  );
+  const reviewIssues = editionIdentity
+    ? replaceReviewIssue(
+        workReviewIssues,
+        editionConflictReviewIssueId(editionIdentity),
+        editionConflictIssue,
+      )
+    : workReviewIssues;
   return {
     people: editionResult.people,
     works: workResult.works,
+    workCandidates: workResult.workCandidates,
     editions: editionIntegration.editions,
-    editionByIsbn: editionIntegration.editionByIsbn,
-    conflictWorkIds: workResult.conflictWorkIds,
-    conflictEditionIds: editionIntegration.conflictEditionIds,
+    editionCandidates: editionIntegration.editionCandidates,
+    editionCandidatesByIsbn: editionIntegration.editionCandidatesByIsbn,
     recommendationEvidence: [...state.recommendationEvidence, evidence],
-    reviewIssues: appendReviewIssues(state.reviewIssues, incomingReviewIssues),
+    reviewIssues,
   };
 }

@@ -1,6 +1,7 @@
 import type { SourceRef } from "../domain/schemas/primitives.js";
 import { LegacyStatusMappingError } from "./legacy-error.js";
 import type { MigrationConfidence } from "./legacy-status.js";
+import { WITHHELD_CONFIDENCE } from "./legacy-status.js";
 
 export type ConfidenceOrder = "left" | "right" | "equal";
 
@@ -73,4 +74,69 @@ export function selectCanonical<T>(
   key: (value: T) => string,
 ): T {
   return compareText(key(left), key(right)) <= 0 ? left : right;
+}
+
+export type MergeCandidate<T> = {
+  readonly entity: T;
+  readonly confidence: MigrationConfidence;
+};
+
+type SourcedEntity = {
+  readonly sources: readonly SourceRef[];
+};
+
+export type CandidateResolution<T> = {
+  readonly candidates: readonly MergeCandidate<T>[];
+  readonly conflict: boolean;
+  readonly confidence: MigrationConfidence;
+  readonly highestCandidates: readonly T[];
+  readonly selected: T;
+  readonly sources: readonly SourceRef[];
+};
+
+function selectStronger<T>(
+  left: MergeCandidate<T>,
+  right: MergeCandidate<T>,
+  key: (value: T) => string,
+): MergeCandidate<T> {
+  const order = compareConfidence(left.confidence, right.confidence);
+  if (order === "left") return left;
+  if (order === "right") return right;
+  return selectCanonical(left, right, (candidate) => key(candidate.entity));
+}
+
+export function resolveCandidates<T extends SourcedEntity>(
+  existing: readonly MergeCandidate<T>[],
+  incoming: MergeCandidate<T>,
+  key: (value: T) => string,
+): CandidateResolution<T> {
+  const candidates = [...existing, incoming];
+  const strongest = existing.reduce(
+    (selected, candidate) => selectStronger(selected, candidate, key),
+    incoming,
+  );
+  const highest = candidates
+    .filter(
+      (candidate) =>
+        compareConfidence(candidate.confidence, strongest.confidence) ===
+        "equal",
+    )
+    .toSorted((left, right) =>
+      compareText(key(left.entity), key(right.entity)),
+    );
+  const selectedKey = key(strongest.entity);
+  const conflict = highest.some(
+    (candidate) => key(candidate.entity) !== selectedKey,
+  );
+  return {
+    candidates,
+    conflict,
+    confidence: conflict ? WITHHELD_CONFIDENCE : strongest.confidence,
+    highestCandidates: highest.map((candidate) => candidate.entity),
+    selected: strongest.entity,
+    sources: mergeSources(
+      [],
+      candidates.flatMap((candidate) => candidate.entity.sources),
+    ),
+  };
 }

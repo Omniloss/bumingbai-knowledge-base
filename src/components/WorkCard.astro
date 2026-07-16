@@ -1,0 +1,35 @@
+---
+import type { Work } from "../domain/schemas/catalog.js";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import StatusBadge from "./StatusBadge.astro";
+
+interface Props {
+  readonly work: Work;
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this map in template markup.
+const mediaLabels = {
+  book: "书籍",
+  documentary: "纪录片",
+  film: "电影",
+  other: "其他",
+  podcast: "播客",
+  television: "电视剧",
+} as const satisfies Record<Work["mediaType"], string>;
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this prop in template markup.
+const { work } = Astro.props;
+---
+
+<article
+  class="catalog-card work-card"
+  data-work-card
+  data-media={work.mediaType}
+  data-publication-status={work.publicationStatus}
+  data-verification-status={work.verificationStatus}
+>
+  <p class="eyebrow">{mediaLabels[work.mediaType]}</p>
+  <h2><a href={`/works/${work.slug}/`}>{work.title}</a></h2>
+  {work.originalTitle && <p class="original-title" lang="und">{work.originalTitle}</p>}
+  <StatusBadge status={work.verificationStatus} />
+</article>

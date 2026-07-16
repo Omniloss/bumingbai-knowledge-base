@@ -1,4 +1,6 @@
 import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { installControlledCatalogBoundary } from "./catalog-fixture.js";
 
@@ -12,6 +14,44 @@ afterEach(() => {
 });
 
 describe.sequential("CatalogRepository", () => {
+  it("discovers the catalog root from an Astro prerender chunk location", async () => {
+    // Given
+    const { findCatalogRoot } = await importCatalogRepository();
+    const prerenderModuleUrl = new URL(
+      "../../dist/.prerender/chunks/catalog.mjs",
+      import.meta.url,
+    );
+
+    // When
+    const catalogRoot = findCatalogRoot(prerenderModuleUrl);
+
+    // Then
+    expect(catalogRoot.href).toBe(new URL("../../", import.meta.url).href);
+  });
+
+  it("reports a typed error when no catalog sentinel is reachable", async () => {
+    // Given
+    const { CatalogRootNotFoundError, findCatalogRoot } =
+      await importCatalogRepository();
+    const startUrl = pathToFileURL(
+      join(tmpdir(), "missing-catalog-root", "catalog.mjs"),
+    );
+
+    // When
+    let actualError: unknown;
+    try {
+      findCatalogRoot(startUrl);
+    } catch (error) {
+      actualError = error;
+    }
+
+    // Then
+    expect(actualError).toBeInstanceOf(CatalogRootNotFoundError);
+    if (!(actualError instanceof CatalogRootNotFoundError)) throw actualError;
+    expect(actualError.startUrl).toBe(startUrl);
+    expect(actualError.sentinelRelativePath).toBe("data/catalog/meta.json");
+  });
+
   it("loads the normalized baseline outside the caller working directory", async () => {
     // Given
     const originalWorkingDirectory = process.cwd();

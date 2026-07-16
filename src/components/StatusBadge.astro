@@ -1,0 +1,23 @@
+---
+import type { VerificationStatus } from "../domain/schemas/primitives.js";
+
+interface Props {
+  readonly status: VerificationStatus;
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this map in template markup.
+const labels = {
+  partially_verified: "部分核验",
+  pending_verification: "待核验",
+  rejected: "已排除",
+  verified: "已核验",
+} as const satisfies Record<VerificationStatus, string>;
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this prop in template markup.
+const { status } = Astro.props;
+---
+
+<span
+  class={`status-badge status-${status}`}
+  data-verification-status={status}
+>{labels[status]}</span>

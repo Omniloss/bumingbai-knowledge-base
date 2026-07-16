@@ -1,6 +1,70 @@
 ---
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import WorkCard from "../components/WorkCard.astro";
+import { canPublishRecommendation } from "../domain/publication.js";
+import type { Work } from "../domain/schemas/catalog.js";
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
 import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  listPublicEpisodes,
+  listPublicWorks,
+  loadCatalog,
+} from "../lib/catalog.js";
+
+const [catalog, publicEpisodes, catalogWorks] = await Promise.all([
+  loadCatalog(),
+  listPublicEpisodes(),
+  listPublicWorks(),
+]);
+// biome-ignore lint/correctness/noUnusedVariables: Astro iterates this collection in template markup.
+const latestEpisodes = publicEpisodes.slice(0, 3);
+const publicWorks = catalogWorks.filter(
+  (work) =>
+    work.verificationStatus === "verified" ||
+    work.verificationStatus === "partially_verified",
+);
+const workById = new Map(publicWorks.map((work) => [work.id, work] as const));
+const recentWorks: Work[] = [];
+const recentWorkIds = new Set<Work["id"]>();
+
+for (const episode of publicEpisodes) {
+  const episodeWorks: Work[] = [];
+  for (const evidence of catalog.recommendationEvidence) {
+    if (
+      evidence.episodeId !== episode.id ||
+      !canPublishRecommendation(evidence)
+    ) {
+      continue;
+    }
+    const work = workById.get(evidence.workId);
+    if (work !== undefined) episodeWorks.push(work);
+  }
+  episodeWorks.sort(
+    (left, right) =>
+      left.title.localeCompare(right.title, "zh-CN") ||
+      left.slug.localeCompare(right.slug),
+  );
+  for (const work of episodeWorks) {
+    if (recentWorkIds.has(work.id)) continue;
+    recentWorkIds.add(work.id);
+    recentWorks.push(work);
+    if (recentWorks.length === 6) break;
+  }
+  if (recentWorks.length === 6) break;
+}
+
+for (const work of publicWorks) {
+  if (recentWorks.length === 6) break;
+  if (recentWorkIds.has(work.id)) continue;
+  recentWorkIds.add(work.id);
+  recentWorks.push(work);
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro formats dates in template markup.
+const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
+  dateStyle: "long",
+  timeZone: "Asia/Shanghai",
+});
 ---
 
 <BaseLayout title="不明白知识库" description="按节目和作品探索不明白播客正式推荐">
@@ -8,5 +72,58 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <p class="eyebrow">不明白播客资料库</p>
     <h1>从一期节目，找到<span class="keep-together">下一部</span><span class="keep-together">值得读或看的作品</span></h1>
     <p>节目和推荐资料正在迁移，页面只显示<span class="keep-together">通过核验的数据</span>。</p>
+    <div class="hero-actions" aria-label="浏览资料库">
+      <a class="button" href="/episodes/">浏览全部节目</a>
+      <a class="button button-secondary" href="/works/">浏览全部作品</a>
+    </div>
+  </section>
+
+  <section class="discovery-section" aria-labelledby="recent-episodes-heading">
+    <header class="section-header">
+      <p class="eyebrow">从节目进入</p>
+      <h2 id="recent-episodes-heading">最新公开节目</h2>
+      <p>先回到节目语境，再沿着正式推荐继续阅读或观看。</p>
+    </header>
+    <div class="record-grid">
+      {latestEpisodes.map((episode) => (
+        <article
+          class="catalog-card episode-card"
+          data-episode-card
+          data-publication-status={episode.publicationStatus}
+          data-recent-episode
+          data-verification-status={episode.verificationStatus}
+        >
+          <p class="eyebrow">{episode.number === null ? "特别节目" : `第 ${episode.number} 期`}</p>
+          <h2><a href={`/episodes/${episode.slug}/`}>{episode.title}</a></h2>
+          <p class="record-meta">
+            <time datetime={episode.publishedAt}>{dateFormatter.format(new Date(episode.publishedAt))}</time>
+            {episode.duration && <span>{episode.duration}</span>}
+          </p>
+        </article>
+      ))}
+    </div>
+    <p class="section-action"><a href="/episodes/">查看节目索引</a></p>
+  </section>
+
+  <section class="discovery-section" aria-labelledby="recent-works-heading">
+    <header class="section-header">
+      <p class="eyebrow">从作品进入</p>
+      <h2 id="recent-works-heading">近期推荐作品</h2>
+      <p>按最新公开节目的正式推荐证据整理，同一作品只出现一次。</p>
+    </header>
+    <div class="record-grid">
+      {recentWorks.map((work) => (
+        <div data-recent-work>
+          <WorkCard work={work} />
+        </div>
+      ))}
+    </div>
+    <p class="section-action"><a href="/works/">查看作品索引</a></p>
+  </section>
+
+  <section class="search-placeholder" aria-labelledby="search-heading">
+    <p class="eyebrow">统一检索</p>
+    <h2 id="search-heading">搜索资料库</h2>
+    <p>统一搜索将在后续阶段开放。目前可从节目索引或作品索引浏览全部公开资料。</p>
   </section>
 </BaseLayout>

@@ -4,6 +4,7 @@
 - `work/bumingbai_structured.json` 必须与外部源逐字节一致；根 `.gitattributes` 对该文件使用 `-text`，更新后须同时核对外部源、工作树和 Git blob 的 SHA-256。
 - `src/domain/schemas/catalog.ts` 中的 `CatalogSchema` 是目录数据进入 TypeScript 层的边界契约；实体和品牌化 ID schema 分别维护在 `entities.ts` 和 `primitives.ts`，读取外部目录数据时必须先解析该契约。
 - `src/domain/id.ts` 统一生成稳定 ID 和 slug；已知实体前缀返回 `primitives.ts` 的品牌化 ID，任意其他前缀仍保持开放并返回普通字符串。
+- `src/lib/catalog.ts` 从模块 URL 向上查找固定 sentinel `data/catalog/meta.json`，使源码、测试和 Astro `dist/.prerender/chunks` 都能定位目录且不依赖调用方 cwd；移动数据目录时必须同步根发现测试。
 - `src/migration/legacy.ts` 是旧 JSON 的单一迁移入口；外部输入只在该边界解析一次，迁移时间由调用方注入，无法确认的创作者、标题或版本信息必须进入 `reviewIssues`。只有官方简介明确标注的推荐证据可以公开；书目字段还必须有已抓取推荐链接的元数据状态，否则对应版本必须暂缓公开并进入审核。
 - `Episode.number` 必须是正整数或明确的 `null`；无编号节目不得补造编号，其节目、推荐关联和证据 ID 必须共同使用官方 URL 与规范化发布时间作为身份，禁止只按 URL 关联。
 - `work/crawl_bumingbai.py` 只负责抓取官方 RSS、节目页和文字稿；`work/structure_bumingbai.py` 负责结构化与证据状态。
@@ -17,5 +18,6 @@
 - Windows 上运行 `pnpm run ci` 完整验证；`script/ci` 只能经绝对路径 Git Bash 调用，严禁在 PowerShell 中裸执行无扩展名的 `script/*`。
 - 运行 `bun run tools/migrate-legacy.ts work/bumingbai_structured.json data/catalog` 重新生成规范化目录。
 - `data/catalog/` 是公开站点输入；`data/review/issues.json` 只用于审核，不得作为公开候选事实来源。
+- 首页、节目索引和作品索引只能消费 `CatalogRepository` 的公开实体；作品筛选保留全量服务端渲染卡片，以 `media`、`status` 查询参数和渐进增强脚本切换可见性，无 JavaScript 时不得隐藏目录。
 - 只有“官方文字稿说话人标签”“官方节目简介明确说明”“节目标题明确列名或角色”三类 `guest_evidence` 可生成公开 Person；包含“未逐一列名”或“未在标题或简介中明确列名”的占位文本必须保留到审核问题，不得拆分或发布为 Person。
 - 每次对项目结构、数据契约、脚本命令或关键限制作出有意义的修改后，同步修订本文件。

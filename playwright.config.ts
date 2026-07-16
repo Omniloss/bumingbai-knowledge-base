@@ -12,7 +12,7 @@ export default defineConfig({
     { name: "mobile", use: { ...devices["Pixel 7"] } },
   ],
   webServer: {
-    command: "pnpm run preview -- --host 127.0.0.1",
+    command: "pnpm exec astro preview --host 127.0.0.1",
     port: 4321,
     reuseExistingServer: false,
   },

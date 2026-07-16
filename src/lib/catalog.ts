@@ -1,4 +1,7 @@
+import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
+import { dirname, join, sep } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import {
   type Catalog,
   CatalogMetaSchema,
@@ -7,27 +10,54 @@ import {
   type Work,
 } from "../domain/schemas/catalog.js";
 
+const CATALOG_SENTINEL = "data/catalog/meta.json";
+
+export class CatalogRootNotFoundError extends Error {
+  readonly name = "CatalogRootNotFoundError";
+
+  constructor(
+    readonly startUrl: URL,
+    readonly sentinelRelativePath: string,
+  ) {
+    super(
+      `Could not find ${sentinelRelativePath} above ${fileURLToPath(startUrl)}`,
+    );
+  }
+}
+
+export function findCatalogRoot(startUrl: URL): URL {
+  let directoryPath = fileURLToPath(new URL(".", startUrl));
+
+  while (true) {
+    if (existsSync(join(directoryPath, "data", "catalog", "meta.json"))) {
+      return pathToFileURL(`${directoryPath}${sep}`);
+    }
+
+    const parentPath = dirname(directoryPath);
+    if (parentPath === directoryPath) {
+      throw new CatalogRootNotFoundError(startUrl, CATALOG_SENTINEL);
+    }
+    directoryPath = parentPath;
+  }
+}
+
+const catalogRoot = findCatalogRoot(new URL(import.meta.url));
+
 const CATALOG_FILES = {
-  editions: new URL("../../data/catalog/editions.json", import.meta.url),
-  episodes: new URL("../../data/catalog/episodes.json", import.meta.url),
-  imageAssets: new URL("../../data/catalog/image-assets.json", import.meta.url),
-  meta: new URL("../../data/catalog/meta.json", import.meta.url),
-  people: new URL("../../data/catalog/people.json", import.meta.url),
-  providerRecords: new URL(
-    "../../data/catalog/provider-records.json",
-    import.meta.url,
-  ),
+  editions: new URL("data/catalog/editions.json", catalogRoot),
+  episodes: new URL("data/catalog/episodes.json", catalogRoot),
+  imageAssets: new URL("data/catalog/image-assets.json", catalogRoot),
+  meta: new URL("data/catalog/meta.json", catalogRoot),
+  people: new URL("data/catalog/people.json", catalogRoot),
+  providerRecords: new URL("data/catalog/provider-records.json", catalogRoot),
   recommendationEvidence: new URL(
-    "../../data/catalog/recommendation-evidence.json",
-    import.meta.url,
+    "data/catalog/recommendation-evidence.json",
+    catalogRoot,
   ),
-  reviewIssues: new URL("../../data/review/issues.json", import.meta.url),
-  topics: new URL("../../data/catalog/topics.json", import.meta.url),
-  workRelations: new URL(
-    "../../data/catalog/work-relations.json",
-    import.meta.url,
-  ),
-  works: new URL("../../data/catalog/works.json", import.meta.url),
+  reviewIssues: new URL("data/review/issues.json", catalogRoot),
+  topics: new URL("data/catalog/topics.json", catalogRoot),
+  workRelations: new URL("data/catalog/work-relations.json", catalogRoot),
+  works: new URL("data/catalog/works.json", catalogRoot),
 } as const;
 
 let catalogPromise: Promise<Catalog> | undefined;

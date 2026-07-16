@@ -1,0 +1,29 @@
+---
+import type { RecommendationEvidence } from "../domain/schemas/catalog.js";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import StatusBadge from "./StatusBadge.astro";
+
+interface Props {
+  readonly evidence: RecommendationEvidence;
+  readonly episodeTitle: string;
+  readonly episodeSlug: string;
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates these props in template markup.
+const { evidence, episodeTitle, episodeSlug } = Astro.props;
+---
+
+<article
+  class="evidence-panel"
+  data-evidence-panel
+  data-evidence-publication-status={evidence.publicationStatus}
+>
+  <StatusBadge status={evidence.verificationStatus} />
+  <p class="evidence-episode">
+    来自节目：<a href={`/episodes/${episodeSlug}/`}>{episodeTitle}</a>
+  </p>
+  <blockquote>{evidence.rawText}</blockquote>
+  <p class="source-action">
+    <a href={evidence.source.url} rel="external noreferrer">查看官方证据</a>
+  </p>
+</article>

@@ -1,0 +1,161 @@
+---
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import WorkCard from "../../components/WorkCard.astro";
+import { canPublishRecommendation } from "../../domain/publication.js";
+import type {
+  Episode,
+  Person,
+  RecommendationEvidence,
+  Work,
+} from "../../domain/schemas/catalog.js";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadCatalog } from "../../lib/catalog.js";
+
+type RecommendationRecord = {
+  readonly evidence: RecommendationEvidence;
+  readonly work: Work;
+};
+
+type RecommendationGroup = {
+  readonly key: string;
+  readonly name: string;
+  readonly records: readonly RecommendationRecord[];
+};
+
+interface Props {
+  readonly episode: Episode;
+  readonly guests: readonly Person[];
+  readonly groups: readonly RecommendationGroup[];
+  readonly hasPendingEvidence: boolean;
+}
+
+export async function getStaticPaths() {
+  const catalog = await loadCatalog();
+  const canPublishEntity = (entity: {
+    readonly publicationStatus: "public" | "withheld";
+    readonly verificationStatus:
+      | "verified"
+      | "partially_verified"
+      | "pending_verification"
+      | "rejected";
+  }): boolean =>
+    entity.publicationStatus === "public" &&
+    (entity.verificationStatus === "verified" ||
+      entity.verificationStatus === "partially_verified");
+  const publicPeople = catalog.people.filter(canPublishEntity);
+  const publicWorks = catalog.works.filter(canPublishEntity);
+  const peopleById = new Map(publicPeople.map((person) => [person.id, person]));
+  const worksById = new Map(publicWorks.map((work) => [work.id, work]));
+
+  return catalog.episodes.filter(canPublishEntity).map((episode) => {
+    const episodeEvidence = catalog.recommendationEvidence.filter(
+      (evidence) => evidence.episodeId === episode.id,
+    );
+    const records = episodeEvidence
+      .filter(canPublishRecommendation)
+      .flatMap((evidence) => {
+        const work = worksById.get(evidence.workId);
+        return work ? [{ evidence, work }] : [];
+      })
+      .toSorted((left, right) =>
+        left.evidence.id.localeCompare(right.evidence.id),
+      );
+    const groupKeys = [
+      ...new Set(
+        records.map((record) => {
+          const recommenderId = record.evidence.recommenderId;
+          return recommenderId && peopleById.has(recommenderId)
+            ? recommenderId
+            : "neutral";
+        }),
+      ),
+    ];
+    const groups = groupKeys.map((key) => ({
+      key,
+      name: peopleById.get(key)?.name ?? "推荐记录",
+      records: records.filter((record) => {
+        const recommenderId = record.evidence.recommenderId;
+        const recordKey =
+          recommenderId && peopleById.has(recommenderId)
+            ? recommenderId
+            : "neutral";
+        return recordKey === key;
+      }),
+    }));
+    const publicEvidenceIds = new Set(
+      records.map((record) => record.evidence.id),
+    );
+
+    return {
+      params: { slug: episode.slug },
+      props: {
+        episode,
+        guests: episode.guestIds.flatMap((guestId) => {
+          const guest = peopleById.get(guestId);
+          return guest ? [guest] : [];
+        }),
+        groups,
+        hasPendingEvidence: episodeEvidence.some(
+          (evidence) => !publicEvidenceIds.has(evidence.id),
+        ),
+      },
+    };
+  });
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates these props in template markup.
+const { episode, guests, groups, hasPendingEvidence } = Astro.props;
+// biome-ignore lint/correctness/noUnusedVariables: Astro formats dates in template markup.
+const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
+  dateStyle: "long",
+  timeZone: "Asia/Shanghai",
+});
+---
+
+<BaseLayout title={`${episode.title}｜不明白知识库`} description={`${episode.title}的公开推荐记录与官方来源`}>
+  <header class="detail-page-header episode-detail-header">
+    <p class="eyebrow">{episode.number === null ? "特别节目" : `第 ${episode.number} 期`}</p>
+    <h1>{episode.title}</h1>
+    <dl class="fact-list">
+      <div>
+        <dt>发布日期</dt>
+        <dd><time datetime={episode.publishedAt}>{dateFormatter.format(new Date(episode.publishedAt))}</time></dd>
+      </div>
+      <div>
+        <dt>嘉宾</dt>
+        <dd>{guests.length > 0 ? guests.map((guest) => guest.name).join("、") : "暂无已核验嘉宾"}</dd>
+      </div>
+      <div>
+        <dt>官方来源</dt>
+        <dd><a href={episode.officialUrl} rel="external noreferrer">官方节目页</a></dd>
+      </div>
+    </dl>
+  </header>
+
+  <section class="detail-section episode-recommendations">
+    <header>
+      <p class="eyebrow">公开证据</p>
+      <h2>推荐作品</h2>
+    </header>
+    {groups.length > 0 ? groups.map((group) => (
+      <section class="recommendation-group" data-recommender-group={group.key}>
+        <h3>{group.name}</h3>
+        <div class="recommendation-records">
+          {group.records.map(({ evidence, work }) => (
+            <article
+              class="episode-recommendation"
+              data-evidence-publication-status={evidence.publicationStatus}
+            >
+              <blockquote>{evidence.rawText}</blockquote>
+              <WorkCard headingLevel={4} work={work} />
+            </article>
+          ))}
+        </div>
+      </section>
+    )) : <p class="detail-empty">暂无已核验推荐作品。</p>}
+    {hasPendingEvidence && (
+      <p class="pending-notice">另有推荐记录仍在核验，候选信息暂不公开。</p>
+    )}
+  </section>
+</BaseLayout>

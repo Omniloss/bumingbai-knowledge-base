@@ -1,0 +1,45 @@
+---
+import type { SourceRef } from "../domain/schemas/catalog.js";
+
+type DetailSource = {
+  readonly kind: SourceRef["kind"] | "image";
+  readonly label: string;
+  readonly url: string;
+};
+
+interface Props {
+  readonly sources: readonly DetailSource[];
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this map in template markup.
+const sourceKindLabels = {
+  external_reference: "外部参考",
+  image: "图片来源",
+  library_catalog: "图书馆目录",
+  manual_review: "人工复核",
+  official_episode: "官方节目页",
+  official_rss: "官方 RSS",
+  official_transcript: "官方文字稿",
+  provider_api: "数据服务",
+  publisher: "出版方",
+} as const satisfies Record<SourceRef["kind"] | "image", string>;
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this prop in template markup.
+const { sources } = Astro.props;
+---
+
+<section class="detail-section" data-section-order="5">
+  <header><p class="eyebrow">可追溯性</p><h2>数据和图片来源</h2></header>
+  {sources.length > 0 ? (
+    <ul class="source-list">
+      {sources.map((source) => (
+        <li>
+          <span>{source.label}</span>
+          {source.url.startsWith("https://") ? (
+            <a href={source.url} rel="external noreferrer">{sourceKindLabels[source.kind]}</a>
+          ) : <span>{source.url}</span>}
+        </li>
+      ))}
+    </ul>
+  ) : <p class="detail-empty">暂无可公开来源。</p>}
+</section>

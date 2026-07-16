@@ -4,6 +4,7 @@ import type { Work } from "../domain/schemas/catalog.js";
 import StatusBadge from "./StatusBadge.astro";
 
 interface Props {
+  readonly headingLevel?: 2 | 4;
   readonly work: Work;
 }
 
@@ -18,7 +19,7 @@ const mediaLabels = {
 } as const satisfies Record<Work["mediaType"], string>;
 
 // biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this prop in template markup.
-const { work } = Astro.props;
+const { headingLevel = 2, work } = Astro.props;
 ---
 
 <article
@@ -29,7 +30,11 @@ const { work } = Astro.props;
   data-verification-status={work.verificationStatus}
 >
   <p class="eyebrow">{mediaLabels[work.mediaType]}</p>
-  <h2><a href={`/works/${work.slug}/`}>{work.title}</a></h2>
+  {headingLevel === 4 ? (
+    <h4><a href={`/works/${work.slug}/`}>{work.title}</a></h4>
+  ) : (
+    <h2><a href={`/works/${work.slug}/`}>{work.title}</a></h2>
+  )}
   {work.originalTitle && <p class="original-title" lang="und">{work.originalTitle}</p>}
   <StatusBadge status={work.verificationStatus} />
 </article>

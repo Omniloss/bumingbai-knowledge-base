@@ -1,0 +1,62 @@
+---
+import type { Edition, Person, Work } from "../domain/schemas/catalog.js";
+
+type EditionRecord = {
+  readonly edition: Edition;
+  readonly translators: readonly Person[];
+};
+
+interface Props {
+  readonly creators: readonly Person[];
+  readonly editionRecords: readonly EditionRecord[];
+  readonly work: Work;
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates these props in template markup.
+const { creators, editionRecords, work } = Astro.props;
+---
+
+<section class="detail-section" data-section-order="2">
+  <header>
+    <p class="eyebrow">目录事实</p>
+    <h2>{work.mediaType === "book" ? "版本信息" : "作品资料"}</h2>
+  </header>
+  {work.mediaType === "book" ? (
+    <div class="edition-list">
+      {editionRecords.length > 0 ? editionRecords.map(({ edition, translators }) => (
+        <article class="edition-record">
+          <h3>{edition.title}</h3>
+          <dl class="fact-list">
+            <div>
+              <dt>译者</dt>
+              <dd>{translators.length > 0 ? translators.map((translator) => translator.name).join("、") : "暂无已核验译者信息"}</dd>
+            </div>
+            {edition.publisher && <div><dt>出版社</dt><dd>{edition.publisher}</dd></div>}
+            {edition.isbn && <div><dt>ISBN</dt><dd>{edition.isbn}</dd></div>}
+            <div><dt>语言</dt><dd>{edition.language}</dd></div>
+            {edition.region && <div><dt>地区</dt><dd>{edition.region}</dd></div>}
+            {edition.publishedAt && <div><dt>出版信息</dt><dd>{edition.publishedAt}</dd></div>}
+          </dl>
+          <h4>翻译质量</h4>
+          <p>
+            <span class="assessment-status">{edition.translationAssessment.status === "unverified" ? "未核实" : "已核验"}</span>
+            ：{edition.translationAssessment.summary}
+          </p>
+        </article>
+      )) : <p class="detail-empty">暂无已核验版本信息。</p>}
+    </div>
+  ) : (
+    <div class="non-book-facts">
+      {creators.length > 0 || work.originalTitle || work.year || work.regions.length > 0 ? (
+        <dl class="fact-list">
+          {creators.length > 0 && (
+            <div><dt>导演或创作者</dt><dd>{creators.map((creator) => creator.name).join("、")}</dd></div>
+          )}
+          {work.originalTitle && <div><dt>原始发行标题</dt><dd lang="und">{work.originalTitle}</dd></div>}
+          {work.year && <div><dt>原始发行信息</dt><dd>{work.year} 年</dd></div>}
+          {work.regions.length > 0 && <div><dt>地区译名</dt><dd>{work.regions.join("、")}</dd></div>}
+        </dl>
+      ) : <p class="detail-empty">暂无已核验创作者、原始发行或地区译名信息。</p>}
+    </div>
+  )}
+</section>

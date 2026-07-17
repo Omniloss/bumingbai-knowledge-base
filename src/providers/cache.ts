@@ -1,5 +1,13 @@
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { randomUUID } from "node:crypto";
+import {
+  lstat,
+  mkdir,
+  readFile,
+  rename,
+  rm,
+  writeFile,
+} from "node:fs/promises";
+import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import { z } from "zod";
 import type { ProviderName, ProviderResult } from "./types.js";
 
@@ -10,6 +18,27 @@ const ProviderNameSchema = z.enum([
   "commons",
   "workers_ai",
 ]);
+const CacheKeySchema = z.string().regex(/^[A-Za-z0-9][A-Za-z0-9_-]*$/);
+const pendingWrites = new Map<string, Promise<void>>();
+
+function cachePaths(root: string, provider: ProviderName, key: string) {
+  const safeProvider = ProviderNameSchema.parse(provider);
+  const safeKey = CacheKeySchema.parse(key);
+  const directory = resolve(root, safeProvider);
+  const finalPath = resolve(directory, `${safeKey}.json`);
+  const relativePath = relative(directory, finalPath);
+
+  if (
+    relativePath === "" ||
+    relativePath === ".." ||
+    relativePath.startsWith(`..${sep}`) ||
+    isAbsolute(relativePath)
+  ) {
+    throw new Error("Cache path must remain within its provider directory");
+  }
+
+  return { directory, finalPath, safeKey };
+}
 
 function providerResultSchema<T>(
   provider: ProviderName,
@@ -30,6 +59,50 @@ function parseJson(content: string): unknown {
   return JSON.parse(content);
 }
 
+function enqueueWrite(
+  finalPath: string,
+  write: () => Promise<void>,
+): Promise<void> {
+  const previous = pendingWrites.get(finalPath) ?? Promise.resolve();
+  const current = previous.catch(() => undefined).then(write);
+
+  pendingWrites.set(finalPath, current);
+  current.then(
+    () => {
+      if (pendingWrites.get(finalPath) === current) {
+        pendingWrites.delete(finalPath);
+      }
+    },
+    () => {
+      if (pendingWrites.get(finalPath) === current) {
+        pendingWrites.delete(finalPath);
+      }
+    },
+  );
+
+  return current;
+}
+
+async function publishCacheEntry(
+  tempPath: string,
+  finalPath: string,
+): Promise<void> {
+  try {
+    await rename(tempPath, finalPath);
+  } catch (renameError: unknown) {
+    const existingEntry = await lstat(finalPath).catch(
+      (statError: unknown): never => {
+        if (isMissingFile(statError)) throw renameError;
+        throw statError;
+      },
+    );
+
+    if (!existingEntry.isFile()) throw renameError;
+    await rm(finalPath);
+    await rename(tempPath, finalPath);
+  }
+}
+
 export async function readProviderCache<T>(
   root: string,
   provider: ProviderName,
@@ -47,10 +120,11 @@ export async function readProviderCache(
   key: string,
   recordSchema: z.ZodType<unknown> = z.unknown(),
 ): Promise<ProviderResult<unknown> | undefined> {
+  const { finalPath } = cachePaths(root, provider, key);
   let content: string;
 
   try {
-    content = await readFile(join(root, provider, `${key}.json`), "utf8");
+    content = await readFile(finalPath, "utf8");
   } catch (error: unknown) {
     if (isMissingFile(error)) return undefined;
     throw error;
@@ -74,12 +148,19 @@ export async function writeProviderCache<T>(
   key: string,
   value: ProviderResult<T>,
 ): Promise<void> {
-  const directory = join(root, provider);
-  const finalPath = join(directory, `${key}.json`);
-  const tempPath = `${finalPath}.tmp`;
+  const { directory, finalPath, safeKey } = cachePaths(root, provider, key);
   const result = providerResultSchema(provider, z.unknown()).parse(value);
 
   await mkdir(directory, { recursive: true });
-  await writeFile(tempPath, `${JSON.stringify(result, null, 2)}\n`, "utf8");
-  await rename(tempPath, finalPath);
+  return enqueueWrite(finalPath, async () => {
+    const tempPath = join(directory, `.${safeKey}.${randomUUID()}.tmp`);
+
+    try {
+      await writeFile(tempPath, `${JSON.stringify(result, null, 2)}\n`, "utf8");
+      await publishCacheEntry(tempPath, finalPath);
+    } catch (error: unknown) {
+      await rm(tempPath, { force: true });
+      throw error;
+    }
+  });
 }

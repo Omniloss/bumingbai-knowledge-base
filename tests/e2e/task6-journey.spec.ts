@@ -53,9 +53,11 @@ for (const viewport of VIEWPORTS) {
       "viewport is set explicitly",
     );
     await page.setViewportSize(viewport);
+    const blockedImageRequests: string[] = [];
     await page.route(
       /\.(?:avif|gif|jpe?g|png|svg|webp)(?:\?.*)?$/u,
       async (route) => {
+        blockedImageRequests.push(route.request().url());
         await route.abort();
       },
     );
@@ -64,13 +66,29 @@ for (const viewport of VIEWPORTS) {
     });
 
     const main = page.getByRole("main");
+    const fallback = page.getByText("暂无已核验图片");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(fallback).toBeVisible();
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+      await new Promise<void>((resolve) => {
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      });
+    });
     const initialBox = await main.boundingBox();
-    await page.waitForTimeout(100);
+    const initialFallbackBox = await fallback.boundingBox();
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+        }),
+    );
     const settledBox = await main.boundingBox();
+    const settledFallbackBox = await fallback.boundingBox();
 
     expect(settledBox).toEqual(initialBox);
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(page.getByText("暂无已核验图片")).toBeVisible();
+    expect(settledFallbackBox).toEqual(initialFallbackBox);
+    expect(blockedImageRequests).toEqual([]);
     const badgeSignals = await page
       .locator(".status-badge")
       .evaluateAll((badges) =>

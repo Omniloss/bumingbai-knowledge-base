@@ -385,6 +385,10 @@ a {
   border-color: var(--navy);
 }
 
+.cjk-phrase {
+  white-space: nowrap;
+}
+
 .search-result-list {
   display: grid;
   gap: var(--space-6);
@@ -802,7 +806,7 @@ a {
   outline-offset: var(--focus-width);
 }
 
-@media (max-width: 40rem) {
+@media (max-width: 39.999rem) {
   .site-header {
     align-items: flex-start;
     flex-direction: column;

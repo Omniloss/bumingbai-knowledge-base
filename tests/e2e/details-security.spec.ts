@@ -15,14 +15,15 @@ test("non-HTTPS episode sources are never rendered as links", async ({
   await expect(page.locator('a[href^="http://"]')).toHaveCount(0);
 });
 
-test("pending recommendation candidates remain undisclosed", async ({
+test("nonpublic recommendation records use neutral disclosure copy", async ({
   page,
 }) => {
   await page.goto("/episodes/ep-151/");
 
-  await expect(
-    page.getByText("另有推荐记录仍在核验，候选信息暂不公开。"),
-  ).toBeVisible();
+  await expect(page.getByText("另有相关资料暂不对外显示。")).toBeVisible();
+  await expect(page.locator(".pending-notice")).not.toContainText(
+    /候选|核验|审核|审查|评审|review|candidate/iu,
+  );
   await expect(page.locator("body")).not.toContainText("Conclave");
   await expect(page.locator("body")).not.toContainText(
     "电影《秘密会议》（《Conclave》）爱德华·贝尔格",

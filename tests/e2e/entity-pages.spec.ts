@@ -8,6 +8,27 @@ test("methodology omits nonpublic review states", async ({ page }) => {
   await expect(page.getByRole("main")).not.toContainText("审核记录");
 });
 
+test("short CJK phrases stay intact on mobile pages", async ({ page }) => {
+  await page.setViewportSize({ height: 844, width: 390 });
+
+  await page.goto("/");
+  const searchPhrase = page.locator(".cjk-phrase", {
+    hasText: "作品和主题",
+  });
+  await expect(searchPhrase).toHaveCSS("white-space", "nowrap");
+
+  await page.goto("/about/methodology/");
+  const methodologyPhrases = page.locator(".cjk-phrase");
+  await expect(methodologyPhrases).toHaveText([
+    "正式推荐栏目",
+    "才会公开",
+    "人物页",
+  ]);
+  for (const phrase of await methodologyPhrases.all()) {
+    await expect(phrase).toHaveCSS("white-space", "nowrap");
+  }
+});
+
 test("person page contains only public participation, creation, and recommendation sections", async ({
   page,
 }) => {

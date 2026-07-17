@@ -11,6 +11,7 @@ import type {
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { loadCatalog } from "../../lib/catalog.js";
+import { getHttpsExternalUrl } from "../../lib/external-url.js";
 
 type RecommendationRecord = {
   readonly evidence: RecommendationEvidence;
@@ -111,6 +112,8 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
   dateStyle: "long",
   timeZone: "Asia/Shanghai",
 });
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this value in template markup.
+const officialUrl = getHttpsExternalUrl(episode.officialUrl);
 ---
 
 <BaseLayout title={`${episode.title}｜不明白知识库`} description={`${episode.title}的公开推荐记录与官方来源`}>
@@ -128,7 +131,13 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
       </div>
       <div>
         <dt>官方来源</dt>
-        <dd><a href={episode.officialUrl} rel="external noreferrer">官方节目页</a></dd>
+        <dd>
+          {officialUrl ? (
+            <a href={officialUrl} rel="external noreferrer">官方节目页</a>
+          ) : (
+            <span>官方节目页链接未通过 HTTPS 安全校验</span>
+          )}
+        </dd>
       </div>
     </dl>
   </header>

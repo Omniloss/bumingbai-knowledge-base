@@ -1,5 +1,6 @@
 ---
 import type { SourceRef } from "../domain/schemas/catalog.js";
+import { getHttpsExternalUrl } from "../lib/external-url.js";
 
 type DetailSource = {
   readonly kind: SourceRef["kind"] | "image";
@@ -24,20 +25,24 @@ const sourceKindLabels = {
   publisher: "出版方",
 } as const satisfies Record<SourceRef["kind"] | "image", string>;
 
-// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this prop in template markup.
 const { sources } = Astro.props;
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this collection in template markup.
+const displaySources = sources.map((source) => ({
+  ...source,
+  httpsUrl: getHttpsExternalUrl(source.url),
+}));
 ---
 
 <section class="detail-section" data-section-order="5">
   <header><p class="eyebrow">可追溯性</p><h2>数据和图片来源</h2></header>
-  {sources.length > 0 ? (
+  {displaySources.length > 0 ? (
     <ul class="source-list">
-      {sources.map((source) => (
+      {displaySources.map((source) => (
         <li>
           <span>{source.label}</span>
-          {source.url.startsWith("https://") ? (
-            <a href={source.url} rel="external noreferrer">{sourceKindLabels[source.kind]}</a>
-          ) : <span>{source.url}</span>}
+          {source.httpsUrl ? (
+            <a href={source.httpsUrl} rel="external noreferrer">{sourceKindLabels[source.kind]}</a>
+          ) : <span>链接未通过 HTTPS 安全校验</span>}
         </li>
       ))}
     </ul>

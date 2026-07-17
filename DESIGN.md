@@ -104,12 +104,12 @@
 | Detail header | `section[data-section-order="0"] > typographic cover + metadata + h1`；书籍和非书共用 | 自动换列、单一 h1、原题与状态只显示公开 schema 事实；书籍可显示作者，非书创作者事实留在第 2 区避免重复 | 交由内部链接处理 | 交由内部链接处理 | 交由内部链接处理 | 不适用 | 构建时生成 | 缺图时使用排版封面并明确写“暂无已核验图片” | 不适用 |
 | Typographic cover | `div[role="img"] > media label + title + empty copy`；本地占位变体 | `--cover-aspect`、海军蓝细边框、纸面底色，不生成或伪造封面图 | 不适用 | 不适用 | 不适用 | 不适用 | 不适用 | 明确说明暂无已核验图片 | 不适用 |
 | Detail section | `section[data-section-order] > header + content`；作品页固定 0 至 5，节目页按资料语义排列 | 以顶部细规则线和 `--space-12` 分隔；h2 开始区段，组标题使用 h3 | 交由子链接处理 | 交由子链接处理 | 交由子链接处理 | 不适用 | 构建时生成 | 使用 Detail empty state，不移除区段 | 不适用 |
-| `EvidencePanel` | `article > StatusBadge + episode link + official quote + source link` | 方角、顶部细规则线；官方原文使用 `blockquote`，只接收可发布证据和公开节目连接 | 两个链接使用海军蓝和下划线 | 两个链接使用焦点红 | 两个链接使用统一焦点轮廓 | 不适用 | 构建时生成 | 无合格证据时由父 Detail section 显示空态 | 不适用 |
+| `EvidencePanel` | `article > StatusBadge + episode link + official quote + source action` | 方角、顶部细规则线；官方原文使用 `blockquote`，只接收可发布证据和公开节目连接；来源仅在 HTTPS 校验通过时成为链接 | 两个安全链接使用海军蓝和下划线 | 两个安全链接使用焦点红 | 两个安全链接使用统一焦点轮廓 | 不适用 | 构建时生成 | 无合格证据时由父 Detail section 显示空态；非 HTTPS 来源显示不可点击的安全提示 | 不适用 |
 | Episode recommendation group | `section > h3 + recommendation records`；确认推荐人或中性“推荐记录”变体 | 每条保留官方原文，并以 `WorkCard` 链接公开作品；候选记录不进入 DOM | 交由作品链接处理 | 交由作品链接处理 | 交由作品链接处理 | 不适用 | 构建时生成 | 无公开推荐时显示通用空态；存在非公开证据时只显示通用核验通知 | 不适用 |
 | Edition record | `article > h3 + fact list + translation assessment`；仅书籍，第 2 区标题为“版本信息” | 只显示公开 Edition 的译者、出版社、ISBN、出版信息；翻译评价单列 h4，并以前间距和细规则线与版本事实分开 | 来源链接使用海军蓝和下划线 | 来源链接使用焦点红 | 来源链接使用统一焦点轮廓 | 不适用 | 构建时生成 | 无公开版本时明确写“暂无已核验版本信息” | 不适用 |
 | Non-book facts | `fact list`；电影、纪录片、电视、播客和其他媒介，第 2 区标题为“作品资料” | 只显示公开 Person 创作者或导演、原题、年份和地区；不生成译者、出版社、ISBN 或翻译质量结构，不在头部重复创作者 | 不适用 | 不适用 | 不适用 | 不适用 | 构建时生成 | 无已核验事实时明确说明，不补造创作者或发行信息 | 不适用 |
 | Relation record | `article > h3 + kind + reasons`；硬关系和 similar 分区 | 只连接公开目标作品并显示存储的类型与理由；两类关系不混排 | 标题链接使用海军蓝和下划线 | 标题链接使用焦点红 | 标题链接使用统一焦点轮廓 | 不适用 | 构建时生成 | 两个区段分别显示“暂无已核验关联作品”和“暂无已核验相似作品” | 不适用 |
-| Source list | `ul > source links`；数据与图片来源合并去重 | 只列 schema 中已有 URL，外链显示来源类型或图片来源并使用安全 rel | 链接使用海军蓝和下划线 | 链接使用焦点红 | 链接使用统一焦点轮廓 | 不适用 | 构建时生成 | 无来源时明确写“暂无可公开来源” | 不适用 |
+| Source list | `ul > source actions`；数据与图片来源合并去重 | 只列 schema 中已有 URL；仅 HTTPS 来源成为外链并使用安全 rel，其他协议显示不可点击的安全提示 | 安全链接使用海军蓝和下划线 | 安全链接使用焦点红 | 安全链接使用统一焦点轮廓 | 不适用 | 构建时生成 | 无来源时明确写“暂无可公开来源”；非 HTTPS 来源不提供跳转 | 不适用 |
 | Detail empty state | 单段状态说明，无恢复按钮 | 静音文字、上下不加容器底色；文案必须指明缺少哪类“已核验”记录 | 不适用 | 不适用 | 不适用 | 不适用 | 不适用 | 默认职责 | 不适用 |
 | Filter bar | 原生 GET form，两个有标签的 select、结果计数和 reset | 纸面控件、方角细边框；查询参数固定为 `media` 和 `status` | select 和按钮边框变为海军蓝 | reset 使用焦点红反馈 | 控件显示统一焦点轮廓，键盘顺序为媒介、状态、重置 | 不适用，筛选条件都可选 | 不适用，操作同步完成 | 无匹配结果时显示 Empty state，完整列表仍保留在 DOM | 无运行时请求，不定义错误态 |
 | Empty state | `p + 清除筛选 button`，由筛选结果驱动 | 方角、上下规则线、明确恢复动作；默认隐藏 | 清除按钮使用按钮 hover 规则 | 清除按钮使用焦点红反馈 | 清除按钮显示统一焦点轮廓 | 无筛选时隐藏，不伪造 disabled | 不适用 | 无匹配时显示“没有符合当前筛选条件的作品” | 不适用 |

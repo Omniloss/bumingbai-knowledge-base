@@ -433,9 +433,15 @@ a {
   color: var(--focus);
 }
 
-.search-empty {
+.search-empty,
+.search-error {
   margin: var(--space-6) 0 0;
   color: var(--muted);
+}
+
+.title-segment {
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .filter-bar {

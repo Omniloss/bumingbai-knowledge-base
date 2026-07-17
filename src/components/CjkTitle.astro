@@ -1,0 +1,15 @@
+---
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves this title helper in template markup.
+import { segmentCjkTitle } from "../lib/cjk-title.js";
+
+type Props = {
+  readonly value: string;
+};
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this prop in template markup.
+const { value } = Astro.props;
+---
+
+{segmentCjkTitle(value).map((segment) => (
+  <span class:list={{ "title-segment": segment.keepTogether }}>{segment.value}</span>
+))}

@@ -1,5 +1,7 @@
 ---
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import CjkTitle from "../../components/CjkTitle.astro";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import WorkCard from "../../components/WorkCard.astro";
 import { canPublishRecommendation } from "../../domain/publication.js";
 import type { Episode, Person, Work } from "../../domain/schemas/catalog.js";
@@ -86,9 +88,6 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
   dateStyle: "long",
   timeZone: "Asia/Shanghai",
 });
-// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this helper in template markup.
-const displayTitle = (value: string): string =>
-  value.replaceAll("中国世纪", "中国\u2060世纪");
 ---
 
 <BaseLayout title={`${person.name}｜不明白知识库`} description={`${person.name}的公开节目、作品与推荐记录`}>
@@ -109,7 +108,7 @@ const displayTitle = (value: string): string =>
         {episodes.map((episode) => (
           <article class="catalog-card episode-card">
             <p class="eyebrow">{episode.number === null ? "特别节目" : `第 ${episode.number} 期`}</p>
-            <h3><a href={`/episodes/${episode.slug}/`}>{displayTitle(episode.title)}</a></h3>
+            <h3><a href={`/episodes/${episode.slug}/`}><CjkTitle value={episode.title} /></a></h3>
             <p class="record-meta"><time datetime={episode.publishedAt}>{dateFormatter.format(new Date(episode.publishedAt))}</time></p>
           </article>
         ))}

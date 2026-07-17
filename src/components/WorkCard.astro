@@ -1,6 +1,8 @@
 ---
 import type { Work } from "../domain/schemas/catalog.js";
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import CjkTitle from "./CjkTitle.astro";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import StatusBadge from "./StatusBadge.astro";
 
 interface Props {
@@ -31,9 +33,9 @@ const { headingLevel = 2, work } = Astro.props;
 >
   <p class="eyebrow">{mediaLabels[work.mediaType]}</p>
   {headingLevel === 4 ? (
-    <h4><a href={`/works/${work.slug}/`}>{work.title}</a></h4>
+    <h4><a href={`/works/${work.slug}/`}><CjkTitle value={work.title} /></a></h4>
   ) : (
-    <h2><a href={`/works/${work.slug}/`}>{work.title}</a></h2>
+    <h2><a href={`/works/${work.slug}/`}><CjkTitle value={work.title} /></a></h2>
   )}
   {work.originalTitle && <p class="original-title" lang="und">{work.originalTitle}</p>}
   <StatusBadge status={work.verificationStatus} />

@@ -132,7 +132,7 @@ export const ImageAssetSchema = z
         .string()
         .url()
         .regex(/^https:\/\//u),
-      z.string().regex(/^\/(?!\/)[^\s]+$/u),
+      z.string().regex(/^\/(?![/\\])[^\\\s]+$/u),
     ]),
     sourcePageUrl: z.union([
       z.string().url(),

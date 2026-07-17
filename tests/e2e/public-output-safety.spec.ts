@@ -7,8 +7,9 @@ const FORBIDDEN_PUBLIC_REVIEW_COPY =
 const FORBIDDEN_NOTICE_COPY = /候选|核验|审核|审查|评审|review|candidate/iu;
 const ANCHOR_HREF = /<a\b[^>]*\bhref=(["'])(.*?)\1/giu;
 const IMAGE_SRC = /<img\b[^>]*\bsrc=(["'])(.*?)\1/giu;
-const SAFE_ANCHOR_HREF = /^(?:https:\/\/|\/(?!\/)|#)/iu;
-const SAFE_IMAGE_SRC = /^(?:https:\/\/|\/(?!\/))/iu;
+const SAFE_ANCHOR_HREF =
+  /^(?:https:\/\/[^\s\\]+|\/(?![/\\])[^\\\s]*|#[^\\\s]*)$/iu;
+const SAFE_IMAGE_SRC = /^(?:https:\/\/[^\s\\]+|\/(?![/\\])[^\\\s]+)$/iu;
 
 type SectionHeading = {
   readonly hasH1: boolean;

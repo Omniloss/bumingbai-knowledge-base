@@ -155,6 +155,8 @@ describe("CatalogSchema", () => {
     "ftp://images.example.com/original.jpg",
     "data:image/svg+xml;base64,PHN2Zy8+",
     "javascript:alert(1)",
+    "/\\evil.example/x.jpg",
+    "/\\/evil.example/x.jpg",
   ])("rejects unsafe image URL %s", (url) => {
     expect(ImageAssetSchema.safeParse({ ...IMAGE_ASSET, url }).success).toBe(
       false,

@@ -140,8 +140,11 @@ test("empty filter result explains how to recover", async ({ page }) => {
   // Given the works index
   await page.goto("/works/");
 
-  // When a public collection has no rejected works
-  await page.getByLabel("核验状态").selectOption("rejected");
+  // When a valid filter temporarily has no matching public records
+  await page.locator("[data-work-card]").evaluateAll((cards) => {
+    for (const card of cards) card.setAttribute("data-media", "other");
+  });
+  await page.getByLabel("媒介类型").selectOption("book");
 
   // Then no card is shown and a resettable empty state appears
   await expect(page.locator("[data-work-card]:visible")).toHaveCount(0);
@@ -160,7 +163,10 @@ test("empty filter result has no serious accessibility violations", async ({
 }) => {
   await page.goto("/works/");
 
-  await page.getByLabel("核验状态").selectOption("rejected");
+  await page.locator("[data-work-card]").evaluateAll((cards) => {
+    for (const card of cards) card.setAttribute("data-media", "other");
+  });
+  await page.getByLabel("媒介类型").selectOption("book");
 
   const seriousViolations = (
     await new AxeBuilder({ page })

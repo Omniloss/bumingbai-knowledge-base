@@ -39,7 +39,8 @@ test("search supports keyboard selection and Escape", async ({ page }) => {
 
   // Then
   await expect(search).toHaveValue("");
-  await expect(page.getByRole("listbox")).toHaveCount(0);
+  await expect(search).toHaveAttribute("aria-expanded", "false");
+  await expect(page.getByRole("option")).toHaveCount(0);
 });
 
 test("search waits for two characters, groups records, and supports ArrowUp and Enter", async ({

@@ -3,13 +3,14 @@
 import { segmentCjkTitle } from "../lib/cjk-title.js";
 
 type Props = {
+  readonly protectedPhrases?: readonly string[];
   readonly value: string;
 };
 
 // biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this prop in template markup.
-const { value } = Astro.props;
+const { protectedPhrases = [], value } = Astro.props;
 ---
 
-{segmentCjkTitle(value).map((segment) => (
+{segmentCjkTitle(value, protectedPhrases).map((segment) => (
   <span class:list={{ "title-segment": segment.keepTogether }}>{segment.value}</span>
 ))}

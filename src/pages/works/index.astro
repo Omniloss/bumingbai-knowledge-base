@@ -5,11 +5,30 @@ import WorkCard from "../../components/WorkCard.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { listPublicWorks } from "../../lib/catalog.js";
 
-// biome-ignore lint/correctness/noUnusedVariables: Astro iterates this collection in template markup.
 const works = (await listPublicWorks()).filter(
   (work) =>
     work.verificationStatus === "verified" ||
     work.verificationStatus === "partially_verified",
+);
+const mediaOptions = [
+  { label: "书籍", value: "book" },
+  { label: "电影", value: "film" },
+  { label: "电视剧", value: "television" },
+  { label: "纪录片", value: "documentary" },
+  { label: "播客", value: "podcast" },
+  { label: "其他", value: "other" },
+] as const;
+const statusOptions = [
+  { label: "已核验", value: "verified" },
+  { label: "部分核验", value: "partially_verified" },
+] as const;
+// biome-ignore lint/correctness/noUnusedVariables: Astro renders this collection in template markup.
+const availableMediaOptions = mediaOptions.filter((option) =>
+  works.some((work) => work.mediaType === option.value),
+);
+// biome-ignore lint/correctness/noUnusedVariables: Astro renders this collection in template markup.
+const availableStatusOptions = statusOptions.filter((option) =>
+  works.some((work) => work.verificationStatus === option.value),
 );
 ---
 
@@ -17,7 +36,7 @@ const works = (await listPublicWorks()).filter(
   <header class="collection-header">
     <p class="eyebrow">作品索引</p>
     <h1>全部公开作品</h1>
-    <p>按媒介类型和核验状态筛选；每一项都来自可公开的正式推荐证据。</p>
+    <p>按媒介类型和核验状态筛选；每一项都来自<span class="keep-together">公开的正式推荐证据</span>。</p>
   </header>
 
   <form class="filter-bar" action="/works/" method="get" data-works-filter>
@@ -25,22 +44,18 @@ const works = (await listPublicWorks()).filter(
       <label for="media-filter">媒介类型</label>
       <select id="media-filter" name="media">
         <option value="">全部媒介</option>
-        <option value="book">书籍</option>
-        <option value="film">电影</option>
-        <option value="television">电视剧</option>
-        <option value="documentary">纪录片</option>
-        <option value="podcast">播客</option>
-        <option value="other">其他</option>
+        {availableMediaOptions.map((option) => (
+          <option value={option.value}>{option.label}</option>
+        ))}
       </select>
     </div>
     <div class="filter-field">
       <label for="status-filter">核验状态</label>
       <select id="status-filter" name="status">
         <option value="">全部状态</option>
-        <option value="verified">已核验</option>
-        <option value="partially_verified">部分核验</option>
-        <option value="pending_verification">待核验</option>
-        <option value="rejected">已排除</option>
+        {availableStatusOptions.map((option) => (
+          <option value={option.value}>{option.label}</option>
+        ))}
       </select>
     </div>
     <button class="button button-secondary" type="reset">重置筛选</button>

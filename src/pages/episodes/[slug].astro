@@ -1,5 +1,7 @@
 ---
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import CjkTitle from "../../components/CjkTitle.astro";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import WorkCard from "../../components/WorkCard.astro";
 import { canPublishRecommendation } from "../../domain/publication.js";
 import type {
@@ -119,7 +121,7 @@ const officialUrl = getHttpsExternalUrl(episode.officialUrl);
 <BaseLayout title={`${episode.title}｜不明白知识库`} description={`${episode.title}的公开推荐记录与官方来源`}>
   <header class="detail-page-header episode-detail-header">
     <p class="eyebrow">{episode.number === null ? "特别节目" : `第 ${episode.number} 期`}</p>
-    <h1>{episode.title}</h1>
+    <h1><CjkTitle value={episode.title} protectedPhrases={guests.map((guest) => guest.name)} /></h1>
     <dl class="fact-list">
       <div>
         <dt>发布日期</dt>

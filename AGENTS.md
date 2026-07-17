@@ -17,6 +17,9 @@
 - `pnpm run dev` 和 `pnpm run build` 都会先用 Bun 生成仅含公开且已核验或部分核验实体的 `public/search-index.json`，再启动 Astro 开发服务器或构建站点；该文件是构建产物，不参与 Biome 格式化或 Git 跟踪。
 - `work/` 原始输入与 `data/catalog/`、`data/review/` 生成 JSON 不由 Biome 改写，数据正确性由 Zod、迁移测试和 `tools/validate-data.ts` 校验。
 - Windows 上运行 `pnpm run ci` 完整验证；`script/ci` 只能经绝对路径 Git Bash 调用，严禁在 PowerShell 中裸执行无扩展名的 `script/*`。
+- 运行 `pnpm run dev` 启动 Astro 本地站点，运行 `pnpm run build` 生成静态站点，运行 `pnpm run preview -- --host 127.0.0.1` 验收生产构建；PowerShell 不得直接执行无扩展名的 `script/server` 或 `script/build`。
+- 浏览器验收使用 `pnpm exec playwright test`，desktop 和 mobile 项目都必须通过；Lighthouse 只对生产 preview 运行 `pnpm run qa:lighthouse -- <URL>`，该命令以 Puppeteer 的 CDP pipe 启动 Chrome Stable，并通过 Lighthouse Node API 各跑三次移动端和桌面端。
+- 页面只能读取 `CatalogRepository`，不得直接读取或绕过 `data/catalog/` schema；公开筛选项必须由当前可公开集合推导，pending、rejected 和无匹配值不得出现在公开筛选控件中。
 - 运行 `bun run tools/migrate-legacy.ts work/bumingbai_structured.json data/catalog` 重新生成规范化目录。
 - `data/catalog/` 是公开站点输入；`data/review/issues.json` 只用于审核，不得作为公开候选事实来源。
 - 首页、节目索引和作品索引只能消费 `CatalogRepository` 的公开实体；作品筛选保留全量服务端渲染卡片，以 `media`、`status` 查询参数和渐进增强脚本切换可见性，无 JavaScript 时不得隐藏目录。

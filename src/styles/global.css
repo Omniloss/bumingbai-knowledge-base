@@ -247,10 +247,7 @@ a {
 
 .record-grid {
   display: grid;
-  grid-template-columns: repeat(
-      auto-fit,
-      minmax(min(100%, var(--card-min)), 1fr)
-    );
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-8) var(--space-6);
 }
 
@@ -839,10 +836,25 @@ a {
   }
 }
 
+@media (min-width: 40rem) and (max-width: 59.999rem) {
+  .record-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 39.999rem) {
+  .record-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
     scroll-behavior: auto;
+    transition-duration: 0.01ms;
   }
 }

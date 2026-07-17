@@ -15,7 +15,13 @@
     role="combobox"
     type="search"
   />
-  <div aria-live="polite" class="search-results" id="catalog-search-results"></div>
+  <div
+    aria-label="搜索结果"
+    class="search-results search-result-list"
+    id="catalog-search-results"
+    role="listbox"
+  ></div>
+  <div aria-live="polite" class="search-message" data-search-message></div>
 </section>
 
 <script>
@@ -40,10 +46,12 @@
 
   const input = document.querySelector("#catalog-search");
   const resultsContainer = document.querySelector("#catalog-search-results");
+  const messageContainer = document.querySelector("[data-search-message]");
 
   if (
     input instanceof HTMLInputElement &&
-    resultsContainer instanceof HTMLDivElement
+    resultsContainer instanceof HTMLDivElement &&
+    messageContainer instanceof HTMLDivElement
   ) {
     let indexPromise: Promise<SearchIndex> | undefined;
     let resultLinks: HTMLAnchorElement[] = [];
@@ -62,6 +70,7 @@
 
     const clearResults = () => {
       resultsContainer.replaceChildren();
+      messageContainer.replaceChildren();
       resultLinks = [];
       activeIndex = -1;
       input.setAttribute("aria-expanded", "false");
@@ -84,7 +93,7 @@
       const paragraph = document.createElement("p");
       paragraph.className = className;
       paragraph.textContent = message;
-      resultsContainer.append(paragraph);
+      messageContainer.append(paragraph);
     };
 
     const renderResults = (records: SearchIndex) => {
@@ -94,10 +103,6 @@
         return;
       }
 
-      const listbox = document.createElement("div");
-      listbox.setAttribute("aria-label", "搜索结果");
-      listbox.setAttribute("role", "listbox");
-      listbox.className = "search-result-list";
       let resultIndex = 0;
 
       for (const kind of SEARCH_KINDS) {
@@ -135,10 +140,9 @@
           resultIndex += 1;
         }
         group.append(list);
-        listbox.append(group);
+        resultsContainer.append(group);
       }
 
-      resultsContainer.append(listbox);
       input.setAttribute("aria-expanded", "true");
     };
 

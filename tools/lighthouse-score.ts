@@ -39,11 +39,35 @@ export function scoreFailures(
     summary[preset].runs.forEach((scores, index) => {
       for (const category of LIGHTHOUSE_CATEGORIES) {
         const score = scores[category];
-        if (score < 100) {
+        if (score !== 1) {
           failures.push({ category, preset, run: index + 1, score });
         }
       }
     });
   }
   return failures;
+}
+
+function scoresAsPercentages(scores: LighthouseScores): LighthouseScores {
+  return {
+    accessibility: scores.accessibility * 100,
+    "best-practices": scores["best-practices"] * 100,
+    performance: scores.performance * 100,
+    seo: scores.seo * 100,
+  };
+}
+
+export function percentageSummary(
+  summary: LighthouseSummary,
+): LighthouseSummary {
+  return {
+    desktop: {
+      median: scoresAsPercentages(summary.desktop.median),
+      runs: summary.desktop.runs.map(scoresAsPercentages),
+    },
+    mobile: {
+      median: scoresAsPercentages(summary.mobile.median),
+      runs: summary.mobile.runs.map(scoresAsPercentages),
+    },
+  };
 }

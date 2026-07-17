@@ -3,14 +3,15 @@ import {
   countAuditedScores,
   type LighthouseScores,
   type LighthouseSummary,
+  percentageSummary,
   scoreFailures,
 } from "../../tools/lighthouse-score";
 
 const PERFECT_SCORES: LighthouseScores = {
-  accessibility: 100,
-  "best-practices": 100,
-  performance: 100,
-  seo: 100,
+  accessibility: 1,
+  "best-practices": 1,
+  performance: 1,
+  seo: 1,
 };
 
 function summaryWith(score: LighthouseScores): LighthouseSummary {
@@ -27,18 +28,27 @@ function summaryWith(score: LighthouseScores): LighthouseSummary {
 }
 
 describe("Lighthouse raw-score gate", () => {
-  test("accepts all 24 perfect category scores", () => {
+  test("accepts all 24 exact raw scores", () => {
     const summary = summaryWith(PERFECT_SCORES);
 
     expect(countAuditedScores(summary)).toBe(24);
     expect(scoreFailures(summary)).toEqual([]);
   });
 
-  test("identifies a single sub-100 run even when medians remain perfect", () => {
-    const summary = summaryWith({ ...PERFECT_SCORES, performance: 99 });
+  test("rejects a near-perfect raw score that would round to 100", () => {
+    const summary = summaryWith({ ...PERFECT_SCORES, performance: 0.996 });
 
     expect(scoreFailures(summary)).toEqual([
-      { category: "performance", preset: "mobile", run: 2, score: 99 },
+      { category: "performance", preset: "mobile", run: 2, score: 0.996 },
     ]);
+  });
+
+  test("converts raw scores to percentages only for reporting", () => {
+    const report = percentageSummary(
+      summaryWith({ ...PERFECT_SCORES, performance: 0.996 }),
+    );
+
+    expect(report.mobile.runs[1]?.performance).toBe(99.6);
+    expect(report.desktop.median.performance).toBe(100);
   });
 });

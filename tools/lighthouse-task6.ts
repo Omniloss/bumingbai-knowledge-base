@@ -17,6 +17,7 @@ import {
   type LighthouseScoreFailure,
   type LighthouseScores,
   type LighthouseSummary,
+  percentageSummary,
   scoreFailures,
 } from "./lighthouse-score.ts";
 
@@ -75,7 +76,7 @@ function categoryScore(
   result: RunnerResult,
   category: LighthouseCategory,
 ): number {
-  return Math.round((result.lhr.categories[category]?.score ?? 0) * 100);
+  return result.lhr.categories[category]?.score ?? 0;
 }
 
 function scoresFrom(result: RunnerResult): LighthouseScores {
@@ -179,19 +180,20 @@ async function main(): Promise<void> {
     });
   }
 
-  await writeFile(
-    path.join(OUTPUT_PATH, "summary.json"),
-    `${JSON.stringify(summary, null, 2)}\n`,
-    "utf8",
-  );
-  console.log(JSON.stringify(summary, null, 2));
-
   const scoreCount = countAuditedScores(summary);
   if (scoreCount !== EXPECTED_SCORE_COUNT) {
     throw new LighthouseScoreCountError(scoreCount);
   }
   const failures = scoreFailures(summary);
   if (failures.length > 0) throw new LighthouseScoreGateError(failures);
+
+  const reportSummary = percentageSummary(summary);
+  await writeFile(
+    path.join(OUTPUT_PATH, "summary.json"),
+    `${JSON.stringify(reportSummary, null, 2)}\n`,
+    "utf8",
+  );
+  console.log(JSON.stringify(reportSummary, null, 2));
 }
 
 await main();

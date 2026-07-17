@@ -3,7 +3,10 @@ import {
   CatalogSchema,
   type Episode,
 } from "../../src/domain/schemas/catalog.js";
-import { EpisodeSchema } from "../../src/domain/schemas/entities.js";
+import {
+  EpisodeSchema,
+  ImageAssetSchema,
+} from "../../src/domain/schemas/entities.js";
 import type { PersonId } from "../../src/domain/schemas/primitives.js";
 
 const EPISODE = {
@@ -18,6 +21,22 @@ const EPISODE = {
   verificationStatus: "partially_verified",
   publicationStatus: "public",
   sources: [],
+} as const;
+
+const IMAGE_ASSET = {
+  id: "image_111111111111",
+  workId: "work_111111111111",
+  role: "hero",
+  editionRole: "original",
+  handling: "hotlink_only",
+  url: "https://images.example.com/original.jpg",
+  sourcePageUrl: "https://example.com/source",
+  width: 1200,
+  height: 1800,
+  license: "source terms",
+  attribution: "Example source",
+  lastVerifiedAt: "2026-07-14T00:00:00.000Z",
+  broken: false,
 } as const;
 
 describe("CatalogSchema", () => {
@@ -129,5 +148,25 @@ describe("CatalogSchema", () => {
 
     // Then
     expect(result.success).toBe(false);
+  });
+
+  it.each([
+    "http://images.example.com/original.jpg",
+    "ftp://images.example.com/original.jpg",
+    "data:image/svg+xml;base64,PHN2Zy8+",
+    "javascript:alert(1)",
+  ])("rejects unsafe image URL %s", (url) => {
+    expect(ImageAssetSchema.safeParse({ ...IMAGE_ASSET, url }).success).toBe(
+      false,
+    );
+  });
+
+  it.each([
+    "https://images.example.com/original.jpg",
+    "/images/original.jpg",
+  ])("accepts safe image URL %s", (url) => {
+    expect(ImageAssetSchema.safeParse({ ...IMAGE_ASSET, url }).success).toBe(
+      true,
+    );
   });
 });

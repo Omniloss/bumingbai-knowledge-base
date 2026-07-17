@@ -127,7 +127,13 @@ export const ImageAssetSchema = z
     role: z.enum(["hero", "edition", "fallback"]),
     editionRole: z.enum(["original", "translated", "regional", "generated"]),
     handling: z.enum(["hotlink_only", "mirror_allowed", "display_prohibited"]),
-    url: z.union([z.string().url(), z.string().regex(/^\/[^\s]+$/u)]),
+    url: z.union([
+      z
+        .string()
+        .url()
+        .regex(/^https:\/\//u),
+      z.string().regex(/^\/(?!\/)[^\s]+$/u),
+    ]),
     sourcePageUrl: z.union([
       z.string().url(),
       z.string().regex(/^site-generated:[a-z-]+$/u),

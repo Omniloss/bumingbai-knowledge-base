@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "biome check --vcs-enabled=true --vcs-client-kind=git --vcs-use-ignore-file=true . && markdownlint-cli2 \"**/*.md\" \"#node_modules\"",
     "test": "pnpm exec vitest run",
-    "ci": "pnpm run typecheck && pnpm run lint && pnpm run test"
+    "ci": "pnpm run typecheck && pnpm run lint && pnpm run test && pnpm run build && pnpm exec playwright test"
   },
   "keywords": [],
   "author": "",

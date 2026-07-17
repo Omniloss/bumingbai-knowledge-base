@@ -16,9 +16,10 @@
 - 项目工具链统一使用 pnpm、Bun、`biome.jsonc`、`tsc --noEmit` 和 markdownlint，测试通过 `pnpm exec vitest` 运行。
 - `pnpm run dev` 和 `pnpm run build` 都会先用 Bun 生成仅含公开且已核验或部分核验实体的 `public/search-index.json`，再启动 Astro 开发服务器或构建站点；该文件是构建产物，不参与 Biome 格式化或 Git 跟踪。
 - `work/` 原始输入与 `data/catalog/`、`data/review/` 生成 JSON 不由 Biome 改写，数据正确性由 Zod、迁移测试和 `tools/validate-data.ts` 校验。
-- Windows 上运行 `pnpm run ci` 完整验证；`script/ci` 只能经绝对路径 Git Bash 调用，严禁在 PowerShell 中裸执行无扩展名的 `script/*`。
+- Windows 上运行 `pnpm run ci` 依次完成类型检查、lint、单元测试、静态构建和 desktop/mobile Playwright；`script/ci` 只能经绝对路径 Git Bash 调用，严禁在 PowerShell 中裸执行无扩展名的 `script/*`。Lighthouse 仍须按下一条命令单独对生产 preview 验收。
 - 运行 `pnpm run dev` 启动 Astro 本地站点，运行 `pnpm run build` 生成静态站点，运行 `pnpm run preview -- --host 127.0.0.1` 验收生产构建；PowerShell 不得直接执行无扩展名的 `script/server` 或 `script/build`。
 - 浏览器验收使用 `pnpm exec playwright test`，desktop 和 mobile 项目都必须通过；Lighthouse 只对生产 preview 运行 `pnpm run qa:lighthouse -- <URL>`，该命令以 Node 24 的类型剥离模式运行严格 TypeScript runner，通过 Puppeteer 的 CDP pipe 启动 Chrome Stable，并用 Lighthouse Node API 各跑三次移动端和桌面端；24 个原始分类分数必须全部达到 100。Windows 上不得改回 Bun，Bun 1.3 的子进程兼容层无法可靠完成 Chrome CDP pipe 启动并会遗留进程树。
+- `pnpm-workspace.yaml` 将 Lighthouse 的 Sentry 传递依赖锁到已使用 OpenTelemetry 2.x 的版本，以避开 Lighthouse 默认 Sentry 9 依赖链的已知安全告警；调整该 override 后必须同时通过完整 `pnpm audit` 和六次 Lighthouse 原始满分验收。
 - 页面只能读取 `CatalogRepository`，不得直接读取或绕过 `data/catalog/` schema；公开筛选项必须由当前可公开集合推导，pending、rejected 和无匹配值不得出现在公开筛选控件中。
 - 运行 `bun run tools/migrate-legacy.ts work/bumingbai_structured.json data/catalog` 重新生成规范化目录。
 - `data/catalog/` 是公开站点输入；`data/review/issues.json` 只用于审核，不得作为公开候选事实来源。

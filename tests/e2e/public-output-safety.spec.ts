@@ -6,7 +6,9 @@ const FORBIDDEN_PUBLIC_REVIEW_COPY =
   /候选(?:信息|记录)|待核验|审核记录|审查记录|评审记录|\breview (?:status|record)\b|\bcandidates?\b/iu;
 const FORBIDDEN_NOTICE_COPY = /候选|核验|审核|审查|评审|review|candidate/iu;
 const ANCHOR_HREF = /<a\b[^>]*\bhref=(["'])(.*?)\1/giu;
+const IMAGE_SRC = /<img\b[^>]*\bsrc=(["'])(.*?)\1/giu;
 const SAFE_ANCHOR_HREF = /^(?:https:\/\/|\/(?!\/)|#)/iu;
+const SAFE_IMAGE_SRC = /^(?:https:\/\/|\/(?!\/))/iu;
 
 type SectionHeading = {
   readonly hasH1: boolean;
@@ -86,6 +88,10 @@ test("all generated pages keep one h1 and no unsafe or nonpublic markup", async 
     for (const anchor of html.matchAll(ANCHOR_HREF)) {
       const href = anchor[2] ?? "";
       expect(href, `${file}: ${href}`).toMatch(SAFE_ANCHOR_HREF);
+    }
+    for (const image of html.matchAll(IMAGE_SRC)) {
+      const src = image[2] ?? "";
+      expect(src, `${file}: ${src}`).toMatch(SAFE_IMAGE_SRC);
     }
     for (const notice of html.matchAll(
       /<p\b[^>]*class=["'][^"']*pending-notice[^"']*["'][^>]*>(.*?)<\/p>/giu,

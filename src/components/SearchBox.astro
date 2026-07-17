@@ -49,9 +49,15 @@
     let resultLinks: HTMLAnchorElement[] = [];
     let activeIndex = -1;
 
-    const loadIndex = (): Promise<SearchIndex> => {
-      indexPromise ??= loadSearchIndex();
-      return indexPromise;
+    const loadIndex = async (): Promise<SearchIndex> => {
+      const currentPromise = indexPromise ?? loadSearchIndex();
+      indexPromise = currentPromise;
+      try {
+        return await currentPromise;
+      } catch (error) {
+        if (indexPromise === currentPromise) indexPromise = undefined;
+        throw error;
+      }
     };
 
     const clearResults = () => {

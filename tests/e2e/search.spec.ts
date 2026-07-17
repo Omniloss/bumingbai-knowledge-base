@@ -135,6 +135,58 @@ test("search exposes an honest unavailable state when the index cannot load", as
   expect(pageErrors).toEqual([]);
 });
 
+test("search retries after an initial index failure without reloading", async ({
+  page,
+}) => {
+  // Given
+  let requestCount = 0;
+  let serveIndex = false;
+  await page.route("**/search-index.json", async (route) => {
+    requestCount += 1;
+    if (!serveIndex) {
+      await route.fulfill({ status: 500 });
+      return;
+    }
+    await route.fulfill({
+      body: JSON.stringify([
+        {
+          aliases: [],
+          id: "retry-work",
+          kind: "work",
+          title: "记忆重试作品",
+          tokens: ["记忆", "重试"],
+          url: "/works/retry-work/",
+        },
+      ]),
+      contentType: "application/json",
+    });
+  });
+  await page.goto("/");
+  const search = page.getByRole("combobox", {
+    name: "搜索节目、人物和作品",
+  });
+
+  // When
+  await search.fill("记忆");
+
+  // Then
+  await expect(page.getByText("搜索暂不可用，请稍后重试。")).toBeVisible();
+  await expect(page.getByRole("option")).toHaveCount(0);
+  expect(requestCount).toBeGreaterThanOrEqual(2);
+  const failedRequestCount = requestCount;
+
+  // When
+  serveIndex = true;
+  await search.fill("记忆重试");
+
+  // Then
+  await expect.poll(() => requestCount).toBeGreaterThan(failedRequestCount);
+  await expect(
+    page.getByRole("option").filter({ hasText: "记忆重试作品" }),
+  ).toBeVisible();
+  await expect(page).toHaveURL(/\/$/);
+});
+
 test("search results have no serious or critical axe violations", async ({
   page,
 }) => {

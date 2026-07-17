@@ -1,0 +1,237 @@
+<section class="search-box" aria-labelledby="catalog-search-heading">
+  <p class="eyebrow">统一检索</p>
+  <h2 id="catalog-search-heading">搜索资料库</h2>
+  <p>输入至少两个字符，搜索公开节目、人物、作品和主题。</p>
+  <label for="catalog-search">搜索节目、人物和作品</label>
+  <input
+    aria-autocomplete="list"
+    aria-controls="catalog-search-results"
+    aria-expanded="false"
+    autocomplete="off"
+    id="catalog-search"
+    name="catalog-search"
+    placeholder="例如：说吧，记忆"
+    type="search"
+  />
+  <div aria-live="polite" class="search-results" id="catalog-search-results"></div>
+</section>
+
+<script>
+  type SearchKind = "episode" | "work" | "person" | "topic";
+
+  type SearchRecord = {
+    readonly id: string;
+    readonly kind: SearchKind;
+    readonly title: string;
+    readonly aliases: readonly string[];
+    readonly url: string;
+    readonly tokens: readonly string[];
+  };
+
+  type UnknownRecord = { readonly [key: string]: unknown };
+
+  const KIND_LABELS = {
+    episode: "节目",
+    work: "作品",
+    person: "人物",
+    topic: "主题",
+  } as const satisfies Record<SearchKind, string>;
+  const SEARCH_KINDS = ["episode", "work", "person", "topic"] as const;
+
+  const input = document.querySelector("#catalog-search");
+  const resultsContainer = document.querySelector("#catalog-search-results");
+
+  if (
+    input instanceof HTMLInputElement &&
+    resultsContainer instanceof HTMLDivElement
+  ) {
+    let indexPromise: Promise<readonly SearchRecord[]> | undefined;
+    let resultLinks: HTMLAnchorElement[] = [];
+    let activeIndex = -1;
+
+    const normalize = (value: string): string =>
+      value.normalize("NFKC").toLocaleLowerCase("zh-CN");
+
+    const tokenize = (value: string): string[] => {
+      const normalized = normalize(value);
+      const latin = normalized.match(/[a-z0-9]+/gu) ?? [];
+      const chinese = [...normalized.replace(/[^\p{Script=Han}]/gu, "")];
+      const bigrams = chinese
+        .slice(0, -1)
+        .map((character, position) => `${character}${chinese[position + 1]}`);
+      return [...new Set([...latin, ...bigrams])];
+    };
+
+    const isUnknownRecord = (value: unknown): value is UnknownRecord =>
+      typeof value === "object" && value !== null;
+
+    const isSearchRecord = (value: unknown): value is SearchRecord => {
+      if (!isUnknownRecord(value)) return false;
+
+      const { aliases, id, kind, title, tokens, url } = value;
+      return (
+        typeof id === "string" &&
+        (kind === "episode" ||
+          kind === "work" ||
+          kind === "person" ||
+          kind === "topic") &&
+        typeof title === "string" &&
+        Array.isArray(aliases) &&
+        aliases.every((alias) => typeof alias === "string") &&
+        typeof url === "string" &&
+        Array.isArray(tokens) &&
+        tokens.every((token) => typeof token === "string")
+      );
+    };
+
+    const loadIndex = (): Promise<readonly SearchRecord[]> => {
+      indexPromise ??= fetch("/search-index.json")
+        .then((response) => response.json())
+        .then((value: unknown) =>
+          Array.isArray(value) ? value.filter(isSearchRecord) : [],
+        );
+      return indexPromise;
+    };
+
+    const clearResults = () => {
+      resultsContainer.replaceChildren();
+      resultLinks = [];
+      activeIndex = -1;
+      input.setAttribute("aria-expanded", "false");
+      input.removeAttribute("aria-activedescendant");
+    };
+
+    const setActiveResult = (nextIndex: number) => {
+      const nextLink = resultLinks[nextIndex];
+      if (!nextLink) return;
+
+      activeIndex = nextIndex;
+      for (const [index, link] of resultLinks.entries()) {
+        link.setAttribute("aria-selected", `${index === activeIndex}`);
+      }
+      input.setAttribute("aria-activedescendant", nextLink.id);
+    };
+
+    const rankRecords = (
+      records: readonly SearchRecord[],
+      rawQuery: string,
+    ): readonly SearchRecord[] => {
+      const query = normalize(rawQuery);
+      const queryTokens = tokenize(query);
+
+      return records
+        .flatMap((record) => {
+          const hasPrefix = [record.title, ...record.aliases].some((field) =>
+            normalize(field).startsWith(query),
+          );
+          const matchingTokens = queryTokens.filter((token) =>
+            record.tokens.includes(token),
+          ).length;
+          return hasPrefix || matchingTokens > 0
+            ? [{ hasPrefix, matchingTokens, record }]
+            : [];
+        })
+        .toSorted((left, right) => {
+          const prefixOrder = Number(right.hasPrefix) - Number(left.hasPrefix);
+          if (prefixOrder !== 0) return prefixOrder;
+
+          const tokenOrder = right.matchingTokens - left.matchingTokens;
+          return (
+            tokenOrder ||
+            left.record.title.localeCompare(right.record.title, "zh-CN") ||
+            left.record.id.localeCompare(right.record.id)
+          );
+        })
+        .map(({ record }) => record);
+    };
+
+    const renderResults = (records: readonly SearchRecord[]) => {
+      clearResults();
+      if (records.length === 0) {
+        const empty = document.createElement("p");
+        empty.className = "search-empty";
+        empty.textContent = "没有找到匹配的公开资料。";
+        resultsContainer.append(empty);
+        return;
+      }
+
+      const listbox = document.createElement("div");
+      listbox.setAttribute("role", "listbox");
+      listbox.className = "search-result-list";
+      let resultIndex = 0;
+
+      for (const kind of SEARCH_KINDS) {
+        const groupRecords = records.filter((record) => record.kind === kind);
+        if (groupRecords.length === 0) continue;
+
+        const group = document.createElement("section");
+        group.className = "search-result-group";
+        const heading = document.createElement("h3");
+        heading.textContent = KIND_LABELS[kind];
+        group.append(heading);
+
+        const list = document.createElement("ul");
+        for (const record of groupRecords) {
+          const item = document.createElement("li");
+          const link = document.createElement("a");
+          link.href = record.url;
+          link.id = `search-result-${resultIndex}`;
+          link.setAttribute("role", "option");
+          link.setAttribute("aria-selected", "false");
+          link.textContent = record.title;
+          item.append(link);
+          list.append(item);
+          resultLinks.push(link);
+          resultIndex += 1;
+        }
+        group.append(list);
+        listbox.append(group);
+      }
+
+      resultsContainer.append(listbox);
+      input.setAttribute("aria-expanded", "true");
+    };
+
+    const updateResults = async () => {
+      const query = input.value.trim();
+      if ([...query].length < 2) {
+        clearResults();
+        return;
+      }
+
+      const records = await loadIndex();
+      if (query !== input.value.trim()) return;
+      renderResults(rankRecords(records, query));
+    };
+
+    input.addEventListener("input", () => {
+      void updateResults();
+    });
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        input.value = "";
+        clearResults();
+        return;
+      }
+      if (resultLinks.length === 0) return;
+
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        const offset = event.key === "ArrowDown" ? 1 : -1;
+        const nextIndex =
+          activeIndex === -1
+            ? offset === 1
+              ? 0
+              : resultLinks.length - 1
+            : (activeIndex + offset + resultLinks.length) % resultLinks.length;
+        setActiveResult(nextIndex);
+        return;
+      }
+
+      if (event.key === "Enter" && activeIndex !== -1) {
+        const activeLink = resultLinks[activeIndex];
+        if (activeLink) window.location.assign(activeLink.href);
+      }
+    });
+  }
+</script>

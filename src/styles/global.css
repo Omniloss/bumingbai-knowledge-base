@@ -241,6 +241,10 @@ a {
   margin-bottom: var(--space-12);
 }
 
+.entity-header > :last-child {
+  margin-bottom: 0;
+}
+
 .record-grid {
   display: grid;
   grid-template-columns: repeat(
@@ -267,22 +271,23 @@ a {
   margin: 0;
 }
 
-.catalog-card :is(h2, h4) {
+.catalog-card :is(h2, h3, h4) {
   font-family: var(--font-serif);
   font-size: var(--text-card-title);
   line-height: var(--leading-tight);
+  word-break: auto-phrase;
   overflow-wrap: anywhere;
   text-wrap: pretty;
 }
 
-.catalog-card :is(h2, h4) a:hover,
+.catalog-card :is(h2, h3, h4) a:hover,
 .section-action a:hover {
   color: var(--navy);
   text-decoration-thickness: var(--rule-thin);
   text-underline-offset: var(--space-1);
 }
 
-.catalog-card :is(h2, h4) a:active,
+.catalog-card :is(h2, h3, h4) a:active,
 .section-action a:active {
   color: var(--focus);
 }
@@ -333,7 +338,7 @@ a {
   margin: var(--space-6) 0 0;
 }
 
-.search-placeholder {
+.search-box {
   max-width: var(--hero-max);
   margin-top: var(--space-16);
   padding: var(--space-8) 0;
@@ -341,12 +346,96 @@ a {
   border-bottom: var(--rule-thin) solid var(--line);
 }
 
-.search-placeholder > * {
+.search-box > * {
   margin-top: 0;
 }
 
-.search-placeholder > :last-child {
+.search-box > :last-child {
   margin-bottom: 0;
+}
+
+.search-box h2 {
+  margin: var(--space-2) 0 var(--space-4);
+  font-family: var(--font-serif);
+  font-size: clamp(
+    var(--text-section-min),
+    var(--text-section-fluid),
+    var(--text-section-max)
+  );
+  line-height: var(--leading-tight);
+  text-wrap: balance;
+}
+
+.search-box label {
+  display: block;
+  margin-top: var(--space-6);
+  font-size: var(--text-small);
+}
+
+.search-box input {
+  width: 100%;
+  min-height: var(--control-min);
+  margin-top: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: var(--rule-thin) solid var(--line);
+  border-radius: 0;
+  color: var(--ink);
+  background: var(--paper-raised);
+  font: inherit;
+}
+
+.search-box input:hover {
+  border-color: var(--navy);
+}
+
+.search-result-list {
+  display: grid;
+  gap: var(--space-6);
+  margin-top: var(--space-6);
+}
+
+.search-result-group {
+  padding-top: var(--space-4);
+  border-top: var(--rule-thin) solid var(--line);
+}
+
+.search-result-group > h3 {
+  margin: 0 0 var(--space-2);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-small);
+  font-weight: 400;
+  letter-spacing: var(--tracking-eyebrow);
+}
+
+.search-result-group ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.search-result-group a {
+  display: inline-block;
+  min-height: var(--control-min);
+  padding: var(--space-2) 0;
+  font-family: var(--font-serif);
+}
+
+.search-result-group a:hover {
+  color: var(--navy);
+  text-underline-offset: var(--space-1);
+}
+
+.search-result-group a[aria-selected="true"],
+.search-result-group a:active {
+  color: var(--focus);
+}
+
+.search-empty {
+  margin: var(--space-6) 0 0;
+  color: var(--muted);
 }
 
 .filter-bar {
@@ -489,6 +578,76 @@ a {
   margin-top: var(--space-12);
   padding-top: var(--space-6);
   border-top: var(--rule-thin) solid var(--line);
+}
+
+.entity-collection,
+.methodology-section {
+  margin-top: var(--space-12);
+  padding-top: var(--space-6);
+  border-top: var(--rule-thin) solid var(--line);
+}
+
+.entity-collection > header {
+  max-width: var(--hero-max);
+  margin-bottom: var(--space-6);
+}
+
+.entity-collection > header > * {
+  margin-top: 0;
+}
+
+.entity-collection h2,
+.methodology-section h2 {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-serif);
+  font-size: clamp(
+    var(--text-section-min),
+    var(--text-section-fluid),
+    var(--text-section-max)
+  );
+  line-height: var(--leading-tight);
+  text-wrap: balance;
+}
+
+.entity-link-list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entity-link-list a {
+  display: inline-flex;
+  min-height: var(--control-min);
+  align-items: center;
+  font-family: var(--font-serif);
+}
+
+.entity-link-list a:hover {
+  color: var(--navy);
+  text-underline-offset: var(--space-1);
+}
+
+.entity-link-list a:active {
+  color: var(--focus);
+}
+
+.methodology-section {
+  max-width: var(--hero-max);
+}
+
+.methodology-section p {
+  word-break: auto-phrase;
+  overflow-wrap: anywhere;
+}
+
+.methodology-section > :first-child {
+  margin-top: 0;
+}
+
+.methodology-section > :last-child {
+  margin-bottom: 0;
 }
 
 .detail-section > header {

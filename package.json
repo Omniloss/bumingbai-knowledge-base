@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "bun run tools/build-search-index.ts && astro build",
     "preview": "astro preview",
     "typecheck": "tsc --noEmit",
     "lint": "biome check . && markdownlint-cli2 \"**/*.md\" \"#node_modules\"",

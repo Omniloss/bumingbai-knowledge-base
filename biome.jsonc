@@ -10,6 +10,7 @@
       "!!test-results",
       "!!data/catalog",
       "!!data/review",
+      "!!public/search-index.json",
       "!!work"
     ]
   },

@@ -1,0 +1,139 @@
+---
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import WorkCard from "../../components/WorkCard.astro";
+import { canPublishRecommendation } from "../../domain/publication.js";
+import type { Episode, Person, Work } from "../../domain/schemas/catalog.js";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadCatalog } from "../../lib/catalog.js";
+
+type Props = {
+  readonly person: Person;
+  readonly episodes: readonly Episode[];
+  readonly createdWorks: readonly Work[];
+  readonly recommendedWorks: readonly Work[];
+};
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this record in template markup.
+const ROLE_LABELS = {
+  author: "作者",
+  director: "导演",
+  guest: "嘉宾",
+  host: "主持人",
+  translator: "译者",
+} as const satisfies Record<Person["roles"][number], string>;
+
+export async function getStaticPaths() {
+  const isPublicEntity = (entity: {
+    readonly publicationStatus: "public" | "withheld";
+    readonly verificationStatus:
+      | "verified"
+      | "partially_verified"
+      | "pending_verification"
+      | "rejected";
+  }): boolean =>
+    entity.publicationStatus === "public" &&
+    (entity.verificationStatus === "verified" ||
+      entity.verificationStatus === "partially_verified");
+  const catalog = await loadCatalog();
+  const publicEpisodes = catalog.episodes.filter(isPublicEntity);
+  const publicWorks = catalog.works.filter(isPublicEntity);
+  const worksById = new Map(publicWorks.map((work) => [work.id, work]));
+
+  return catalog.people.filter(isPublicEntity).map((person) => {
+    const recommendedWorkIds = new Set<Work["id"]>();
+    for (const evidence of catalog.recommendationEvidence) {
+      if (
+        evidence.recommenderId === person.id &&
+        canPublishRecommendation(evidence) &&
+        worksById.has(evidence.workId)
+      ) {
+        recommendedWorkIds.add(evidence.workId);
+      }
+    }
+
+    return {
+      params: { slug: person.slug },
+      props: {
+        person,
+        episodes: publicEpisodes
+          .filter((episode) => episode.guestIds.includes(person.id))
+          .toSorted((left, right) =>
+            right.publishedAt.localeCompare(left.publishedAt),
+          ),
+        createdWorks: publicWorks
+          .filter((work) => work.creatorIds.includes(person.id))
+          .toSorted((left, right) =>
+            left.title.localeCompare(right.title, "zh-CN"),
+          ),
+        recommendedWorks: [...recommendedWorkIds]
+          .flatMap((workId) => {
+            const work = worksById.get(workId);
+            return work ? [work] : [];
+          })
+          .toSorted((left, right) =>
+            left.title.localeCompare(right.title, "zh-CN"),
+          ),
+      },
+    };
+  });
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates these props in template markup.
+const { createdWorks, episodes, person, recommendedWorks } = Astro.props;
+// biome-ignore lint/correctness/noUnusedVariables: Astro formats dates in template markup.
+const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
+  dateStyle: "long",
+  timeZone: "Asia/Shanghai",
+});
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this helper in template markup.
+const displayTitle = (value: string): string =>
+  value.replaceAll("中国世纪", "中国\u2060世纪");
+---
+
+<BaseLayout title={`${person.name}｜不明白知识库`} description={`${person.name}的公开节目、作品与推荐记录`}>
+  <header class="collection-header entity-header">
+    <p class="eyebrow">人物</p>
+    <h1>{person.name}</h1>
+    <p>公开角色：{person.roles.map((role) => ROLE_LABELS[role]).join("、")}</p>
+    {person.aliases.length > 0 && <p>别名：{person.aliases.join("、")}</p>}
+  </header>
+
+  <section class="entity-collection" aria-labelledby="person-episodes-heading">
+    <header>
+      <p class="eyebrow">参与</p>
+      <h2 id="person-episodes-heading">参与节目</h2>
+    </header>
+    {episodes.length > 0 ? (
+      <div class="record-list">
+        {episodes.map((episode) => (
+          <article class="catalog-card episode-card">
+            <p class="eyebrow">{episode.number === null ? "特别节目" : `第 ${episode.number} 期`}</p>
+            <h3><a href={`/episodes/${episode.slug}/`}>{displayTitle(episode.title)}</a></h3>
+            <p class="record-meta"><time datetime={episode.publishedAt}>{dateFormatter.format(new Date(episode.publishedAt))}</time></p>
+          </article>
+        ))}
+      </div>
+    ) : <p class="detail-empty">暂无已核验参与节目。</p>}
+  </section>
+
+  <section class="entity-collection" aria-labelledby="person-works-heading">
+    <header>
+      <p class="eyebrow">创作</p>
+      <h2 id="person-works-heading">创作作品</h2>
+    </header>
+    {createdWorks.length > 0 ? (
+      <div class="record-grid">{createdWorks.map((work) => <WorkCard work={work} />)}</div>
+    ) : <p class="detail-empty">暂无已核验创作作品。</p>}
+  </section>
+
+  <section class="entity-collection" aria-labelledby="person-recommendations-heading">
+    <header>
+      <p class="eyebrow">正式推荐</p>
+      <h2 id="person-recommendations-heading">推荐作品</h2>
+    </header>
+    {recommendedWorks.length > 0 ? (
+      <div class="record-grid">{recommendedWorks.map((work) => <WorkCard work={work} />)}</div>
+    ) : <p class="detail-empty">暂无已核验推荐作品。</p>}
+  </section>
+</BaseLayout>

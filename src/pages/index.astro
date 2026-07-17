@@ -1,5 +1,7 @@
 ---
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import SearchBox from "../components/SearchBox.astro";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import WorkCard from "../components/WorkCard.astro";
 import { canPublishRecommendation } from "../domain/publication.js";
 import type { Work } from "../domain/schemas/catalog.js";
@@ -65,6 +67,9 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
   dateStyle: "long",
   timeZone: "Asia/Shanghai",
 });
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this helper in template markup.
+const displayTitle = (value: string): string =>
+  value.replaceAll("中国世纪", "中国\u2060世纪");
 ---
 
 <BaseLayout title="不明白知识库" description="按节目和作品探索不明白播客正式推荐">
@@ -94,7 +99,7 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
           data-verification-status={episode.verificationStatus}
         >
           <p class="eyebrow">{episode.number === null ? "特别节目" : `第 ${episode.number} 期`}</p>
-          <h2><a href={`/episodes/${episode.slug}/`}>{episode.title}</a></h2>
+          <h2><a href={`/episodes/${episode.slug}/`}>{displayTitle(episode.title)}</a></h2>
           <p class="record-meta">
             <time datetime={episode.publishedAt}>{dateFormatter.format(new Date(episode.publishedAt))}</time>
             {episode.duration && <span>{episode.duration}</span>}
@@ -121,9 +126,5 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
     <p class="section-action"><a href="/works/">查看作品索引</a></p>
   </section>
 
-  <section class="search-placeholder" aria-labelledby="search-heading">
-    <p class="eyebrow">统一检索</p>
-    <h2 id="search-heading">搜索资料库</h2>
-    <p>统一搜索将在后续阶段开放。目前可从节目索引或作品索引浏览全部公开资料。</p>
-  </section>
+  <SearchBox />
 </BaseLayout>

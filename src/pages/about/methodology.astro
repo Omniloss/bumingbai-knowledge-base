@@ -1,0 +1,36 @@
+---
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="方法与范围｜不明白知识库" description="不明白知识库的收录、核验与纠错说明">
+  <header class="collection-header">
+    <p class="eyebrow">方法与范围</p>
+    <h1>资料如何进入这个知识库</h1>
+    <p>页面只呈现当前可公开、可追溯的目录记录。缺少证据的内容不会因看似合理而被补写。</p>
+  </header>
+
+  <section class="methodology-section" aria-labelledby="inclusion-heading">
+    <h2 id="inclusion-heading">收录标准</h2>
+    <p>节目来自官方 RSS、节目页或官方文字稿。作品只有在官方来源明确列为嘉宾推荐或其他正式推荐栏目，并且推荐关系通过核验时才会公开。</p>
+    <p>节目中顺带提及的书、电影或人物不是正式推荐，不会因为被提到而进入公开作品目录。</p>
+  </section>
+
+  <section class="methodology-section" aria-labelledby="verification-heading">
+    <h2 id="verification-heading">核验状态</h2>
+    <p>“已核验”表示关键字段和推荐关系有来源支持；“部分核验”表示推荐关系成立，但书目、创作者或版本资料仍可能不完整。</p>
+    <p>未达到公开标准的资料不会出现在公开搜索、人物页、主题页或作品列表中。站点只把可追溯的事实作为公开依据。</p>
+  </section>
+
+  <section class="methodology-section" aria-labelledby="translation-heading">
+    <h2 id="translation-heading">翻译质量证据</h2>
+    <p>作品总评分不等同于翻译质量。译本、译者或译评必须有可靠来源才会显示为已核验；缺少可靠来源时，页面明确标示“未核实”。</p>
+    <p>不同译者、出版社或地区版本分别保存，不把多个版本的字段混合成一个看似完整的条目。</p>
+  </section>
+
+  <section class="methodology-section" aria-labelledby="correction-heading">
+    <h2 id="correction-heading">纠错入口</h2>
+    <p>当前站点尚未设置公开的纠错表单、邮箱或外部 Issue 链接，因此这里不提供虚构的联系方式。</p>
+    <p>正式入口上线后，纠错会要求提供具体页面、原始来源和可核验依据；修订记录将通过版本控制保留。</p>
+  </section>
+</BaseLayout>

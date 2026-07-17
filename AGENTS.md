@@ -14,6 +14,7 @@
 - 重复 Work 或 Edition 合并必须保留完整候选及原始置信度：先筛最高置信组，再按稳定键选值；复核描述必须覆盖导致冲突的完整载荷，同 ISBN 最高组冲突时所有关联 Edition 都须暂缓发布，结果不得依赖输入顺序。
 - 项目采用测试先行。数据解析、增量同步、作品关联和前端关键路径都必须有对应测试。
 - 项目工具链统一使用 pnpm、Bun、`biome.jsonc`、`tsc --noEmit` 和 markdownlint，测试通过 `pnpm exec vitest` 运行。
+- `pnpm run build` 会先用 Bun 生成仅含公开且已核验或部分核验实体的 `public/search-index.json`，再运行 Astro；该文件是构建产物，不参与 Biome 格式化或 Git 跟踪。
 - `work/` 原始输入与 `data/catalog/`、`data/review/` 生成 JSON 不由 Biome 改写，数据正确性由 Zod、迁移测试和 `tools/validate-data.ts` 校验。
 - Windows 上运行 `pnpm run ci` 完整验证；`script/ci` 只能经绝对路径 Git Bash 调用，严禁在 PowerShell 中裸执行无扩展名的 `script/*`。
 - 运行 `bun run tools/migrate-legacy.ts work/bumingbai_structured.json data/catalog` 重新生成规范化目录。

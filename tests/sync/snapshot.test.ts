@@ -66,4 +66,18 @@ describe("snapshot", () => {
       path,
     );
   });
+
+  it.each([
+    "../outside",
+    "2026-07-18T00:00:00.000Z\\outside",
+    "not-an-iso-datetime",
+  ])("rejects unsafe retrievedAt value %j", async (retrievedAt) => {
+    const root = await mkdtemp(join(tmpdir(), "bumingbai-snapshot-"));
+
+    await expect(
+      writeSnapshot(root, [{ ...episode(), retrievedAt }]),
+    ).rejects.toThrow(
+      "Official snapshot retrievedAt must be a strict ISO datetime",
+    );
+  });
 });

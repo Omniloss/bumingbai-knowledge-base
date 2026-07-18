@@ -75,6 +75,15 @@ function responseError(url: string, status: number): Error {
   return new Error(`Official source response invalid: ${url} (${status})`);
 }
 
+function timestamp(value: string, assumeUtc = false): number | undefined {
+  const normalized =
+    assumeUtc && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?$/u.test(value)
+      ? `${value}Z`
+      : value;
+  const parsed = Date.parse(normalized);
+  return Number.isNaN(parsed) ? undefined : parsed;
+}
+
 export class OfficialClient {
   readonly changes: SyncChange[] = [];
 
@@ -164,6 +173,19 @@ export class OfficialClient {
         field: "title",
         before: wordpress.title.rendered,
         after: rss.title,
+        risk: "high",
+      });
+    }
+    if (
+      rss !== undefined &&
+      wordpress !== undefined &&
+      timestamp(rss.pubDate) !== timestamp(wordpress.date_gmt, true)
+    ) {
+      this.changes.push({
+        episodeNumber: number,
+        field: "publishedAt",
+        before: wordpress.date_gmt,
+        after: rss.pubDate,
         risk: "high",
       });
     }

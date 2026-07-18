@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import type { Stats } from "node:fs";
 import { lstat, mkdir, realpath, rm, writeFile } from "node:fs/promises";
 import { isAbsolute, relative, resolve, sep } from "node:path";
+import { withQueueLock } from "./queue-lock.js";
 import { renameQueue } from "./queue-rename.js";
 import type { RecommendationCandidate } from "./recommendation-parser.js";
 
@@ -211,29 +212,31 @@ export function writeRecommendationCandidateQueue(
   const lockKey = resolve(root, "data", "review", "sync-candidates.json");
   return serialize(lockKey, async () => {
     const paths = await prepareQueuePaths(root);
-    await verifyDestination(paths);
-    const temporaryPath = resolve(
-      paths.review.path,
-      `.sync-candidates.json.${randomUUID()}.tmp`,
-    );
-    if (!pathWithin(paths.review.path, temporaryPath)) {
-      throw new Error(
-        "Recommendation candidate queue temporary path escapes review directory",
+    return withQueueLock(paths.destination, async () => {
+      await revalidatePaths(paths);
+      const temporaryPath = resolve(
+        paths.review.path,
+        `.sync-candidates.json.${randomUUID()}.tmp`,
       );
-    }
-    try {
-      await writeFile(
-        temporaryPath,
-        `${JSON.stringify(queueRecommendationCandidates(candidates), null, 2)}\n`,
-        { encoding: "utf8", flag: "wx" },
-      );
-      await renameQueue(temporaryPath, paths.destination, () =>
-        revalidatePaths(paths),
-      );
-    } catch (error: unknown) {
-      await rm(temporaryPath, { force: true }).catch(() => undefined);
-      throw error;
-    }
-    return paths.destination;
+      if (!pathWithin(paths.review.path, temporaryPath)) {
+        throw new Error(
+          "Recommendation candidate queue temporary path escapes review directory",
+        );
+      }
+      try {
+        await writeFile(
+          temporaryPath,
+          `${JSON.stringify(queueRecommendationCandidates(candidates), null, 2)}\n`,
+          { encoding: "utf8", flag: "wx" },
+        );
+        await renameQueue(temporaryPath, paths.destination, () =>
+          revalidatePaths(paths),
+        );
+      } catch (error: unknown) {
+        await rm(temporaryPath, { force: true }).catch(() => undefined);
+        throw error;
+      }
+      return paths.destination;
+    });
   });
 }

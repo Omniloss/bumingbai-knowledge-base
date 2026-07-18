@@ -68,16 +68,26 @@ async function createMinimalProject(): Promise<{
     "public-artifact-scan.ts",
   ];
   const toolDirectory = join(root, "tool path");
+  const syncDirectory = join(root, "src", "sync");
   const tool = join(toolDirectory, "check-public-isolation.ts").replaceAll(
     "\\",
     "/",
   );
   await mkdir(join(root, "tool path"), { recursive: true });
+  await mkdir(syncDirectory, { recursive: true });
   await Promise.all(
     sourceTools.map((name) =>
       copyFile(
         resolve(process.cwd(), "tools", name),
         join(toolDirectory, name),
+      ),
+    ),
+  );
+  await Promise.all(
+    ["queue-lock.ts", "queue-rename.ts"].map((name) =>
+      copyFile(
+        resolve(process.cwd(), "src", "sync", name),
+        join(syncDirectory, name),
       ),
     ),
   );

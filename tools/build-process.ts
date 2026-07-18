@@ -1,7 +1,12 @@
 import { spawn } from "node:child_process";
 
 type ProcessExit = { code: number | null };
-type ProcessRecord = { parentProcessId: number; processId: number };
+type ProcessRecord = {
+  createdAt: string;
+  parentProcessId: number;
+  processId: number;
+};
+type Signal = (pid: number, signal: NodeJS.Signals) => void;
 
 function wait(milliseconds: number): Promise<void> {
   return new Promise((resolveWait) => setTimeout(resolveWait, milliseconds));
@@ -29,7 +34,20 @@ async function taskkill(pid: number): Promise<number | null> {
     stdio: "ignore",
     windowsHide: true,
   });
-  return (await exited(child)).code;
+  const exit = exited(child);
+  if (!(await exitsWithin(exit, 5_000))) {
+    child.kill();
+    throw new Error("taskkill did not terminate");
+  }
+  return (await exit).code;
+}
+
+export async function requireTaskkillSuccessForTest(
+  taskkillResult: Promise<number | null>,
+): Promise<void> {
+  if ((await taskkillResult) !== 0) {
+    throw new Error("taskkill failed");
+  }
 }
 
 async function capture(command: string, args: string[]): Promise<string> {
@@ -40,7 +58,7 @@ async function capture(command: string, args: string[]): Promise<string> {
     output += chunk;
   });
   const exit = exited(child);
-  if (!(await exitsWithin(exit, 10_000))) {
+  if (!(await exitsWithin(exit, 5_000))) {
     child.kill();
     throw new Error(`${command} did not terminate`);
   }
@@ -51,39 +69,82 @@ function processRecords(value: unknown): ProcessRecord[] {
   const values = Array.isArray(value) ? value : [value];
   return values.flatMap((item) => {
     if (typeof item !== "object" || item === null) return [];
-    const record = item as Record<string, unknown>;
-    const processId = Number(record["ProcessId"]);
-    const parentProcessId = Number(record["ParentProcessId"]);
-    return Number.isInteger(processId) && Number.isInteger(parentProcessId)
-      ? [{ processId, parentProcessId }]
+    const processId = "ProcessId" in item ? Number(item.ProcessId) : Number.NaN;
+    const parentProcessId =
+      "ParentProcessId" in item ? Number(item.ParentProcessId) : Number.NaN;
+    const createdAt = "CreationDate" in item ? String(item.CreationDate) : "";
+    return Number.isInteger(processId) &&
+      Number.isInteger(parentProcessId) &&
+      createdAt !== ""
+      ? [{ processId, parentProcessId, createdAt }]
       : [];
   });
 }
 
-async function windowsDescendants(pid: number): Promise<number[]> {
-  try {
-    const output = await capture("powershell.exe", [
-      "-NoProfile",
-      "-NonInteractive",
-      "-Command",
-      "Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId | ConvertTo-Json -Compress",
-    ]);
-    const pending = [pid];
-    const descendants: number[] = [];
-    const records = processRecords(JSON.parse(output));
-    while (pending.length > 0) {
-      const parent = pending.pop();
-      for (const record of records) {
-        if (record.parentProcessId === parent) {
-          descendants.push(record.processId);
-          pending.push(record.processId);
-        }
+async function windowsProcesses(): Promise<ProcessRecord[]> {
+  const output = await capture("powershell.exe", [
+    "-NoProfile",
+    "-NonInteractive",
+    "-Command",
+    "Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId,CreationDate | ConvertTo-Json -Compress",
+  ]);
+  const records = processRecords(JSON.parse(output));
+  if (records.length === 0)
+    throw new Error("Unable to inspect Windows process tree");
+  return records;
+}
+
+function descendants(records: ProcessRecord[], pid: number): ProcessRecord[] {
+  const pending = [pid];
+  const found: ProcessRecord[] = [];
+  while (pending.length > 0) {
+    const parent = pending.pop();
+    for (const record of records) {
+      if (record.parentProcessId === parent) {
+        found.push(record);
+        pending.push(record.processId);
       }
     }
-    return descendants.reverse();
-  } catch {
-    return [];
   }
+  return found.reverse();
+}
+
+function stillRunning(
+  records: ProcessRecord[],
+  known: ProcessRecord[],
+): ProcessRecord[] {
+  return known.filter((target) =>
+    records.some(
+      (current) =>
+        current.processId === target.processId &&
+        current.createdAt === target.createdAt,
+    ),
+  );
+}
+
+export async function terminatePosixGroupForTest(
+  pid: number,
+  rootExit: Promise<ProcessExit>,
+  signal: Signal,
+  pause: (milliseconds: number) => Promise<void>,
+): Promise<void> {
+  signal(-pid, "SIGTERM");
+  await pause(500);
+  try {
+    signal(-pid, "SIGKILL");
+  } catch (error: unknown) {
+    if (
+      !(
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "ESRCH"
+      )
+    )
+      throw error;
+  }
+  if (!(await exitsWithin(rootExit, 5_000)))
+    throw new Error("Build process did not terminate");
 }
 
 async function terminate(
@@ -93,18 +154,27 @@ async function terminate(
 ): Promise<void> {
   if (child.pid === undefined) throw new Error("Build process has no PID");
   if (platform === "win32") {
-    const descendants = await windowsDescendants(child.pid);
-    for (const descendant of descendants) await taskkill(descendant);
-    await taskkill(child.pid);
+    const before = await windowsProcesses();
+    const root = before.find((record) => record.processId === child.pid);
+    if (root === undefined) return;
+    const known = [root, ...descendants(before, child.pid)];
+    for (const target of [...known].reverse()) {
+      const result = await taskkill(target.processId);
+      if (result !== 0) {
+        const current = await windowsProcesses();
+        if (stillRunning(current, [target]).length > 0) {
+          await requireTaskkillSuccessForTest(Promise.resolve(result));
+        }
+      }
+    }
     if (!(await exitsWithin(exit, 5_000)))
       throw new Error("Build process did not terminate");
+    const after = await windowsProcesses();
+    if (stillRunning(after, known).length > 0)
+      throw new Error("Build process tree did not terminate");
     return;
   }
-  process.kill(-child.pid, "SIGTERM");
-  if (await exitsWithin(exit, 500)) return;
-  process.kill(-child.pid, "SIGKILL");
-  if (!(await exitsWithin(exit, 5_000)))
-    throw new Error("Build process did not terminate");
+  await terminatePosixGroupForTest(child.pid, exit, process.kill, wait);
 }
 
 export async function runBuild(

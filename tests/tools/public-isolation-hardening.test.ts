@@ -9,6 +9,7 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { expect, it } from "vitest";
+import { writeRecommendationCandidateQueue } from "../../src/sync/run-sync.js";
 import { runPublicIsolationGate } from "../../tools/check-public-isolation.js";
 
 async function createRoot(): Promise<string> {
@@ -88,6 +89,88 @@ it("rejects a nonregular public search index", async () => {
   await expect(
     runPublicIsolationGate({ root, runBuild: async () => undefined }),
   ).rejects.toThrow("Public output contains a nonregular entry");
+});
+
+it("rejects a public ancestor junction before reading the search index", async () => {
+  const root = await createRoot();
+  const outside = join(root, "outside");
+  await mkdir(join(root, "dist"));
+  await mkdir(outside);
+  await writeFile(join(outside, "search-index.json"), "[]\n");
+  await symlink(outside, join(root, "public"), "junction");
+
+  await expect(
+    runPublicIsolationGate({ root, runBuild: async () => undefined }),
+  ).rejects.toThrow("Public output contains a nonregular entry");
+});
+
+it("rejects a queue ancestor junction before injecting the sentinel", async () => {
+  const root = await mkdtemp(join(tmpdir(), "bumingbai-public-isolation-"));
+  const outside = join(root, "outside");
+  await mkdir(join(outside, "review"), { recursive: true });
+  await writeFile(join(outside, "review", "sync-candidates.json"), "[]\n");
+  await mkdir(join(root, "dist"));
+  await mkdir(join(root, "public"));
+  await writeFile(join(root, "public", "search-index.json"), "[]\n");
+  await symlink(outside, join(root, "data"), "junction");
+
+  await expect(
+    runPublicIsolationGate({ root, runBuild: async () => undefined }),
+  ).rejects.toThrow(
+    "Recommendation candidate queue parent must not be a symbolic link",
+  );
+  await expect(
+    readFile(join(outside, "review", "sync-candidates.json"), "utf8"),
+  ).resolves.toBe("[]\n");
+});
+
+it("keeps a production queue writer outside an active isolation build", async () => {
+  const root = await createRoot();
+  const queue = join(root, "data", "review", "sync-candidates.json");
+  await mkdir(join(root, "dist"));
+  await mkdir(join(root, "public"));
+  await writeFile(join(root, "public", "search-index.json"), "[]\n");
+  let releaseBuild: () => void = () => undefined;
+  let startedBuild: () => void = () => undefined;
+  const building = new Promise<void>((resolve) => {
+    startedBuild = resolve;
+  });
+  const gate = runPublicIsolationGate({
+    root,
+    runBuild: async () => {
+      await expect(readFile(queue, "utf8")).resolves.toContain(
+        "__NONPUBLIC_SYNC_CANDIDATE_7f629d__",
+      );
+      startedBuild();
+      await new Promise<void>((resolve) => {
+        releaseBuild = resolve;
+      });
+    },
+  });
+  await building;
+  let writerFinished = false;
+  const writer = writeRecommendationCandidateQueue(root, [
+    {
+      episodeNumber: 1,
+      rawText: "locked writer",
+      sourceUrl: "https://example.test/episode",
+      retrievedAt: "2026-07-18T00:00:00.000Z",
+      locator: "p:nth-child(1)",
+      risk: "high",
+      status: "pending_verification",
+    },
+  ]).then(() => {
+    writerFinished = true;
+  });
+  await new Promise((resolveDelay) => setTimeout(resolveDelay, 80));
+  expect(writerFinished).toBe(false);
+  releaseBuild();
+  await gate;
+  await writer;
+  await expect(readFile(queue, "utf8")).resolves.toContain("locked writer");
+  await expect(readFile(queue, "utf8")).resolves.not.toContain(
+    "__NONPUBLIC_SYNC_CANDIDATE_7f629d__",
+  );
 });
 
 it("finds a sentinel split across artifact scan chunks", async () => {

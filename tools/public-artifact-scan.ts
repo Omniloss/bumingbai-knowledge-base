@@ -1,5 +1,5 @@
-import { lstat, open, readdir } from "node:fs/promises";
-import { join } from "node:path";
+import { lstat, open, readdir, realpath } from "node:fs/promises";
+import { isAbsolute, join, relative, resolve, sep } from "node:path";
 
 const chunkSize = 64 * 1024;
 
@@ -12,6 +12,30 @@ function sameIdentity(
   right: { dev: number; ino: number },
 ): boolean {
   return left.dev === right.dev && left.ino === right.ino;
+}
+
+function within(root: string, path: string): boolean {
+  const difference = relative(root, path);
+  return (
+    difference === "" ||
+    (!difference.startsWith(`..${sep}`) &&
+      difference !== ".." &&
+      !isAbsolute(difference))
+  );
+}
+
+async function validateAncestors(root: string, path: string): Promise<void> {
+  const rootPath = resolve(root);
+  const rootRealPath = await realpath(rootPath);
+  const difference = relative(rootPath, resolve(path));
+  if (!within(rootPath, resolve(path))) throw nonregular();
+  let current = rootPath;
+  for (const segment of difference.split(sep).slice(0, -1)) {
+    current = join(current, segment);
+    const stats = await lstat(current);
+    if (!stats.isDirectory() || stats.isSymbolicLink()) throw nonregular();
+    if (!within(rootRealPath, await realpath(current))) throw nonregular();
+  }
 }
 
 async function scanRegularFile(path: string, sentinel: Buffer): Promise<void> {
@@ -50,22 +74,26 @@ async function scanRegularFile(path: string, sentinel: Buffer): Promise<void> {
 }
 
 export async function scanPublicArtifact(
+  root: string,
   path: string,
   sentinel: Buffer,
 ): Promise<void> {
+  await validateAncestors(root, path);
   await scanRegularFile(path, sentinel);
 }
 
 export async function scanPublicDirectory(
+  root: string,
   directory: string,
   sentinel: Buffer,
 ): Promise<void> {
+  await validateAncestors(root, directory);
   const before = await lstat(directory);
   if (!before.isDirectory() || before.isSymbolicLink()) throw nonregular();
   const entries = await readdir(directory, { withFileTypes: true });
   for (const entry of entries) {
     const path = join(directory, entry.name);
-    if (entry.isDirectory()) await scanPublicDirectory(path, sentinel);
+    if (entry.isDirectory()) await scanPublicDirectory(root, path, sentinel);
     else await scanRegularFile(path, sentinel);
   }
   const after = await lstat(directory);

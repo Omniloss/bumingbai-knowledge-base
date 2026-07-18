@@ -135,43 +135,51 @@ describe("recommendation queue failure handling", () => {
     expect(control.renameAttempts).toBe(1);
   });
 
-  it("publishes after one transient Windows rename EPERM", async () => {
-    const control = createControl();
-    const writeRecommendationCandidateQueue = await queueWriter(control);
-    const root = await mkdtemp(join(tmpdir(), "bumingbai-candidates-"));
-    const target = await destination(root);
-    control.renameErrors = [
-      Object.assign(new Error("simulated Windows rename EPERM"), {
+  it.runIf(process.platform === "win32")(
+    "publishes after one transient Windows rename EPERM",
+    async () => {
+      const control = createControl();
+      const writeRecommendationCandidateQueue = await queueWriter(control);
+      const root = await mkdtemp(join(tmpdir(), "bumingbai-candidates-"));
+      const target = await destination(root);
+      control.renameErrors = [
+        Object.assign(new Error("simulated Windows rename EPERM"), {
+          code: "EPERM",
+        }),
+      ];
+
+      await expect(
+        writeRecommendationCandidateQueue(root, [candidate()]),
+      ).resolves.toBe(target.path);
+      expect(control.renameAttempts).toBe(2);
+      await expect(readFile(target.path, "utf8")).resolves.toContain("《A》");
+    },
+  );
+
+  it.runIf(process.platform === "win32")(
+    "fails and cleans up after bounded persistent Windows rename EPERM",
+    async () => {
+      const control = createControl();
+      const writeRecommendationCandidateQueue = await queueWriter(control);
+      const root = await mkdtemp(join(tmpdir(), "bumingbai-candidates-"));
+      const target = await destination(root);
+      const error = Object.assign(new Error("simulated Windows rename EPERM"), {
         code: "EPERM",
-      }),
-    ];
+      });
+      control.renameErrors = [error, error, error];
 
-    await expect(
-      writeRecommendationCandidateQueue(root, [candidate()]),
-    ).resolves.toBe(target.path);
-    expect(control.renameAttempts).toBe(2);
-    await expect(readFile(target.path, "utf8")).resolves.toContain("《A》");
-  });
-
-  it("fails and cleans up after bounded persistent Windows rename EPERM", async () => {
-    const control = createControl();
-    const writeRecommendationCandidateQueue = await queueWriter(control);
-    const root = await mkdtemp(join(tmpdir(), "bumingbai-candidates-"));
-    const target = await destination(root);
-    const error = Object.assign(new Error("simulated Windows rename EPERM"), {
-      code: "EPERM",
-    });
-    control.renameErrors = [error, error, error];
-
-    await expect(
-      writeRecommendationCandidateQueue(root, [candidate()]),
-    ).rejects.toBe(error);
-    expect(control.renameAttempts).toBe(3);
-    await expect(readFile(target.path, "utf8")).resolves.toBe("previous queue");
-    await expect(readdir(target.directory)).resolves.toEqual([
-      "sync-candidates.json",
-    ]);
-  });
+      await expect(
+        writeRecommendationCandidateQueue(root, [candidate()]),
+      ).rejects.toBe(error);
+      expect(control.renameAttempts).toBe(3);
+      await expect(readFile(target.path, "utf8")).resolves.toBe(
+        "previous queue",
+      );
+      await expect(readdir(target.directory)).resolves.toEqual([
+        "sync-candidates.json",
+      ]);
+    },
+  );
 
   it("fails closed and cleans up when parent identity changes before rename", async () => {
     const control = createControl();

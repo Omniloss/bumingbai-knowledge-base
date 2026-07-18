@@ -43,7 +43,7 @@ async function queueWriter(control: Control): Promise<QueueWriter> {
         ) {
           const ino =
             typeof stats.ino === "bigint" ? stats.ino + 1n : stats.ino + 1;
-          return Object.assign(Object.create(stats), { ino });
+          return Object.create(stats, { ino: { value: ino } });
         }
         return stats;
       },

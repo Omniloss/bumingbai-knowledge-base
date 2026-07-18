@@ -1,6 +1,6 @@
 import { mkdtemp, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { basename, join, relative, resolve, sep } from "node:path";
+import { join, posix, win32 } from "node:path";
 import { describe, expect, it } from "vitest";
 import type { RecommendationCandidate } from "../../src/sync/recommendation-parser.js";
 import { writeRecommendationCandidateQueue } from "../../src/sync/run-sync.js";
@@ -34,11 +34,15 @@ function sanitize(value: string, root: string): string {
 }
 
 function pathRole(path: string, root: string): string {
-  const difference = relative(resolve(root), resolve(path));
+  const flavor = /^[A-Za-z]:[\\/]/u.test(root) ? win32 : posix;
+  const difference = flavor.relative(
+    flavor.resolve(root),
+    flavor.resolve(path),
+  );
   const withinRoot =
     difference === "" ||
-    (!difference.startsWith(`..${sep}`) && difference !== "..");
-  return `${withinRoot ? "temp-root" : "outside-root"}:${basename(path)}`;
+    (!difference.startsWith(`..${flavor.sep}`) && difference !== "..");
+  return `${withinRoot ? "temp-root" : "outside-root"}:${flavor.basename(path)}`;
 }
 
 function errorDetails(error: unknown): {
@@ -109,6 +113,23 @@ describe("cold-start recommendation queue writes", () => {
       path: "temp-root:sync-candidates.json",
       stackLocation: "at run-sync.ts:88:9",
     });
+    expect(JSON.stringify(diagnostic)).not.toContain(root);
+  });
+
+  it.each([
+    ["C:\\temp\\queue", "C:\\temp\\queue\\data\\review\\sync.json"],
+    ["/tmp/queue", "/tmp/queue/data/review/sync.json"],
+  ])("uses the correct path flavor for %s", (root, path) => {
+    const diagnostic = rejectionDiagnostic(
+      {
+        status: "rejected",
+        reason: Object.assign(new Error(`denied ${path}`), { path }),
+      },
+      0,
+      root,
+    );
+
+    expect(diagnostic.path).toBe("temp-root:sync.json");
     expect(JSON.stringify(diagnostic)).not.toContain(root);
   });
 

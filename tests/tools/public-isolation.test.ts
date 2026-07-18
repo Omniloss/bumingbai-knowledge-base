@@ -62,17 +62,25 @@ async function createMinimalProject(): Promise<{
   queuePath: string;
 }> {
   const { root, queuePath } = await createRoot("bumingbai public-isolation-");
-  const sourceTool = resolve(
-    process.cwd(),
-    "tools",
+  const sourceTools = [
     "check-public-isolation.ts",
-  ).replaceAll("\\", "/");
-  const tool = join(root, "tool path", "check-public-isolation.ts").replaceAll(
+    "build-process.ts",
+    "public-artifact-scan.ts",
+  ];
+  const toolDirectory = join(root, "tool path");
+  const tool = join(toolDirectory, "check-public-isolation.ts").replaceAll(
     "\\",
     "/",
   );
   await mkdir(join(root, "tool path"), { recursive: true });
-  await copyFile(sourceTool, tool);
+  await Promise.all(
+    sourceTools.map((name) =>
+      copyFile(
+        resolve(process.cwd(), "tools", name),
+        join(toolDirectory, name),
+      ),
+    ),
+  );
   await writeFile(
     join(root, "package.json"),
     JSON.stringify({

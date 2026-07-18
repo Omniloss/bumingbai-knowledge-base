@@ -391,4 +391,56 @@ describe("OfficialClient", () => {
       expect.objectContaining({ field: "publishedAt" }),
     );
   });
+
+  it("accepts an RSS source weekday across a numeric-offset UTC day boundary", async () => {
+    const offsetRss = rss.replace(
+      "Fri, 10 Jul 2026 12:54:34 GMT",
+      "Thu, 01 Jan 2026 00:30:00 +0100",
+    );
+    const wordpress = wordpressPost({ date_gmt: "2025-12-31T23:30:00Z" });
+    const fetcher: typeof fetch = async (input) => {
+      const url = new URL(input instanceof Request ? input.url : input);
+      return new Response(
+        url.hostname === "feeds.acast.com"
+          ? offsetRss
+          : JSON.stringify([wordpress]),
+        { status: 200 },
+      );
+    };
+
+    const client = new OfficialClient(fetcher);
+    const episodes = await client.fetchEpisodes("2026-07-18T00:00:00.000Z");
+
+    expect(episodes[0]?.publishedAt).toBe("Thu, 01 Jan 2026 00:30:00 +0100");
+    expect(client.changes).not.toContainEqual(
+      expect.objectContaining({ field: "publishedAt" }),
+    );
+  });
+
+  it("rejects an RSS UTC weekday substituted for a wrong source weekday", async () => {
+    const invalidDate = "Wed, 01 Jan 2026 00:30:00 +0100";
+    const fetcher: typeof fetch = async (input) => {
+      const url = new URL(input instanceof Request ? input.url : input);
+      return new Response(
+        url.hostname === "feeds.acast.com"
+          ? rss.replace("Fri, 10 Jul 2026 12:54:34 GMT", invalidDate)
+          : JSON.stringify([wordpressPost()]),
+        { status: 200 },
+      );
+    };
+
+    const error = await new OfficialClient(fetcher)
+      .fetchEpisodes("2026-07-18T00:00:00.000Z")
+      .then(
+        () => undefined,
+        (reason: unknown) => reason,
+      );
+
+    expect(error).toBeInstanceOf(Error);
+    if (!(error instanceof Error)) throw new Error("Expected official error");
+    expect(error.message).toBe(
+      "Official source response invalid: https://feeds.acast.com/public/shows/68004395b4ef799a7a410371 (200)",
+    );
+    expect(error.message).not.toContain(invalidDate);
+  });
 });

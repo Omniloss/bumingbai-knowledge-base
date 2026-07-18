@@ -125,11 +125,15 @@ function rssPublishedTimestamp(value: string): number | undefined {
   ) {
     return undefined;
   }
+  if (
+    RSS_WEEKDAYS[new Date(Date.UTC(year, month - 1, day)).getUTCDay()] !==
+    weekday
+  ) {
+    return undefined;
+  }
   const parsed = parsedTimestamp(value);
   if (parsed === undefined) return undefined;
-  return RSS_WEEKDAYS[new Date(parsed).getUTCDay()] === weekday
-    ? parsed
-    : undefined;
+  return parsed;
 }
 
 const WordpressPostSchema = z.object({

@@ -10,6 +10,7 @@
 - `work/crawl_bumingbai.py` 只负责抓取官方 RSS、节目页和文字稿；`work/structure_bumingbai.py` 负责结构化与证据状态。
 - 不得把节目中顺带提及的作品当作正式推荐。正式推荐以官方“嘉宾推荐”等明确栏目为准。
 - 不得用作品总评分代替翻译质量评价。译本、译者或译评没有可靠来源时必须标记为未核实。
+- 硬关系从目录事实和公开证据确定性派生，同一期不参与相似分数，必须保持双向、稳定 ID 与来源可追溯。
 - 新增同步或推荐逻辑时保留原始来源 URL、抓取时间和核验状态，使结果可追溯。
 - Open Library、TMDB、Wikidata 和 Commons 提供方只返回候选，不得改写目录事实；外部响应必须经 Zod 解析并通过注入 fetch 的固定 fixture 测试。Open Library 封面只热链接，TMDB 只保留 poster path，Commons 图片缺少来源页、许可、作者或 credit 时必须省略。
 - `src/images/policy.ts` 只定义纯图像选择策略：首图按合资格的原版 hero、原版、译版、区域版顺序选择，同级按面积降序和稳定 ID 字典序决定；资格以最长边阈值判断。只有 `mirror_allowed` 图片可派生 WebP 或 AVIF，`hotlink_only` 必须直接使用提供方尺寸。

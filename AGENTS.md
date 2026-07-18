@@ -17,6 +17,7 @@
 - 增强结果必须先通过 `CatalogSchema.parse` 和零条 `validateCatalog` 问题，再用同目录唯一临时文件原子写入四个目标 JSON；任一步失败必须清理临时文件并保留旧文件。
 - 相似关系不得混入 `same_episode` 等硬关系，结构化分数至少为 0.25，每部作品最多保留 6 条；向量只能增强已有非向量理由，Workers AI 向量只存缓存，不进入公开目录。
 - 新增同步或推荐逻辑时保留原始来源 URL、抓取时间和核验状态，使结果可追溯。
+- 同步产生的候选推荐必须写入 `data/review/sync-candidates.json`，只保留原始行、来源 URL 和稳定 DOM 定位；该审核队列不得被公共目录或搜索构建读取。
 - `src/sync/official-client.ts` 只通过注入的 fetch 读取官方 RSS 和 WordPress API；测试必须使用固定离线 fixture。RSS RFC 日期与 WordPress GMT 日期必须在 Zod 外部边界以显式 Gregorian 日历、时间和时区组件验证，RSS 星期还须与其写出的源日历日期一致，不能把 `Date.parse` 当作有效性判定。错误只能报告 URL 和 HTTP 状态。RSS 与 WordPress 冲突必须保留双方原值为高风险 `SyncChange`，不得静默覆盖。
 - 官方快照写入 `data/raw/official/{retrievedAt}-{hash}.json`，`retrievedAt` 必须先通过 `IsoDateSchema`，并确认 resolve 后的临时和最终路径仍在 `root/data/raw/official` 内；文件名时间戳中的冒号替换为连字符，且必须以同目录临时文件后 rename 原子发布。
 - Open Library、TMDB、Wikidata 和 Commons 提供方只返回候选，不得改写目录事实；外部响应必须经 Zod 解析并通过注入 fetch 的固定 fixture 测试。Wikidata 图片必须同时具备与媒介类型相容的 P31 和可与目录精确匹配的额外身份信号，当前采用 P577 年份；证据不足时只保留提供方记录与审核问题。Open Library 封面只热链接，TMDB 必须用搜索结果 poster path 匹配官方图片端点尺寸，Commons 图片缺少来源页、许可、作者、credit 或尺寸时必须省略。

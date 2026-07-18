@@ -12,6 +12,7 @@
 - 不得用作品总评分代替翻译质量评价。译本、译者或译评没有可靠来源时必须标记为未核实。
 - 新增同步或推荐逻辑时保留原始来源 URL、抓取时间和核验状态，使结果可追溯。
 - Open Library、TMDB、Wikidata 和 Commons 提供方只返回候选，不得改写目录事实；外部响应必须经 Zod 解析并通过注入 fetch 的固定 fixture 测试。Open Library 封面只热链接，TMDB 只保留 poster path，Commons 图片缺少来源页、许可、作者或 credit 时必须省略。
+- `src/images/policy.ts` 只定义纯图像选择策略：首图按合资格的原版 hero、原版、译版、区域版顺序选择，同级按面积降序和稳定 ID 字典序决定；资格以最长边阈值判断。只有 `mirror_allowed` 图片可派生 WebP 或 AVIF，`hotlink_only` 必须直接使用提供方尺寸。
 - 公开方法页必须保留官方 TMDB 标志及原文声明 `This product uses the TMDB API but is not endorsed or certified by TMDB.`，TMDB token 只能通过运行时注入且不得记录。
 - 重复 Work 或 Edition 合并必须保留完整候选及原始置信度：先筛最高置信组，再按稳定键选值；复核描述必须覆盖导致冲突的完整载荷，同 ISBN 最高组冲突时所有关联 Edition 都须暂缓发布，结果不得依赖输入顺序。
 - 项目采用测试先行。数据解析、增量同步、作品关联和前端关键路径都必须有对应测试。

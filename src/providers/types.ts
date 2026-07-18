@@ -9,6 +9,7 @@ export type WorkLookup = {
   workId: string;
   title: string;
   originalTitle?: string;
+  originalLanguage?: string;
   creatorNames: string[];
   year?: number;
   mediaType:

@@ -1,0 +1,48 @@
+{
+  "movie": {
+    "page": 1,
+    "results": [
+      {
+        "id": 123,
+        "title": "The Attorney",
+        "original_title": "The Attorney",
+        "original_language": "ko",
+        "release_date": "2013-12-18",
+        "poster_path": "/poster.jpg"
+      },
+      {
+        "id": 124,
+        "title": "The Attorney",
+        "original_title": "The Attorney",
+        "original_language": "en",
+        "release_date": "2013-12-18",
+        "poster_path": "/wrong-language.jpg"
+      },
+      {
+        "id": 125,
+        "title": "The Attorney",
+        "original_title": "The Attorney",
+        "original_language": "ko",
+        "release_date": "2014-01-01",
+        "poster_path": "/wrong-year.jpg"
+      }
+    ],
+    "total_pages": 1,
+    "total_results": 3
+  },
+  "tv": {
+    "page": 1,
+    "results": [
+      {
+        "id": 456,
+        "name": "Signal",
+        "original_name": "Signal",
+        "original_language": "ko",
+        "first_air_date": "2016-01-22",
+        "poster_path": "/signal.jpg"
+      }
+    ],
+    "total_pages": 1,
+    "total_results": 1
+  }
+}

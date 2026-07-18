@@ -252,4 +252,58 @@ describe("OfficialClient", () => {
     );
     expect(error.message).not.toContain("session_id");
   });
+
+  it("rejects an invalid RSS publication date without leaking it", async () => {
+    const invalidDate = "invalid-rss-date-session";
+    const fetcher: typeof fetch = async (input) => {
+      const url = new URL(input instanceof Request ? input.url : input);
+      return new Response(
+        url.hostname === "feeds.acast.com"
+          ? rss.replace("Fri, 10 Jul 2026 12:54:34 GMT", invalidDate)
+          : JSON.stringify([wordpressPost()]),
+        { status: 200 },
+      );
+    };
+
+    const error = await new OfficialClient(fetcher)
+      .fetchEpisodes("2026-07-18T00:00:00.000Z")
+      .then(
+        () => undefined,
+        (reason: unknown) => reason,
+      );
+
+    expect(error).toBeInstanceOf(Error);
+    if (!(error instanceof Error)) throw new Error("Expected official error");
+    expect(error.message).toBe(
+      "Official source response invalid: https://feeds.acast.com/public/shows/68004395b4ef799a7a410371 (200)",
+    );
+    expect(error.message).not.toContain(invalidDate);
+  });
+
+  it("rejects an invalid WordPress GMT date without leaking it", async () => {
+    const invalidDate = "invalid-wordpress-date-session";
+    const fetcher: typeof fetch = async (input) => {
+      const url = new URL(input instanceof Request ? input.url : input);
+      return new Response(
+        url.hostname === "feeds.acast.com"
+          ? rss
+          : JSON.stringify([wordpressPost({ date_gmt: invalidDate })]),
+        { status: 200 },
+      );
+    };
+
+    const error = await new OfficialClient(fetcher)
+      .fetchEpisodes("2026-07-18T00:00:00.000Z")
+      .then(
+        () => undefined,
+        (reason: unknown) => reason,
+      );
+
+    expect(error).toBeInstanceOf(Error);
+    if (!(error instanceof Error)) throw new Error("Expected official error");
+    expect(error.message).toBe(
+      "Official source response invalid: https://bumingbai.net/wp-json/wp/v2/posts?per_page=100&page=1 (200)",
+    );
+    expect(error.message).not.toContain(invalidDate);
+  });
 });

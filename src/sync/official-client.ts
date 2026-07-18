@@ -5,8 +5,34 @@ import type { OfficialEpisodeSnapshot, SyncChange } from "./types.js";
 
 const RSS_URL = "https://feeds.acast.com/public/shows/68004395b4ef799a7a410371";
 const WORDPRESS_URL = "https://bumingbai.net/wp-json/wp/v2/posts";
+const WORDPRESS_GMT_PATTERN =
+  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})?$/u;
+const RSS_PUB_DATE_PATTERN =
+  /^(?:Sun|Mon|Tue|Wed|Thu|Fri|Sat), \d{2} (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (?:GMT|[+-]\d{4})$/u;
+
+function timestamp(value: string, assumeUtc = false): number | undefined {
+  const normalized =
+    assumeUtc && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?$/u.test(value)
+      ? `${value}Z`
+      : value;
+  const parsed = Date.parse(normalized);
+  return Number.isNaN(parsed) ? undefined : parsed;
+}
+
+function wordpressGmtTimestamp(value: string): number | undefined {
+  if (!WORDPRESS_GMT_PATTERN.test(value)) return undefined;
+  return timestamp(value, true);
+}
+
+function rssPublishedTimestamp(value: string): number | undefined {
+  if (!RSS_PUB_DATE_PATTERN.test(value)) return undefined;
+  return timestamp(value);
+}
+
 const WordpressPostSchema = z.object({
-  date_gmt: z.string(),
+  date_gmt: z
+    .string()
+    .refine((value) => wordpressGmtTimestamp(value) !== undefined),
   link: z.url(),
   title: z.object({ rendered: z.string() }),
   content: z.object({ rendered: z.string() }),
@@ -14,7 +40,9 @@ const WordpressPostSchema = z.object({
 const WordpressPostsSchema = z.array(WordpressPostSchema);
 const RssItemSchema = z.object({
   title: z.string(),
-  pubDate: z.string(),
+  pubDate: z
+    .string()
+    .refine((value) => rssPublishedTimestamp(value) !== undefined),
   description: z.string().optional(),
   link: z.string().optional(),
   "itunes:duration": z.string().optional(),
@@ -73,15 +101,6 @@ function sourceError(url: string, status: number): Error {
 
 function responseError(url: string, status: number): Error {
   return new Error(`Official source response invalid: ${url} (${status})`);
-}
-
-function timestamp(value: string, assumeUtc = false): number | undefined {
-  const normalized =
-    assumeUtc && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?$/u.test(value)
-      ? `${value}Z`
-      : value;
-  const parsed = Date.parse(normalized);
-  return Number.isNaN(parsed) ? undefined : parsed;
 }
 
 export class OfficialClient {
@@ -179,7 +198,8 @@ export class OfficialClient {
     if (
       rss !== undefined &&
       wordpress !== undefined &&
-      timestamp(rss.pubDate) !== timestamp(wordpress.date_gmt, true)
+      rssPublishedTimestamp(rss.pubDate) !==
+        wordpressGmtTimestamp(wordpress.date_gmt)
     ) {
       this.changes.push({
         episodeNumber: number,

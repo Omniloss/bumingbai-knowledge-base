@@ -19,6 +19,7 @@
 - 新增同步或推荐逻辑时保留原始来源 URL、抓取时间和核验状态，使结果可追溯。
 - 同步产生的候选推荐必须写入 `data/review/sync-candidates.json`，保留原始行、来源 URL、官方快照 `retrievedAt` 和稳定 DOM 定位；只接受四个精确栏目名，段落开头的 `strong`/`b` 标题可带一个末尾中英文冒号。候选 `p`/`li` 只按真实 `<br>` 分行，其他 `strong`/`b` 段落标签是边界。解析必须限制不可信 HTML 的长度、节点和深度，审核队列不得被公共目录或搜索构建读取。
 - `src/sync/run-sync.ts` 的审核队列发布必须以纯词法目标键先串行化，再在锁内完成 mkdir、`lstat`/`realpath`、唯一同目录独占临时文件、重验目录身份和 rename；父目录与目标都要拒绝符号链接或真实路径逃逸，失败不得破坏既有队列。Node 无可移植的 `openat` 目录句柄保证，最终重验至 rename 间仍不能对抗拥有本地目录改名权限的攻击者，必须 fail closed 并尝试清理。
+- `pnpm run build:public-isolation` 必须临时注入唯一非公开候选，按字节扫描 `dist` 内所有普通文件及独立 `public/search-index.json`，并在任何成功或失败路径恢复审核队列的原始字节；队列 JSON 非数组或损坏时必须 fail closed 且不得回显原文。
 - `src/sync/official-client.ts` 只通过注入的 fetch 读取官方 RSS 和 WordPress API；测试必须使用固定离线 fixture。RSS RFC 日期与 WordPress GMT 日期必须在 Zod 外部边界以显式 Gregorian 日历、时间和时区组件验证，RSS 星期还须与其写出的源日历日期一致，不能把 `Date.parse` 当作有效性判定。错误只能报告 URL 和 HTTP 状态。RSS 与 WordPress 冲突必须保留双方原值为高风险 `SyncChange`，不得静默覆盖。
 - 官方快照写入 `data/raw/official/{retrievedAt}-{hash}.json`，`retrievedAt` 必须先通过 `IsoDateSchema`，并确认 resolve 后的临时和最终路径仍在 `root/data/raw/official` 内；文件名时间戳中的冒号替换为连字符，且必须以同目录临时文件后 rename 原子发布。
 - Open Library、TMDB、Wikidata 和 Commons 提供方只返回候选，不得改写目录事实；外部响应必须经 Zod 解析并通过注入 fetch 的固定 fixture 测试。Wikidata 图片必须同时具备与媒介类型相容的 P31 和可与目录精确匹配的额外身份信号，当前采用 P577 年份；证据不足时只保留提供方记录与审核问题。Open Library 封面只热链接，TMDB 必须用搜索结果 poster path 匹配官方图片端点尺寸，Commons 图片缺少来源页、许可、作者、credit 或尺寸时必须省略。

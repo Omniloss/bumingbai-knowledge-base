@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import { readdir, readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 
 export const NONPUBLIC_SENTINEL = "__NONPUBLIC_SYNC_CANDIDATE_7f629d__";
 
@@ -9,13 +10,13 @@ type GateOptions = {
   runBuild?: () => Promise<void>;
 };
 
-async function htmlFiles(directory: string): Promise<string[]> {
+async function deployedFiles(directory: string): Promise<string[]> {
   const entries = await readdir(directory, { withFileTypes: true });
   const files = await Promise.all(
     entries.map(async (entry) => {
       const path = join(directory, entry.name);
-      if (entry.isDirectory()) return htmlFiles(path);
-      return entry.name.endsWith(".html") ? [path] : [];
+      if (entry.isDirectory()) return deployedFiles(path);
+      return entry.isFile() ? [path] : [];
     }),
   );
   return files.flat();
@@ -42,16 +43,31 @@ function run(command: string, args: string[], root: string): Promise<void> {
 }
 
 async function assertAbsent(root: string): Promise<void> {
-  const files = await htmlFiles(join(root, "dist"));
+  const files = await deployedFiles(join(root, "dist"));
   const outputs = await Promise.all([
-    ...files.map((file) => readFile(file, "utf8")),
-    readFile(join(root, "public", "search-index.json"), "utf8"),
+    ...files.map((file) => readFile(file)),
+    readFile(join(root, "public", "search-index.json")),
   ]);
-  if (outputs.some((output) => output.includes(NONPUBLIC_SENTINEL))) {
+  if (
+    outputs.some((output) => output.includes(Buffer.from(NONPUBLIC_SENTINEL)))
+  ) {
     throw new Error(
       "Nonpublic recommendation sentinel leaked into public output",
     );
   }
+}
+
+function queueCandidates(originalQueue: string): unknown[] {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(originalQueue);
+  } catch {
+    throw new Error("Recommendation candidate queue must contain valid JSON");
+  }
+  if (!Array.isArray(parsed)) {
+    throw new Error("Recommendation candidate queue must be a JSON array");
+  }
+  return parsed;
 }
 
 export async function runPublicIsolationGate(
@@ -60,7 +76,7 @@ export async function runPublicIsolationGate(
   const root = options.root ?? process.cwd();
   const queuePath = join(root, "data", "review", "sync-candidates.json");
   const originalQueue = await readFile(queuePath, "utf8");
-  const candidates: unknown[] = JSON.parse(originalQueue) as unknown[];
+  const candidates = queueCandidates(originalQueue);
   candidates.push({
     rawText: NONPUBLIC_SENTINEL,
     risk: "high",
@@ -87,7 +103,7 @@ export async function runPublicIsolationGate(
 const entryPath = process.argv[1];
 if (
   entryPath !== undefined &&
-  import.meta.url === new URL(`file:///${entryPath.replaceAll("\\", "/")}`).href
+  import.meta.url === pathToFileURL(resolve(entryPath)).href
 ) {
   await runPublicIsolationGate();
 }

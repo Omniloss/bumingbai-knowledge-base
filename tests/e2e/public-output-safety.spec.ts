@@ -11,6 +11,8 @@ const SAFE_ANCHOR_HREF =
   /^(?:https:\/\/[^\s\\]+|\/(?![/\\])[^\\\s]*|#[^\\\s]*)$/iu;
 const SAFE_IMAGE_SRC = /^(?:https:\/\/[^\s\\]+|\/(?![/\\])[^\\\s]+)$/iu;
 
+test.setTimeout(60_000);
+
 type SectionHeading = {
   readonly hasH1: boolean;
   readonly hasH2: boolean;

@@ -49,8 +49,12 @@ export const WikimediaCandidateSchema = z.object({
   sourcePageUrl: z.url(),
   license: z.literal("CC0"),
   externalIds: z.record(z.string(), z.array(z.string())),
+  instanceOf: z.array(z.string()).default([]),
+  publicationYears: z.array(z.number().int()).default([]),
   image: CommonsImageSchema.optional(),
 });
+
+export type WikimediaCandidate = z.infer<typeof WikimediaCandidateSchema>;
 
 export type ProviderCandidate =
   | {

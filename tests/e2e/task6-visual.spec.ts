@@ -1,7 +1,6 @@
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { expect, type Page, test } from "@playwright/test";
-import { renderGeneratedCoverSvg } from "../../src/images/generated-cover.js";
 
 type VisualState = {
   readonly name: string;
@@ -20,6 +19,8 @@ const BASE_VIEWPORTS = [
   { height: 900, name: "1440x900", width: 1_440 },
   { height: 844, name: "390x844", width: 390 },
 ] as const;
+const LONG_GENERATED_COVER_PATH =
+  "/generated-covers/现代性的扩展与危机-全球化-信息技术-认同及其他-关于如何看待这个动荡与分裂的世界的一次漫谈-804977.svg";
 const CONTRACT_VIEWPORTS = [
   { height: 844, name: "375x844", width: 375 },
   { height: 900, name: "768x900", width: 768 },
@@ -153,24 +154,25 @@ test("capture a bounded long generated cover on desktop and mobile", async ({
   test.skip(testInfo.project.name !== "desktop", "one explicit capture matrix");
   await mkdir(OUTPUT_PATH, { recursive: true });
 
-  const cover = renderGeneratedCoverSvg({
-    mediaLabel: "书籍",
-    title:
-      "The Long Latin Title 与中文标题混排并且必须在小屏幕中保持清晰可读的安全换行",
-  });
   for (const viewport of BASE_VIEWPORTS) {
     await page.setViewportSize(viewport);
-    await page.setContent(
-      `<style>body { margin: 0; background: #f4f0e8; } main { padding: 24px; } svg { display: block; height: auto; margin: 0 auto; max-width: 100%; width: 800px; }</style><main>${cover}</main>`,
-    );
+    await page.goto(LONG_GENERATED_COVER_PATH);
     const lineCount = await page.locator("tspan").count();
     expect(lineCount).toBeGreaterThan(1);
     expect(lineCount).toBeLessThanOrEqual(4);
+    await expect(page.locator("[textLength], [lengthAdjust]")).toHaveCount(0);
+    await page.goto("/");
+    await page.setContent(
+      `<style>body { margin: 0; background: #f4f0e8; } main { padding: 24px; } img { display: block; height: auto; margin: 0 auto; max-width: 100%; width: 800px; }</style><main><img alt="长标题生成封面" src="${LONG_GENERATED_COVER_PATH}"></main>`,
+    );
+    await expect(
+      page.getByRole("img", { name: "长标题生成封面" }),
+    ).toBeVisible();
     await page.screenshot({
       animations: "disabled",
       path: path.join(
         OUTPUT_PATH,
-        `generated-cover-long-title-${viewport.name}.png`,
+        `generated-cover-production-long-title-${viewport.name}.png`,
       ),
     });
   }

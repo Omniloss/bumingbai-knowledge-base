@@ -1,4 +1,8 @@
 import { createStableId } from "../domain/id.js";
+import {
+  canPublishRecommendation,
+  isPublicEntity,
+} from "../domain/publication.js";
 import type { Catalog, Work, WorkRelation } from "../domain/schemas/catalog.js";
 import type { SourceRef, WorkId } from "../domain/schemas/primitives.js";
 
@@ -150,13 +154,19 @@ function addEpisodeRelations(
   catalog: Catalog,
   relations: Map<string, RelationAccumulator>,
 ): void {
-  const knownWorkIds = new Set(catalog.works.map((work) => work.id));
+  const publicWorkIds = new Set(
+    catalog.works.filter(isPublicEntity).map((work) => work.id),
+  );
+  const publicEpisodeIds = new Set(
+    catalog.episodes.filter(isPublicEntity).map((episode) => episode.id),
+  );
   const evidenceByEpisode = new Map<string, Map<WorkId, SourceRef[]>>();
 
   for (const evidence of catalog.recommendationEvidence) {
     if (
-      evidence.publicationStatus !== "public" ||
-      !knownWorkIds.has(evidence.workId)
+      !canPublishRecommendation(evidence) ||
+      !publicEpisodeIds.has(evidence.episodeId) ||
+      !publicWorkIds.has(evidence.workId)
     ) {
       continue;
     }

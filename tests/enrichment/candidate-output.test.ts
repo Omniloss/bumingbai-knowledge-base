@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { candidateOutput } from "../../src/enrichment/candidate-output.js";
-import { OpenLibraryCandidateSchema } from "../../src/enrichment/provider-data.js";
+import {
+  OpenLibraryCandidateSchema,
+  WikimediaCandidateSchema,
+} from "../../src/enrichment/provider-data.js";
 import { catalogFixture, now } from "./fixture.js";
 
 function output(authorNames: string[], creatorNames: string[]) {
@@ -61,5 +64,60 @@ describe("candidateOutput author conflicts", () => {
       "Author A",
       "Author B",
     ]);
+  });
+});
+
+describe("candidateOutput Wikidata identity", () => {
+  const image = {
+    artist: "Archive",
+    attribution: "Archive",
+    credit: "Archive",
+    handling: "mirror_allowed" as const,
+    height: 1800,
+    license: "CC BY 4.0",
+    sourcePageUrl: "https://commons.wikimedia.org/wiki/File:cover.jpg",
+    url: "https://commons.wikimedia.org/cover.jpg",
+    width: 1200,
+  };
+
+  function wikidataOutput(instanceOf: string[], publicationYears: number[]) {
+    const work = catalogFixture().works[0];
+    if (work === undefined) throw new Error("Expected fixture work");
+    return candidateOutput(
+      work,
+      {
+        provider: "wikidata",
+        value: WikimediaCandidateSchema.parse({
+          externalId: "Q-CANDIDATE",
+          externalIds: {},
+          image,
+          instanceOf,
+          license: "CC0",
+          publicationYears,
+          sourcePageUrl: "https://www.wikidata.org/wiki/Q-CANDIDATE",
+          title: work.title,
+        }),
+      },
+      [],
+      now,
+    );
+  }
+
+  it.each([
+    ["same title but wrong P31", ["Q11424"], [2001], "mediaType"],
+    ["compatible P31 but wrong year", ["Q571"], [1999], "year"],
+    ["compatible P31 without an additional signal", ["Q571"], [], "identity"],
+  ] as const)("reviews %s without publishing an image", (_caseName, instanceOf, years, field) => {
+    const output = wikidataOutput([...instanceOf], [...years]);
+
+    expect(output.image).toBeUndefined();
+    expect(output.issues).toContainEqual(expect.objectContaining({ field }));
+  });
+
+  it("publishes the image for compatible P31 and exact publication year", () => {
+    const output = wikidataOutput(["Q571"], [2001]);
+
+    expect(output.issues).toEqual([]);
+    expect(output.image?.url).toBe(image.url);
   });
 });

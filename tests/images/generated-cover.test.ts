@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { renderGeneratedCoverSvg } from "../../src/images/generated-cover.js";
 
+function visibleLines(svg: string): string[] {
+  return [...svg.matchAll(/<tspan[^>]*>(.*?)<\/tspan>/gu)].map(
+    (match) => match[1] ?? "",
+  );
+}
+
 describe("renderGeneratedCoverSvg", () => {
   it("keeps CJK titles readable in a deterministic SVG", () => {
     const first = renderGeneratedCoverSvg({
@@ -16,6 +22,25 @@ describe("renderGeneratedCoverSvg", () => {
     expect(first).toContain("经济发展理论");
     expect(first).toContain('viewBox="0 0 800 1200"');
     expect(first).toContain("不明白知识库");
+  });
+
+  it.each([
+    "书",
+    "书名",
+  ])("keeps the short title %s at natural width", (title) => {
+    const svg = renderGeneratedCoverSvg({ title, mediaLabel: "书籍" });
+
+    expect(visibleLines(svg)).toEqual([title]);
+    expect(svg).not.toContain("textLength=");
+    expect(svg).not.toContain("lengthAdjust=");
+  });
+
+  it("splits an 18 plus 1 character CJK title without stretching the tail", () => {
+    const title = `${"甲".repeat(18)}乙`;
+    const svg = renderGeneratedCoverSvg({ title, mediaLabel: "书籍" });
+
+    expect(visibleLines(svg)).toEqual(["甲".repeat(18), "乙"]);
+    expect(svg).not.toContain("textLength=");
   });
 
   it("escapes hostile title and label text without executable markup", () => {
@@ -37,9 +62,7 @@ describe("renderGeneratedCoverSvg", () => {
     "a".repeat(139),
   ])("wraps long visible title text into bounded tspan lines", (title) => {
     const svg = renderGeneratedCoverSvg({ title, mediaLabel: "书籍" });
-    const lines = [...svg.matchAll(/<tspan[^>]*>(.*?)<\/tspan>/gu)].map(
-      (match) => match[1],
-    );
+    const lines = visibleLines(svg);
 
     expect(lines.length).toBeGreaterThan(1);
     expect(lines.length).toBeLessThanOrEqual(4);
@@ -53,11 +76,10 @@ describe("renderGeneratedCoverSvg", () => {
       title:
         "The Long Latin Title 与中文标题混排并且必须在小屏幕中保持清晰可读的安全换行",
     });
-    const lines = [...svg.matchAll(/<tspan[^>]*>(.*?)<\/tspan>/gu)].map(
-      (match) => match[1] ?? "",
-    );
+    const lines = visibleLines(svg);
 
     expect(lines.some((line) => line.includes("Title"))).toBe(true);
+    expect(svg).not.toContain("textLength=");
   });
 
   it("truncates overflowed title lines visibly while preserving the complete escaped title", () => {

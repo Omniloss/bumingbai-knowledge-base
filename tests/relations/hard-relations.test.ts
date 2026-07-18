@@ -30,12 +30,62 @@ const sourceDuplicate = {
   url: "https://example.com/shared",
   retrievedAt,
 } as const;
+const sourceVerified = {
+  kind: "official_episode",
+  url: "https://example.com/source-verified",
+  retrievedAt,
+} as const;
+const sourceNonOfficial = {
+  kind: "provider_api",
+  url: "https://example.com/provider-record",
+  retrievedAt,
+} as const;
 
 function catalogFixture(): Catalog {
   return CatalogSchema.parse({
     schemaVersion: 1,
     generatedAt: retrievedAt,
-    episodes: [],
+    episodes: [
+      {
+        id: "episode_111111111111",
+        slug: "episode-a",
+        verificationStatus: "verified",
+        publicationStatus: "public",
+        sources: [sourceA],
+        number: 1,
+        title: "节目 A",
+        publishedAt: retrievedAt,
+        officialUrl: "https://example.com/episode-a",
+        guestIds: [],
+        topicIds: [],
+      },
+      {
+        id: "episode_222222222222",
+        slug: "episode-b",
+        verificationStatus: "verified",
+        publicationStatus: "public",
+        sources: [sourceB],
+        number: 2,
+        title: "节目 B",
+        publishedAt: retrievedAt,
+        officialUrl: "https://example.com/episode-b",
+        guestIds: [],
+        topicIds: [],
+      },
+      {
+        id: "episode_333333333333",
+        slug: "episode-c",
+        verificationStatus: "verified",
+        publicationStatus: "public",
+        sources: [sourceC],
+        number: 3,
+        title: "节目 C",
+        publishedAt: retrievedAt,
+        officialUrl: "https://example.com/episode-c",
+        guestIds: [],
+        topicIds: [],
+      },
+    ],
     people: [],
     topics: [],
     works: [
@@ -146,6 +196,24 @@ function catalogFixture(): Catalog {
         verificationStatus: "verified",
         publicationStatus: "public",
       },
+      {
+        id: "evidence_888888888888",
+        episodeId: "episode_111111111111",
+        workId: "work_111111111111",
+        rawText: "已核验的作品 A 推荐",
+        source: sourceVerified,
+        verificationStatus: "verified",
+        publicationStatus: "public",
+      },
+      {
+        id: "evidence_999999999999",
+        episodeId: "episode_222222222222",
+        workId: "work_111111111111",
+        rawText: "非官方来源作品 A 推荐",
+        source: sourceNonOfficial,
+        verificationStatus: "verified",
+        publicationStatus: "public",
+      },
     ],
     imageAssets: [],
     workRelations: [],
@@ -213,7 +281,7 @@ describe("buildHardRelations", () => {
           toWorkId: "work_222222222222",
           kind: "same_episode",
           reasons: ["同一期节目推荐"],
-          sources: [sourceDuplicate, sourceA, sourceB],
+          sources: [sourceVerified, sourceB],
         }),
       ]),
     );
@@ -241,5 +309,41 @@ describe("buildHardRelations", () => {
       ["same_series", "work_333333333333", "work_111111111111"],
     ]);
     expect(buildHardRelations(reversedCatalog(catalog))).toEqual(relations);
+  });
+
+  it("requires the episode and both works to be publicly verified", () => {
+    const catalog = catalogFixture();
+    const hiddenEpisode = CatalogSchema.parse({
+      ...catalog,
+      episodes: catalog.episodes.map((episode) =>
+        episode.id === "episode_111111111111"
+          ? { ...episode, verificationStatus: "pending_verification" }
+          : episode,
+      ),
+    });
+    const hiddenLeftWork = CatalogSchema.parse({
+      ...catalog,
+      works: catalog.works.map((work) =>
+        work.id === "work_111111111111"
+          ? { ...work, publicationStatus: "withheld" }
+          : work,
+      ),
+    });
+    const hiddenRightWork = CatalogSchema.parse({
+      ...catalog,
+      works: catalog.works.map((work) =>
+        work.id === "work_222222222222"
+          ? { ...work, verificationStatus: "rejected" }
+          : work,
+      ),
+    });
+
+    for (const input of [hiddenEpisode, hiddenLeftWork, hiddenRightWork]) {
+      expect(
+        buildHardRelations(input).filter(
+          (relation) => relation.kind === "same_episode",
+        ),
+      ).toEqual([]);
+    }
   });
 });

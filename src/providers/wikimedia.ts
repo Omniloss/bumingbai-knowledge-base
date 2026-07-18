@@ -1,5 +1,12 @@
 import { z } from "zod";
 import type { ProviderClient, ProviderResult, WorkLookup } from "./types.js";
+import {
+  externalIdClaims,
+  firstStringClaim,
+  publicationYearClaims,
+  WikimediaClaimSchema,
+  wikibaseItemClaims,
+} from "./wikimedia-claims.js";
 
 const SearchResponseSchema = z.object({
   search: z.array(
@@ -10,12 +17,6 @@ const SearchResponseSchema = z.object({
     }),
   ),
 });
-const ClaimSchema = z.object({
-  mainsnak: z.object({
-    datatype: z.string(),
-    datavalue: z.object({ value: z.unknown(), type: z.string() }).optional(),
-  }),
-});
 const LanguageValueSchema = z.object({
   language: z.string(),
   value: z.string(),
@@ -25,8 +26,12 @@ const EntitySchema = z.object({
   labels: z.object({ en: LanguageValueSchema.optional() }).optional(),
   descriptions: z.object({ en: LanguageValueSchema.optional() }).optional(),
   claims: z
-    .object({ P18: z.array(ClaimSchema).optional() })
-    .catchall(z.array(ClaimSchema)),
+    .object({
+      P18: z.array(WikimediaClaimSchema).optional(),
+      P31: z.array(WikimediaClaimSchema).optional(),
+      P577: z.array(WikimediaClaimSchema).optional(),
+    })
+    .catchall(z.array(WikimediaClaimSchema)),
 });
 const EntitiesResponseSchema = z.object({
   entities: z.record(z.string(), EntitySchema),
@@ -75,6 +80,8 @@ export type WikimediaRecord = {
   sourcePageUrl: string;
   license: "CC0";
   externalIds: Record<string, string[]>;
+  instanceOf: string[];
+  publicationYears: number[];
   image?: CommonsImageCandidate;
 };
 
@@ -91,41 +98,6 @@ async function parseResponse<T>(response: Response, schema: z.ZodType<T>) {
     throw new Error(`Wikimedia request failed: ${response.status}`);
   const payload: unknown = await response.json();
   return schema.parse(payload);
-}
-
-function claimValues(
-  claims: z.infer<typeof EntitySchema>["claims"],
-  datatype: string,
-): Record<string, string[]> {
-  const result: Record<string, string[]> = {};
-  for (const [property, statements] of Object.entries(claims)) {
-    const values = (statements ?? []).flatMap((statement) => {
-      const value = stringClaimValue(statement, datatype);
-      return value === undefined ? [] : [value];
-    });
-    if (values.length > 0) result[property] = values;
-  }
-  return result;
-}
-
-function stringClaimValue(
-  statement: z.infer<typeof ClaimSchema>,
-  datatype: string,
-): string | undefined {
-  if (statement.mainsnak.datatype !== datatype) return undefined;
-  const value = z.string().safeParse(statement.mainsnak.datavalue?.value);
-  return value.success ? value.data : undefined;
-}
-
-function firstClaim(
-  statements: z.infer<typeof ClaimSchema>[] | undefined,
-  datatype: string,
-): string | undefined {
-  for (const statement of statements ?? []) {
-    const value = stringClaimValue(statement, datatype);
-    if (value !== undefined) return value;
-  }
-  return undefined;
 }
 
 function imageFromCommons(
@@ -233,14 +205,16 @@ export class WikimediaClient implements ProviderClient<WikimediaRecord> {
     entity: z.infer<typeof EntitySchema>,
   ): Promise<WikimediaRecord> {
     const image = await this.commonsImage(
-      firstClaim(entity.claims.P18, "commonsMedia"),
+      firstStringClaim(entity.claims.P18, "commonsMedia"),
     );
     const record: WikimediaRecord = {
       externalId: entity.id,
       title: entity.labels?.en?.value ?? entity.id,
       sourcePageUrl: `https://www.wikidata.org/wiki/${entity.id}`,
       license: "CC0",
-      externalIds: claimValues(entity.claims, "external-id"),
+      externalIds: externalIdClaims(entity.claims),
+      instanceOf: wikibaseItemClaims(entity.claims.P31),
+      publicationYears: publicationYearClaims(entity.claims.P577),
     };
     const description = entity.descriptions?.en?.value;
     if (description !== undefined) record.description = description;

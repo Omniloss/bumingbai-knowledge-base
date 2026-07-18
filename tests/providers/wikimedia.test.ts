@@ -59,6 +59,7 @@ const query = {
   workId: "work_speak_memory",
   title: "Speak, Memory",
   creatorNames: ["Vladimir Nabokov"],
+  year: 1966,
   mediaType: "book" as const,
 };
 
@@ -101,6 +102,8 @@ describe("WikimediaClient", () => {
       externalId: "Q1514127",
       license: "CC0",
       externalIds: { P648: ["OL45804W"] },
+      instanceOf: ["Q7725634"],
+      publicationYears: [1966],
     });
     expect(result.records[0]?.image).toMatchObject({
       sourcePageUrl: expect.stringContaining("commons.wikimedia.org"),

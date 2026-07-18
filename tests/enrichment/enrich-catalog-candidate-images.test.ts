@@ -16,10 +16,12 @@ describe("enrichCatalog candidate images", () => {
             ? [
                 {
                   externalId: "Q-WRONG",
-                  title: "Wrong Title",
+                  title: query.title,
                   sourcePageUrl: "https://www.wikidata.org/wiki/Q-WRONG",
                   license: "CC0",
                   externalIds: {},
+                  instanceOf: ["Q11424"],
+                  publicationYears: [2001],
                   image: {
                     url: "https://commons.wikimedia.org/wrong.jpg",
                     sourcePageUrl:
@@ -39,6 +41,8 @@ describe("enrichCatalog candidate images", () => {
                   sourcePageUrl: "https://www.wikidata.org/wiki/Q-RIGHT",
                   license: "CC0",
                   externalIds: {},
+                  instanceOf: ["Q571"],
+                  publicationYears: [2001],
                   image: {
                     url: "https://commons.wikimedia.org/right.jpg",
                     sourcePageUrl:
@@ -67,7 +71,7 @@ describe("enrichCatalog candidate images", () => {
       "Q-WRONG",
     );
     expect(result.reviewIssues).toContainEqual(
-      expect.objectContaining({ field: "title" }),
+      expect.objectContaining({ field: "mediaType" }),
     );
     expect(result.imageAssets.map((image) => image.url)).not.toContain(
       "https://commons.wikimedia.org/wrong.jpg",

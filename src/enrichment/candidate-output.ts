@@ -6,6 +6,7 @@ import type {
 } from "../domain/schemas/catalog.js";
 import type { ProviderName } from "../providers/types.js";
 import type { ProviderCandidate } from "./provider-data.js";
+import { wikimediaIdentityConflicts } from "./wikimedia-identity.js";
 
 type CandidateOutput = {
   readonly image?: ImageAsset;
@@ -133,6 +134,21 @@ function conflictIssues(
         retrievedAt,
       ),
     );
+  }
+  if (candidate.provider === "wikidata") {
+    for (const conflict of wikimediaIdentityConflicts(work, candidate.value)) {
+      issues.push(
+        issue(
+          work,
+          candidate.provider,
+          value.externalId,
+          conflict.field,
+          conflict.candidates,
+          url,
+          retrievedAt,
+        ),
+      );
+    }
   }
   return issues;
 }

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { ProviderClient, ProviderResult, WorkLookup } from "./types.js";
+
 const SearchResponseSchema = z.object({
   search: z.array(
     z.object({
@@ -156,7 +157,6 @@ function isFreeLicense(license: string): boolean {
 
 export class WikimediaClient implements ProviderClient<WikimediaRecord> {
   readonly name = "wikidata" as const;
-
   constructor(private readonly fetcher: typeof fetch = fetch) {}
 
   private async commonsImage(

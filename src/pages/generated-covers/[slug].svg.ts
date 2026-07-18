@@ -1,4 +1,5 @@
 import type { APIRoute, GetStaticPaths } from "astro";
+import { isPublicEntity } from "../../domain/publication.js";
 import { WorkSchema } from "../../domain/schemas/entities.js";
 import { renderGeneratedCoverSvg } from "../../images/generated-cover.js";
 import { loadCatalog } from "../../lib/catalog.js";
@@ -15,12 +16,7 @@ const mediaLabels = {
 export const getStaticPaths: GetStaticPaths = async () => {
   const catalog = await loadCatalog();
   return catalog.works
-    .filter(
-      (work) =>
-        work.publicationStatus === "public" &&
-        (work.verificationStatus === "verified" ||
-          work.verificationStatus === "partially_verified"),
-    )
+    .filter(isPublicEntity)
     .map((work) => ({ params: { slug: work.slug }, props: { work } }));
 };
 

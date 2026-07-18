@@ -1,6 +1,7 @@
 ---
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import WorkCard from "../../components/WorkCard.astro";
+import { isPublicEntity } from "../../domain/publication.js";
 import type {
   Episode,
   Person,
@@ -19,17 +20,6 @@ type Props = {
 };
 
 export async function getStaticPaths() {
-  const isPublicEntity = (entity: {
-    readonly publicationStatus: "public" | "withheld";
-    readonly verificationStatus:
-      | "verified"
-      | "partially_verified"
-      | "pending_verification"
-      | "rejected";
-  }): boolean =>
-    entity.publicationStatus === "public" &&
-    (entity.verificationStatus === "verified" ||
-      entity.verificationStatus === "partially_verified");
   const catalog = await loadCatalog();
   const publicEpisodes = catalog.episodes.filter(isPublicEntity);
   const publicPeople = catalog.people.filter(isPublicEntity);

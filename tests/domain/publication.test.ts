@@ -3,107 +3,15 @@ import {
   canPublishRecommendation,
   validateCatalog,
 } from "../../src/domain/publication.js";
-import { CatalogSchema } from "../../src/domain/schemas/catalog.js";
 import {
-  EditionSchema,
-  EpisodeSchema,
-  RecommendationEvidenceSchema,
-  WorkSchema,
-} from "../../src/domain/schemas/entities.js";
-
-const GENERATED_AT = "2026-07-14T00:00:00.000Z";
-const SOURCE = {
-  kind: "official_episode",
-  url: "https://bumingbai.net/example",
-  retrievedAt: GENERATED_AT,
-} as const;
-const RSS_SOURCE = { ...SOURCE, kind: "official_rss" } as const;
-
-const EMPTY_CATALOG = CatalogSchema.parse({
-  schemaVersion: 1,
-  generatedAt: GENERATED_AT,
-  episodes: [],
-  people: [],
-  topics: [],
-  works: [],
-  editions: [],
-  recommendationEvidence: [],
-  imageAssets: [],
-  workRelations: [],
-  providerRecords: [],
-  reviewIssues: [],
-});
-
-function catalog(overrides: Readonly<Record<string, unknown>> = {}) {
-  return CatalogSchema.parse({ ...EMPTY_CATALOG, ...overrides });
-}
-
-function recommendation(overrides: Readonly<Record<string, unknown>> = {}) {
-  return RecommendationEvidenceSchema.parse({
-    id: "evidence_111111111111",
-    episodeId: "episode_111111111111",
-    workId: "work_111111111111",
-    rawText: "《休战》",
-    source: SOURCE,
-    verificationStatus: "verified",
-    publicationStatus: "public",
-    ...overrides,
-  });
-}
-
-function episode(overrides: Readonly<Record<string, unknown>> = {}) {
-  return EpisodeSchema.parse({
-    id: "episode_111111111111",
-    slug: "episode-1",
-    number: 1,
-    title: "第一期",
-    publishedAt: GENERATED_AT,
-    officialUrl: SOURCE.url,
-    guestIds: [],
-    topicIds: [],
-    verificationStatus: "verified",
-    publicationStatus: "public",
-    sources: [SOURCE],
-    ...overrides,
-  });
-}
-
-function work(overrides: Readonly<Record<string, unknown>> = {}) {
-  return WorkSchema.parse({
-    id: "work_111111111111",
-    slug: "the-truce",
-    title: "休战",
-    mediaType: "book",
-    creatorIds: [],
-    topicIds: [],
-    genres: [],
-    regions: [],
-    verificationStatus: "verified",
-    publicationStatus: "public",
-    sources: [SOURCE],
-    ...overrides,
-  });
-}
-
-function edition(overrides: Readonly<Record<string, unknown>> = {}) {
-  return EditionSchema.parse({
-    id: "edition_111111111111",
-    slug: "the-truce-zh",
-    workId: "work_111111111111",
-    language: "zh",
-    title: "休战",
-    translatorIds: [],
-    translationAssessment: {
-      status: "unverified",
-      summary: "未核实",
-      sources: [],
-    },
-    verificationStatus: "verified",
-    publicationStatus: "public",
-    sources: [SOURCE],
-    ...overrides,
-  });
-}
+  catalog,
+  edition,
+  episode,
+  RSS_SOURCE,
+  recommendation,
+  SOURCE,
+  work,
+} from "./publication-fixture.js";
 
 describe("canPublishRecommendation", () => {
   it("rejects pending evidence", () => {

@@ -1,3 +1,4 @@
+import { validateReferences } from "./references.js";
 import type { Catalog, RecommendationEvidence } from "./schemas/catalog.js";
 
 export type ValidationIssue = {
@@ -10,12 +11,13 @@ export type ValidationIssue = {
   readonly message: string;
 };
 
-type ReferenceCheck = {
-  readonly entityId: string;
-  readonly field: string;
-  readonly targetType: string;
-  readonly targetId: string;
-  readonly exists: boolean;
+export type PublishableEntity = {
+  readonly publicationStatus: "public" | "withheld";
+  readonly verificationStatus:
+    | "verified"
+    | "partially_verified"
+    | "pending_verification"
+    | "rejected";
 };
 
 const ISSUE_PRIORITY = {
@@ -38,16 +40,12 @@ export function canPublishRecommendation(
   );
 }
 
-function addMissingReference(
-  issues: ValidationIssue[],
-  check: ReferenceCheck,
-): void {
-  if (check.exists) return;
-  issues.push({
-    code: "missing_reference",
-    entityId: check.entityId,
-    message: `${check.field} references missing ${check.targetType} ${check.targetId}`,
-  });
+export function isPublicEntity(entity: PublishableEntity): boolean {
+  return (
+    entity.publicationStatus === "public" &&
+    (entity.verificationStatus === "verified" ||
+      entity.verificationStatus === "partially_verified")
+  );
 }
 
 function compareText(left: string, right: string): number {
@@ -57,11 +55,7 @@ function compareText(left: string, right: string): number {
 }
 
 export function validateCatalog(catalog: Catalog): readonly ValidationIssue[] {
-  const issues: ValidationIssue[] = [];
-  const episodeIds = new Set(catalog.episodes.map((item) => item.id));
-  const personIds = new Set(catalog.people.map((item) => item.id));
-  const topicIds = new Set(catalog.topics.map((item) => item.id));
-  const workIds = new Set(catalog.works.map((item) => item.id));
+  const issues: ValidationIssue[] = [...validateReferences(catalog)];
 
   const entityCollections: readonly (readonly {
     readonly id: string;
@@ -93,40 +87,7 @@ export function validateCatalog(catalog: Catalog): readonly ValidationIssue[] {
     });
   }
 
-  for (const evidence of catalog.recommendationEvidence) {
-    addMissingReference(issues, {
-      entityId: evidence.id,
-      field: "RecommendationEvidence.episodeId",
-      targetType: "Episode",
-      targetId: evidence.episodeId,
-      exists: episodeIds.has(evidence.episodeId),
-    });
-    addMissingReference(issues, {
-      entityId: evidence.id,
-      field: "RecommendationEvidence.workId",
-      targetType: "Work",
-      targetId: evidence.workId,
-      exists: workIds.has(evidence.workId),
-    });
-  }
-
   for (const edition of catalog.editions) {
-    addMissingReference(issues, {
-      entityId: edition.id,
-      field: "Edition.workId",
-      targetType: "Work",
-      targetId: edition.workId,
-      exists: workIds.has(edition.workId),
-    });
-    for (const translatorId of edition.translatorIds) {
-      addMissingReference(issues, {
-        entityId: edition.id,
-        field: "Edition.translatorIds",
-        targetType: "Person",
-        targetId: translatorId,
-        exists: personIds.has(translatorId),
-      });
-    }
     if (
       edition.translationAssessment.status === "verified" &&
       edition.translationAssessment.sources.length === 0
@@ -139,28 +100,7 @@ export function validateCatalog(catalog: Catalog): readonly ValidationIssue[] {
     }
   }
 
-  for (const episode of catalog.episodes) {
-    for (const topicId of episode.topicIds) {
-      addMissingReference(issues, {
-        entityId: episode.id,
-        field: "Episode.topicIds",
-        targetType: "Topic",
-        targetId: topicId,
-        exists: topicIds.has(topicId),
-      });
-    }
-  }
-
   for (const work of catalog.works) {
-    for (const topicId of work.topicIds) {
-      addMissingReference(issues, {
-        entityId: work.id,
-        field: "Work.topicIds",
-        targetType: "Topic",
-        targetId: topicId,
-        exists: topicIds.has(topicId),
-      });
-    }
     const hasPublishableEvidence = catalog.recommendationEvidence.some(
       (evidence) =>
         evidence.workId === work.id && canPublishRecommendation(evidence),

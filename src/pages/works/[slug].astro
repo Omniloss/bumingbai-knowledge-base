@@ -9,14 +9,16 @@ import WorkRelationSection from "../../components/WorkRelationSection.astro";
 import WorkSourceSection from "../../components/WorkSourceSection.astro";
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import WorkVersionSection from "../../components/WorkVersionSection.astro";
-import { canPublishRecommendation } from "../../domain/publication.js";
+import {
+  canPublishRecommendation,
+  isPublicEntity,
+} from "../../domain/publication.js";
 import type {
   Edition,
   Episode,
   ImageAsset,
   Person,
   RecommendationEvidence,
-  SourceRef,
   Work,
   WorkRelation,
 } from "../../domain/schemas/catalog.js";
@@ -24,6 +26,10 @@ import { selectHeroImage } from "../../images/policy.js";
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { loadCatalog } from "../../lib/catalog.js";
+import {
+  type DetailSource,
+  mergeDetailSources,
+} from "../../lib/detail-sources.js";
 
 type EvidenceRecord = {
   readonly episode: Episode;
@@ -40,14 +46,6 @@ type RelationRecord = {
   readonly target: Work;
 };
 
-type DetailSource = {
-  readonly attribution?: string;
-  readonly kind: SourceRef["kind"] | "image";
-  readonly label: string;
-  readonly license?: string;
-  readonly url: string;
-};
-
 interface Props {
   readonly work: Work;
   readonly creators: readonly Person[];
@@ -61,20 +59,9 @@ interface Props {
 
 export async function getStaticPaths() {
   const catalog = await loadCatalog();
-  const canPublishEntity = (entity: {
-    readonly publicationStatus: "public" | "withheld";
-    readonly verificationStatus:
-      | "verified"
-      | "partially_verified"
-      | "pending_verification"
-      | "rejected";
-  }): boolean =>
-    entity.publicationStatus === "public" &&
-    (entity.verificationStatus === "verified" ||
-      entity.verificationStatus === "partially_verified");
-  const publicEpisodes = catalog.episodes.filter(canPublishEntity);
-  const publicPeople = catalog.people.filter(canPublishEntity);
-  const publicWorks = catalog.works.filter(canPublishEntity);
+  const publicEpisodes = catalog.episodes.filter(isPublicEntity);
+  const publicPeople = catalog.people.filter(isPublicEntity);
+  const publicWorks = catalog.works.filter(isPublicEntity);
   const episodesById = new Map(
     publicEpisodes.map((episode) => [episode.id, episode]),
   );
@@ -84,7 +71,7 @@ export async function getStaticPaths() {
   return publicWorks.map((work) => {
     const editions = catalog.editions
       .filter(
-        (edition) => edition.workId === work.id && canPublishEntity(edition),
+        (edition) => edition.workId === work.id && isPublicEntity(edition),
       )
       .toSorted((left, right) =>
         left.title.localeCompare(right.title, "zh-CN"),
@@ -163,12 +150,7 @@ export async function getStaticPaths() {
         similarRelations: relationRecords.filter(
           ({ relation }) => relation.kind === "similar",
         ),
-        sources: entitySources.filter(
-          (source, index, allSources) =>
-            allSources.findIndex(
-              (candidate) => candidate.url === source.url,
-            ) === index,
-        ),
+        sources: mergeDetailSources(entitySources),
       },
     };
   });

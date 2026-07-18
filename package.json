@@ -8,7 +8,7 @@
     "build": "bun run tools/build-search-index.ts && astro build",
     "preview": "astro preview",
     "qa:lighthouse": "node --experimental-strip-types tools/lighthouse-task6.ts",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && astro check",
     "lint": "biome check --vcs-enabled=true --vcs-client-kind=git --vcs-use-ignore-file=true . && markdownlint-cli2 \"**/*.md\" \"#node_modules\"",
     "test": "pnpm exec vitest run",
     "ci": "pnpm run typecheck && pnpm run lint && pnpm run test && pnpm run build && pnpm exec playwright test"
@@ -33,6 +33,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@astrojs/check": "0.9.9",
     "@axe-core/playwright": "^4.12.1",
     "@biomejs/biome": "^2.5.3",
     "@playwright/test": "^1.61.1",
@@ -40,7 +41,7 @@
     "lighthouse": "^13.4.0",
     "markdownlint-cli2": "^0.23.0",
     "puppeteer-core": "^25.3.0",
-    "typescript": "^7.0.2",
+    "typescript": "^6.0.3",
     "vitest": "^4.1.10"
   }
 }

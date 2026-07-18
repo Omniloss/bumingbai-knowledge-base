@@ -3,7 +3,10 @@
 import CjkTitle from "../../components/CjkTitle.astro";
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import WorkCard from "../../components/WorkCard.astro";
-import { canPublishRecommendation } from "../../domain/publication.js";
+import {
+  canPublishRecommendation,
+  isPublicEntity,
+} from "../../domain/publication.js";
 import type {
   Episode,
   Person,
@@ -35,23 +38,12 @@ interface Props {
 
 export async function getStaticPaths() {
   const catalog = await loadCatalog();
-  const canPublishEntity = (entity: {
-    readonly publicationStatus: "public" | "withheld";
-    readonly verificationStatus:
-      | "verified"
-      | "partially_verified"
-      | "pending_verification"
-      | "rejected";
-  }): boolean =>
-    entity.publicationStatus === "public" &&
-    (entity.verificationStatus === "verified" ||
-      entity.verificationStatus === "partially_verified");
-  const publicPeople = catalog.people.filter(canPublishEntity);
-  const publicWorks = catalog.works.filter(canPublishEntity);
+  const publicPeople = catalog.people.filter(isPublicEntity);
+  const publicWorks = catalog.works.filter(isPublicEntity);
   const peopleById = new Map(publicPeople.map((person) => [person.id, person]));
   const worksById = new Map(publicWorks.map((work) => [work.id, work]));
 
-  return catalog.episodes.filter(canPublishEntity).map((episode) => {
+  return catalog.episodes.filter(isPublicEntity).map((episode) => {
     const episodeEvidence = catalog.recommendationEvidence.filter(
       (evidence) => evidence.episodeId === episode.id,
     );
@@ -76,7 +68,10 @@ export async function getStaticPaths() {
     ];
     const groups = groupKeys.map((key) => ({
       key,
-      name: peopleById.get(key)?.name ?? "推荐记录",
+      name:
+        key === "neutral"
+          ? "推荐记录"
+          : (peopleById.get(key)?.name ?? "推荐记录"),
       records: records.filter((record) => {
         const recommenderId = record.evidence.recommenderId;
         const recordKey =

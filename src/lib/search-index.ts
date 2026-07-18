@@ -1,3 +1,4 @@
+import { isPublicEntity } from "../domain/publication.js";
 import type { Catalog } from "../domain/schemas/catalog.js";
 import {
   type SearchIndex,
@@ -14,23 +15,6 @@ const KIND_ORDER = {
   person: 2,
   topic: 3,
 } as const satisfies Record<SearchKind, number>;
-
-type PublishableEntity = {
-  readonly publicationStatus: "public" | "withheld";
-  readonly verificationStatus:
-    | "verified"
-    | "partially_verified"
-    | "pending_verification"
-    | "rejected";
-};
-
-function isPublicEntity(entity: PublishableEntity): boolean {
-  return (
-    entity.publicationStatus === "public" &&
-    (entity.verificationStatus === "verified" ||
-      entity.verificationStatus === "partially_verified")
-  );
-}
 
 function createSearchRecord(
   id: string,

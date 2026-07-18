@@ -1,7 +1,7 @@
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
-import type { Page } from "@playwright/test";
-import { test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
+import { renderGeneratedCoverSvg } from "../../src/images/generated-cover.js";
 
 type VisualState = {
   readonly name: string;
@@ -143,5 +143,35 @@ test("capture every Task 6 template and state from the production build", async 
         path: path.join(OUTPUT_PATH, `${state.name}-${viewport.name}.png`),
       });
     }
+  }
+});
+
+test("capture a bounded long generated cover on desktop and mobile", async ({
+  page,
+}, testInfo) => {
+  test.skip(TASK6_CAPTURE !== "1", "capture run is explicit");
+  test.skip(testInfo.project.name !== "desktop", "one explicit capture matrix");
+  await mkdir(OUTPUT_PATH, { recursive: true });
+
+  const cover = renderGeneratedCoverSvg({
+    mediaLabel: "书籍",
+    title:
+      "The Long Latin Title 与中文标题混排并且必须在小屏幕中保持清晰可读的安全换行",
+  });
+  for (const viewport of BASE_VIEWPORTS) {
+    await page.setViewportSize(viewport);
+    await page.setContent(
+      `<style>body { margin: 0; background: #f4f0e8; } main { padding: 24px; } svg { display: block; height: auto; margin: 0 auto; max-width: 100%; width: 800px; }</style><main>${cover}</main>`,
+    );
+    const lineCount = await page.locator("tspan").count();
+    expect(lineCount).toBeGreaterThan(1);
+    expect(lineCount).toBeLessThanOrEqual(4);
+    await page.screenshot({
+      animations: "disabled",
+      path: path.join(
+        OUTPUT_PATH,
+        `generated-cover-long-title-${viewport.name}.png`,
+      ),
+    });
   }
 });

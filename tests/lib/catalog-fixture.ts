@@ -8,6 +8,11 @@ type EpisodeFixtureInput = {
   readonly number: number | null;
   readonly publishedAt: string;
   readonly publicationStatus: "public" | "withheld";
+  readonly verificationStatus?:
+    | "verified"
+    | "partially_verified"
+    | "pending_verification"
+    | "rejected";
 };
 
 type WorkFixtureInput = {
@@ -15,6 +20,11 @@ type WorkFixtureInput = {
   readonly slug: string;
   readonly title: string;
   readonly publicationStatus: "public" | "withheld";
+  readonly verificationStatus?:
+    | "verified"
+    | "partially_verified"
+    | "pending_verification"
+    | "rejected";
 };
 
 function episodeFixture(input: EpisodeFixtureInput) {
@@ -29,7 +39,7 @@ function episodeFixture(input: EpisodeFixtureInput) {
     sources: [],
     title: input.slug,
     topicIds: [],
-    verificationStatus: "verified",
+    verificationStatus: input.verificationStatus ?? "verified",
   } as const;
 }
 
@@ -45,7 +55,7 @@ function workFixture(input: WorkFixtureInput) {
     sources: [],
     title: input.title,
     topicIds: [],
-    verificationStatus: "verified",
+    verificationStatus: input.verificationStatus ?? "verified",
   } as const;
 }
 
@@ -56,6 +66,22 @@ const CONTROLLED_EPISODES = [
     publicationStatus: "public",
     publishedAt: "2026-01-01T00:00:00.000Z",
     slug: "same-time-unnumbered",
+  }),
+  episodeFixture({
+    id: "episode_000000000008",
+    number: 10,
+    publicationStatus: "public",
+    publishedAt: "2026-02-02T00:00:00.000Z",
+    slug: "pending-public-episode",
+    verificationStatus: "pending_verification",
+  }),
+  episodeFixture({
+    id: "episode_000000000009",
+    number: 11,
+    publicationStatus: "public",
+    publishedAt: "2026-02-03T00:00:00.000Z",
+    slug: "rejected-public-episode",
+    verificationStatus: "rejected",
   }),
   episodeFixture({
     id: "episode_000000000002",
@@ -107,6 +133,20 @@ const CONTROLLED_WORKS = [
     publicationStatus: "public",
     slug: "sympathizer-zulu",
     title: "同情者",
+  }),
+  workFixture({
+    id: "work_000000000007",
+    publicationStatus: "public",
+    slug: "pending-public-work",
+    title: "Pending Work",
+    verificationStatus: "pending_verification",
+  }),
+  workFixture({
+    id: "work_000000000008",
+    publicationStatus: "public",
+    slug: "rejected-public-work",
+    title: "Rejected Work",
+    verificationStatus: "rejected",
   }),
   workFixture({
     id: "work_000000000002",

@@ -3,7 +3,10 @@
 import CjkTitle from "../../components/CjkTitle.astro";
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import WorkCard from "../../components/WorkCard.astro";
-import { canPublishRecommendation } from "../../domain/publication.js";
+import {
+  canPublishRecommendation,
+  isPublicEntity,
+} from "../../domain/publication.js";
 import type { Episode, Person, Work } from "../../domain/schemas/catalog.js";
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -26,17 +29,6 @@ const ROLE_LABELS = {
 } as const satisfies Record<Person["roles"][number], string>;
 
 export async function getStaticPaths() {
-  const isPublicEntity = (entity: {
-    readonly publicationStatus: "public" | "withheld";
-    readonly verificationStatus:
-      | "verified"
-      | "partially_verified"
-      | "pending_verification"
-      | "rejected";
-  }): boolean =>
-    entity.publicationStatus === "public" &&
-    (entity.verificationStatus === "verified" ||
-      entity.verificationStatus === "partially_verified");
   const catalog = await loadCatalog();
   const publicEpisodes = catalog.episodes.filter(isPublicEntity);
   const publicWorks = catalog.works.filter(isPublicEntity);

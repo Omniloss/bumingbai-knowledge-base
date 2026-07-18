@@ -101,6 +101,12 @@ describe.sequential("CatalogRepository", () => {
     expect(
       episodes.every((episode) => episode.publicationStatus === "public"),
     ).toBe(true);
+    expect(episodes.map((episode) => episode.slug)).not.toEqual(
+      expect.arrayContaining([
+        "pending-public-episode",
+        "rejected-public-episode",
+      ]),
+    );
   });
 
   it("orders equal-time episodes by number, null, and slug", async () => {
@@ -150,6 +156,9 @@ describe.sequential("CatalogRepository", () => {
     expect(works.every((work) => work.publicationStatus === "public")).toBe(
       true,
     );
+    expect(works.map((work) => work.slug)).not.toEqual(
+      expect.arrayContaining(["pending-public-work", "rejected-public-work"]),
+    );
   });
 
   it("orders explicit Chinese titles and same-title slugs", async () => {
@@ -196,6 +205,18 @@ describe.sequential("CatalogRepository", () => {
 
     // Then
     expect(episode).toBeUndefined();
+  });
+
+  it("does not resolve public but unverified slugs", async () => {
+    installControlledCatalogBoundary();
+    const { getEpisodeBySlug, getWorkBySlug } = await importCatalogRepository();
+
+    await expect(
+      getEpisodeBySlug("pending-public-episode"),
+    ).resolves.toBeUndefined();
+    await expect(
+      getWorkBySlug("rejected-public-work"),
+    ).resolves.toBeUndefined();
   });
 
   it("finds a work by slug", async () => {

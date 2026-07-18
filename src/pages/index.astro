@@ -5,7 +5,10 @@ import CjkTitle from "../components/CjkTitle.astro";
 import SearchBox from "../components/SearchBox.astro";
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import WorkCard from "../components/WorkCard.astro";
-import { canPublishRecommendation } from "../domain/publication.js";
+import {
+  canPublishRecommendation,
+  isPublicEntity,
+} from "../domain/publication.js";
 import type { Work } from "../domain/schemas/catalog.js";
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -22,11 +25,7 @@ const [catalog, publicEpisodes, catalogWorks] = await Promise.all([
 ]);
 // biome-ignore lint/correctness/noUnusedVariables: Astro iterates this collection in template markup.
 const latestEpisodes = publicEpisodes.slice(0, 3);
-const publicWorks = catalogWorks.filter(
-  (work) =>
-    work.verificationStatus === "verified" ||
-    work.verificationStatus === "partially_verified",
-);
+const publicWorks = catalogWorks.filter(isPublicEntity);
 const workById = new Map(publicWorks.map((work) => [work.id, work] as const));
 const recentWorks: Work[] = [];
 const recentWorkIds = new Set<Work["id"]>();

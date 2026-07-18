@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { dirname, join, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { isPublicEntity } from "../domain/publication.js";
 import {
   type Catalog,
   CatalogMetaSchema,
@@ -123,7 +124,7 @@ export function loadCatalog(): Promise<Catalog> {
 
 export async function listPublicEpisodes(): Promise<readonly Episode[]> {
   return (await loadCatalog()).episodes
-    .filter((episode) => episode.publicationStatus === "public")
+    .filter(isPublicEntity)
     .sort((left, right) => {
       const dateOrder =
         Date.parse(right.publishedAt) - Date.parse(left.publishedAt);
@@ -147,7 +148,7 @@ export async function listPublicEpisodes(): Promise<readonly Episode[]> {
 
 export async function listPublicWorks(): Promise<readonly Work[]> {
   return (await loadCatalog()).works
-    .filter((work) => work.publicationStatus === "public")
+    .filter(isPublicEntity)
     .sort((left, right) => {
       const titleOrder = left.title.localeCompare(right.title, "zh-CN");
       return titleOrder || compareSlugs(left.slug, right.slug);

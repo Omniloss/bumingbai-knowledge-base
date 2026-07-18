@@ -47,4 +47,19 @@ describe("candidateOutput author conflicts", () => {
       }),
     ]);
   });
+
+  it("uses normalized unique author names for a stable creator conflict ID", () => {
+    const duplicateOrder = output(
+      ["Author B", "Author A", "Author B"],
+      ["Author A"],
+    );
+    const canonicalOrder = output(["Author A", "Author B"], ["Author A"]);
+
+    expect(duplicateOrder.issues[0]?.id).toBe(canonicalOrder.issues[0]?.id);
+    expect(duplicateOrder.issues[0]?.candidates).toEqual([
+      "Author B",
+      "Author A",
+      "Author B",
+    ]);
+  });
 });

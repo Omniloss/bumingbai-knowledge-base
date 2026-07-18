@@ -96,4 +96,24 @@ describe("search index contract", () => {
     expect(output).toBe(reversedOutput);
     expect(parsed.some((record) => withheldIds.has(record.id))).toBe(false);
   });
+
+  it("omits a public record when its verification is pending", async () => {
+    // Given
+    const catalog = await loadCatalog();
+    const episode = catalog.episodes.at(0);
+    if (episode === undefined) throw new Error("expected an episode fixture");
+    const pendingCatalog = CatalogSchema.parse({
+      ...catalog,
+      episodes: [
+        { ...episode, verificationStatus: "pending_verification" },
+        ...catalog.episodes.slice(1),
+      ],
+    });
+
+    // When
+    const records = buildSearchIndex(pendingCatalog);
+
+    // Then
+    expect(records.some((record) => record.id === episode.id)).toBe(false);
+  });
 });

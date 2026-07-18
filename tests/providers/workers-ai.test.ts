@@ -64,15 +64,27 @@ describe("WorkersAiClient", () => {
   });
 
   it("uses current environment credentials when they are available", async () => {
-    const fetcher: typeof fetch = async () =>
-      Response.json({ success: true, result: { data: [[1]] } });
+    const requests: CapturedRequest[] = [];
+    const fetcher: typeof fetch = async (input, init) => {
+      requests.push({
+        init,
+        url: new URL(input instanceof Request ? input.url : input.toString()),
+      });
+      return Response.json({ success: true, result: { data: [[1]] } });
+    };
+    const client = new WorkersAiClient({ fetcher });
     vi.stubEnv("CLOUDFLARE_ACCOUNT_ID", "environment-account");
     vi.stubEnv("CLOUDFLARE_API_TOKEN", "environment-token");
 
     try {
-      await expect(
-        new WorkersAiClient({ fetcher }).embed(["text"]),
-      ).resolves.toEqual([[1]]);
+      await expect(client.embed(["text"])).resolves.toEqual([[1]]);
+      expect(requests[0]?.url.toString()).toBe(
+        "https://api.cloudflare.com/client/v4/accounts/environment-account/ai/run/@cf/qwen/qwen3-embedding-0.6b",
+      );
+      expect(new Headers(requests[0]?.init?.headers).get("Authorization")).toBe(
+        "Bearer environment-token",
+      );
+      expect(requests[0]?.init?.body).toBe(JSON.stringify({ text: ["text"] }));
     } finally {
       vi.unstubAllEnvs();
     }
@@ -120,6 +132,7 @@ describe("WorkersAiClient", () => {
     expect(error.message).not.toContain("super-secret-token");
     expect(error.message).not.toContain("response-private-material");
     expect(error.message).not.toContain("Authorization");
+    expect(error.message).not.toContain("test-token");
   });
 
   it.each([

@@ -39,7 +39,7 @@ function issue(
       provider,
       externalId,
       field,
-      ...candidates,
+      ...(field === "creatorIds" ? normalizedNames(candidates) : candidates),
     ),
     entityId: work.id,
     field,
@@ -215,9 +215,11 @@ export function candidateOutput(
   creatorNames: readonly string[],
   retrievedAt: string,
 ): CandidateOutput {
-  const image = imageAsset(work, candidate, retrievedAt);
+  const issues = conflictIssues(work, candidate, creatorNames, retrievedAt);
+  const image =
+    issues.length === 0 ? imageAsset(work, candidate, retrievedAt) : undefined;
   return {
     ...(image === undefined ? {} : { image }),
-    issues: conflictIssues(work, candidate, creatorNames, retrievedAt),
+    issues,
   };
 }

@@ -198,7 +198,7 @@ function addEpisodeRelations(
   }
 }
 
-export function buildHardRelations(catalog: Catalog): readonly WorkRelation[] {
+export function buildHardRelations(catalog: Catalog): WorkRelation[] {
   const relations = new Map<string, RelationAccumulator>();
 
   addGroupedWorkRelations(catalog, relations);

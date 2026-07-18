@@ -1,8 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, expectTypeOf, it } from "vitest";
 import { createStableId } from "../../src/domain/id.js";
 import {
   type Catalog,
   CatalogSchema,
+  type WorkRelation,
 } from "../../src/domain/schemas/catalog.js";
 import { buildHardRelations } from "../../src/relations/hard-relations.js";
 
@@ -162,6 +163,12 @@ function reversedCatalog(catalog: Catalog): Catalog {
 }
 
 describe("buildHardRelations", () => {
+  it("returns a mutable relation array contract", () => {
+    expectTypeOf(buildHardRelations(catalogFixture())).toEqualTypeOf<
+      WorkRelation[]
+    >();
+  });
+
   it("derives traceable, deterministic bidirectional hard relations", () => {
     const catalog = catalogFixture();
 

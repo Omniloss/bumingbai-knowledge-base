@@ -32,6 +32,7 @@ function issue(
   candidates: string[],
   url: string,
   retrievedAt: string,
+  stableIdCandidates?: readonly string[],
 ): ReviewIssue {
   return {
     id: createStableId(
@@ -40,7 +41,8 @@ function issue(
       provider,
       externalId,
       field,
-      ...(field === "creatorIds" ? normalizedNames(candidates) : candidates),
+      ...(stableIdCandidates ??
+        (field === "creatorIds" ? normalizedNames(candidates) : candidates)),
     ),
     entityId: work.id,
     field,
@@ -146,6 +148,7 @@ function conflictIssues(
           conflict.candidates,
           url,
           retrievedAt,
+          conflict.stableIdCandidates,
         ),
       );
     }

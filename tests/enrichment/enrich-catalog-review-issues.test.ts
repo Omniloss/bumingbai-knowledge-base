@@ -22,6 +22,18 @@ const conflictingClient: ProviderClient<unknown> = {
   }),
 };
 
+function wikidataRecord(instanceOf: string[], publicationYears: number[]) {
+  return {
+    externalId: "Q-CONFLICT",
+    externalIds: {},
+    instanceOf,
+    license: "CC0" as const,
+    publicationYears,
+    sourcePageUrl: "https://www.wikidata.org/wiki/Q-CONFLICT",
+    title: "First Work",
+  };
+}
+
 describe("enrichCatalog review issue deduplication", () => {
   it("preserves resolved and dismissed statuses when regenerated issues have the same IDs", async () => {
     const root = await createTemporaryRoot();
@@ -49,5 +61,68 @@ describe("enrichCatalog review issue deduplication", () => {
     expect(
       result.reviewIssues.find((issue) => issue.field === "creatorIds")?.status,
     ).toBe("dismissed");
+  });
+
+  it("preserves Wikidata issue statuses when semantic claims are reordered and duplicated", async () => {
+    const root = await createTemporaryRoot();
+    let reordered = false;
+    const wikidataClient: ProviderClient<unknown> = {
+      name: "wikidata",
+      lookup: async (query) => ({
+        provider: "wikidata",
+        retrievedAt: now,
+        records:
+          query.workId === "work_000000000001"
+            ? [
+                reordered
+                  ? wikidataRecord(
+                      ["Q24634210", "Q11424", "Q24634210"],
+                      [2000, 1999, 2000],
+                    )
+                  : wikidataRecord(["Q11424", "Q24634210"], [1999, 2000]),
+              ]
+            : [],
+      }),
+    };
+    const first = await enrichCatalog(catalogFixture(), [wikidataClient], {
+      cacheRoot: root,
+      now,
+    });
+    const issueIds = new Map(
+      first.reviewIssues.map((issue) => [issue.field, issue.id]),
+    );
+    const catalog = CatalogSchema.parse({
+      ...first,
+      reviewIssues: first.reviewIssues.map((issue) => ({
+        ...issue,
+        status: issue.field === "mediaType" ? "resolved" : "dismissed",
+      })),
+    });
+    reordered = true;
+
+    const result = await enrichCatalog(catalog, [wikidataClient], {
+      cacheRoot: root,
+      forceRefresh: true,
+      now,
+    });
+    const identityIssues = result.reviewIssues.filter((issue) =>
+      ["mediaType", "year"].includes(issue.field),
+    );
+
+    expect(identityIssues).toHaveLength(2);
+    expect(identityIssues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          field: "mediaType",
+          id: issueIds.get("mediaType"),
+          status: "resolved",
+        }),
+        expect.objectContaining({
+          field: "year",
+          id: issueIds.get("year"),
+          status: "dismissed",
+        }),
+      ]),
+    );
   });
 });

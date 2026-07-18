@@ -120,4 +120,23 @@ describe("candidateOutput Wikidata identity", () => {
     expect(output.issues).toEqual([]);
     expect(output.image?.url).toBe(image.url);
   });
+
+  it.each([
+    [
+      "P31",
+      ["Q11424", "Q24634210"],
+      [2001],
+      ["Q24634210", "Q11424", "Q24634210"],
+      [2001],
+      "mediaType",
+    ],
+    ["P577", ["Q571"], [1999, 2000], ["Q571"], [2000, 1999, 2000], "year"],
+  ] as const)("uses a stable issue ID for reordered and duplicated %s claims", (_claim, firstTypes, firstYears, secondTypes, secondYears, field) => {
+    const first = wikidataOutput([...firstTypes], [...firstYears]);
+    const second = wikidataOutput([...secondTypes], [...secondYears]);
+
+    expect(first.issues.find((issue) => issue.field === field)?.id).toBe(
+      second.issues.find((issue) => issue.field === field)?.id,
+    );
+  });
 });

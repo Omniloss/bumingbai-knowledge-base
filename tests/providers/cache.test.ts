@@ -147,6 +147,31 @@ describe("provider cache", () => {
     });
   });
 
+  it("preserves the previous cache when a replacement write cannot serialize", async () => {
+    const root = await mkdtemp(join(tmpdir(), "bumingbai-provider-"));
+    const directory = join(root, "open_library");
+    const previous = {
+      provider: "open_library" as const,
+      retrievedAt: "2026-07-14T00:00:00.000Z",
+      records: [{ externalId: "OL1W" }],
+    };
+
+    await writeProviderCache(root, "open_library", "work_123", previous);
+
+    await expect(
+      writeProviderCache(root, "open_library", "work_123", {
+        provider: "open_library",
+        retrievedAt: "2026-07-15T00:00:00.000Z",
+        records: [{ externalId: 1n }],
+      }),
+    ).rejects.toThrow("Do not know how to serialize a BigInt");
+
+    await expect(
+      readProviderCache(root, "open_library", "work_123"),
+    ).resolves.toEqual(previous);
+    expect(await readdir(directory)).toEqual(["work_123.json"]);
+  });
+
   it("removes its temporary file when rename fails", async () => {
     const root = await mkdtemp(join(tmpdir(), "bumingbai-provider-"));
     const directory = join(root, "open_library");

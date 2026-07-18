@@ -1,12 +1,5 @@
 import { randomUUID } from "node:crypto";
-import {
-  lstat,
-  mkdir,
-  readFile,
-  rename,
-  rm,
-  writeFile,
-} from "node:fs/promises";
+import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import { z } from "zod";
 import type { ProviderName, ProviderResult } from "./types.js";
@@ -87,20 +80,7 @@ async function publishCacheEntry(
   tempPath: string,
   finalPath: string,
 ): Promise<void> {
-  try {
-    await rename(tempPath, finalPath);
-  } catch (renameError: unknown) {
-    const existingEntry = await lstat(finalPath).catch(
-      (statError: unknown): never => {
-        if (isMissingFile(statError)) throw renameError;
-        throw statError;
-      },
-    );
-
-    if (!existingEntry.isFile()) throw renameError;
-    await rm(finalPath);
-    await rename(tempPath, finalPath);
-  }
+  await rename(tempPath, finalPath);
 }
 
 export async function readProviderCache<T>(

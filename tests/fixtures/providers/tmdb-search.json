@@ -69,6 +69,39 @@
     "total_pages": 1,
     "total_results": 3
   },
+  "movieImages": {
+    "id": 123,
+    "posters": [
+      {
+        "file_path": "/poster.jpg",
+        "width": 2000,
+        "height": 3000,
+        "iso_639_1": "ko"
+      }
+    ]
+  },
+  "tvImages": {
+    "id": 456,
+    "posters": [
+      {
+        "file_path": "/signal.jpg",
+        "width": 1000,
+        "height": 1500,
+        "iso_639_1": "ko"
+      }
+    ]
+  },
+  "tvUsImages": {
+    "id": 458,
+    "posters": [
+      {
+        "file_path": "/signal-us.jpg",
+        "width": 800,
+        "height": 1200,
+        "iso_639_1": "en"
+      }
+    ]
+  },
   "malformedMovie": {
     "results": [
       {

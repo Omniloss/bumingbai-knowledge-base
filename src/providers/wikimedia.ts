@@ -42,6 +42,8 @@ const CommonsResponseSchema = z.object({
             z.object({
               url: z.url(),
               descriptionurl: z.url(),
+              width: z.number().int().positive(),
+              height: z.number().int().positive(),
               extmetadata: z.object({
                 LicenseShortName: MetadataValueSchema.optional(),
                 Artist: MetadataValueSchema.optional(),
@@ -62,6 +64,9 @@ export type CommonsImageCandidate = {
   artist: string;
   credit: string;
   attribution: string;
+  width: number;
+  height: number;
+  handling: "hotlink_only" | "mirror_allowed";
 };
 
 export type WikimediaRecord = {
@@ -139,7 +144,16 @@ function imageFromCommons(
     artist,
     credit,
     attribution: `${credit}; ${artist}`,
+    width: info.width,
+    height: info.height,
+    handling: isFreeLicense(license) ? "mirror_allowed" : "hotlink_only",
   };
+}
+
+function isFreeLicense(license: string): boolean {
+  return /^(?:CC0|CC BY(?:-SA)?(?: \d\.\d)?|Public domain)$/iu.test(
+    license.trim(),
+  );
 }
 
 export class WikimediaClient implements ProviderClient<WikimediaRecord> {
@@ -156,7 +170,7 @@ export class WikimediaClient implements ProviderClient<WikimediaRecord> {
       format: "json",
       prop: "imageinfo",
       titles: `File:${filename}`,
-      iiprop: "url|extmetadata",
+      iiprop: "url|size|extmetadata",
       iiextmetadatafilter: "LicenseShortName|Artist|Credit",
     });
     return imageFromCommons(

@@ -6,6 +6,9 @@ import { TmdbClient } from "../../src/providers/tmdb.js";
 const FixtureSchema = z.object({
   movie: z.unknown(),
   tv: z.unknown(),
+  movieImages: z.unknown(),
+  tvImages: z.unknown(),
+  tvUsImages: z.unknown(),
   malformedMovie: z.unknown(),
   malformedTv: z.unknown(),
 });
@@ -48,7 +51,9 @@ describe("TmdbClient", () => {
     const fetcher: typeof fetch = async (input, init) => {
       const url = new URL(input instanceof Request ? input.url : input);
       requests.push(init === undefined ? { url } : { init, url });
-      return Response.json(fixture.movie);
+      return Response.json(
+        url.pathname.endsWith("/images") ? fixture.movieImages : fixture.movie,
+      );
     };
 
     const result = await new TmdbClient("test-token", fetcher).lookup(
@@ -61,12 +66,22 @@ describe("TmdbClient", () => {
       "Bearer test-token",
     );
     expect(result.records).toHaveLength(1);
+    expect(requests.map(({ url }) => url.pathname)).toEqual([
+      "/3/search/movie",
+      "/3/movie/123/images",
+    ]);
     expect(result.records[0]).toMatchObject({
       externalId: "123",
       title: "변호인",
       originalTitle: "The Attorney",
       originalLanguage: "ko",
-      posterPath: "/poster.jpg",
+      poster: {
+        handling: "hotlink_only",
+        url: "https://image.tmdb.org/t/p/original/poster.jpg",
+        width: 2000,
+        height: 3000,
+        language: "ko",
+      },
     });
   });
 
@@ -74,9 +89,12 @@ describe("TmdbClient", () => {
     const fixture = await loadFixture();
     let requestedPath = "";
     const fetcher: typeof fetch = async (input) => {
-      requestedPath = new URL(input instanceof Request ? input.url : input)
+      const path = new URL(input instanceof Request ? input.url : input)
         .pathname;
-      return Response.json(fixture.tv);
+      requestedPath = path;
+      return Response.json(
+        path.endsWith("/images") ? fixture.tvImages : fixture.tv,
+      );
     };
 
     const result = await new TmdbClient("test-token", fetcher).lookup({
@@ -84,20 +102,30 @@ describe("TmdbClient", () => {
       originalLanguage: "ko",
     });
 
-    expect(requestedPath).toBe("/3/search/tv");
+    expect(requestedPath).toBe("/3/tv/456/images");
     expect(result.records).toHaveLength(1);
     expect(result.records[0]).toMatchObject({
       externalId: "456",
       title: "시그널",
       originalTitle: "Signal",
       originalLanguage: "ko",
-      posterPath: "/signal.jpg",
+      poster: {
+        width: 1000,
+        height: 1500,
+        language: "ko",
+      },
     });
   });
 
   it("deliberately keeps all original languages when none is supplied", async () => {
     const fixture = await loadFixture();
-    const fetcher: typeof fetch = async () => Response.json(fixture.tv);
+    const fetcher: typeof fetch = async (input) => {
+      const path = new URL(input instanceof Request ? input.url : input)
+        .pathname;
+      if (path === "/3/tv/456/images") return Response.json(fixture.tvImages);
+      if (path === "/3/tv/458/images") return Response.json(fixture.tvUsImages);
+      return Response.json(fixture.tv);
+    };
 
     const result = await new TmdbClient("test-token", fetcher).lookup(
       televisionQuery,
@@ -107,6 +135,24 @@ describe("TmdbClient", () => {
       "456",
       "458",
     ]);
+  });
+
+  it("preserves a title record when the images endpoint fails", async () => {
+    const fixture = await loadFixture();
+    const fetcher: typeof fetch = async (input) => {
+      const path = new URL(input instanceof Request ? input.url : input)
+        .pathname;
+      return path.endsWith("/images")
+        ? new Response("unavailable", { status: 503 })
+        : Response.json(fixture.movie);
+    };
+
+    const result = await new TmdbClient("test-token", fetcher).lookup(
+      movieQuery,
+    );
+
+    expect(result.records[0]?.externalId).toBe("123");
+    expect(result.records[0]?.poster).toBeUndefined();
   });
 
   it("normalizes original-title matches without consulting the runtime locale", async () => {

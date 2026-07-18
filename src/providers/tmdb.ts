@@ -19,6 +19,16 @@ const TvSchema = z.object({
 });
 const MovieResponseSchema = z.object({ results: z.array(MovieSchema) });
 const TvResponseSchema = z.object({ results: z.array(TvSchema) });
+const ImagesResponseSchema = z.object({
+  posters: z.array(
+    z.object({
+      file_path: z.string(),
+      width: z.number().int().positive(),
+      height: z.number().int().positive(),
+      iso_639_1: z.string().nullable().optional(),
+    }),
+  ),
+});
 
 export type TmdbRecord = {
   externalId: string;
@@ -26,7 +36,13 @@ export type TmdbRecord = {
   originalTitle: string;
   originalLanguage: string;
   releaseYear?: number;
-  posterPath?: string;
+  poster?: {
+    handling: "hotlink_only";
+    url: string;
+    width: number;
+    height: number;
+    language?: string;
+  };
 };
 
 function normalize(value: string): string {
@@ -62,7 +78,6 @@ function movieRecord(movie: z.infer<typeof MovieSchema>): TmdbRecord {
   };
   const releaseYear = yearFromDate(movie.release_date);
   if (releaseYear !== undefined) record.releaseYear = releaseYear;
-  if (movie.poster_path !== null) record.posterPath = movie.poster_path;
   return record;
 }
 
@@ -75,7 +90,6 @@ function tvRecord(show: z.infer<typeof TvSchema>): TmdbRecord {
   };
   const releaseYear = yearFromDate(show.first_air_date);
   if (releaseYear !== undefined) record.releaseYear = releaseYear;
-  if (show.poster_path !== null) record.posterPath = show.poster_path;
   return record;
 }
 
@@ -87,6 +101,45 @@ export class TmdbClient implements ProviderClient<TmdbRecord> {
     private readonly fetcher: typeof fetch = fetch,
   ) {
     if (!token) throw new Error("TMDB_API_TOKEN is required");
+  }
+
+  private headers(): HeadersInit {
+    return {
+      Accept: "application/json",
+      Authorization: `Bearer ${this.token}`,
+    };
+  }
+
+  private async poster(
+    path: "movie" | "tv",
+    externalId: number,
+    posterPath: string | null,
+  ): Promise<TmdbRecord["poster"]> {
+    if (posterPath === null) return undefined;
+    try {
+      const response = await this.fetcher(
+        `https://api.themoviedb.org/3/${path}/${externalId}/images`,
+        { headers: this.headers() },
+      );
+      if (!response.ok) return undefined;
+      const payload: unknown = await response.json();
+      const poster = ImagesResponseSchema.parse(payload).posters.find(
+        (candidate) => candidate.file_path === posterPath,
+      );
+      if (poster === undefined) return undefined;
+      const result: TmdbRecord["poster"] = {
+        handling: "hotlink_only",
+        url: `https://image.tmdb.org/t/p/original${poster.file_path}`,
+        width: poster.width,
+        height: poster.height,
+      };
+      if (poster.iso_639_1 !== undefined && poster.iso_639_1 !== null) {
+        result.language = poster.iso_639_1;
+      }
+      return result;
+    } catch {
+      return undefined;
+    }
   }
 
   async lookup(query: WorkLookup): Promise<ProviderResult<TmdbRecord>> {
@@ -107,30 +160,40 @@ export class TmdbClient implements ProviderClient<TmdbRecord> {
     const url = new URL(`https://api.themoviedb.org/3/search/${path}`);
     url.searchParams.set("query", query.originalTitle ?? query.title);
     const response = await this.fetcher(url, {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${this.token}`,
-      },
+      headers: this.headers(),
     });
     if (!response.ok)
       throw new Error(`TMDB request failed: ${response.status}`);
     const payload: unknown = await response.json();
-    const records =
+    const candidates =
       path === "movie"
-        ? MovieResponseSchema.parse(payload).results.map(movieRecord)
-        : TvResponseSchema.parse(payload).results.map(tvRecord);
+        ? MovieResponseSchema.parse(payload).results.map((item) => ({
+            item,
+            record: movieRecord(item),
+          }))
+        : TvResponseSchema.parse(payload).results.map((item) => ({
+            item,
+            record: tvRecord(item),
+          }));
+    const matched = candidates.filter(({ record }) =>
+      matches(
+        query,
+        record.originalTitle,
+        record.originalLanguage,
+        record.releaseYear,
+      ),
+    );
+    const records = await Promise.all(
+      matched.map(async ({ item, record }) => {
+        const poster = await this.poster(path, item.id, item.poster_path);
+        return poster === undefined ? record : { ...record, poster };
+      }),
+    );
 
     return {
       provider: this.name,
       retrievedAt: new Date().toISOString(),
-      records: records.filter((record) =>
-        matches(
-          query,
-          record.originalTitle,
-          record.originalLanguage,
-          record.releaseYear,
-        ),
-      ),
+      records,
     };
   }
 }

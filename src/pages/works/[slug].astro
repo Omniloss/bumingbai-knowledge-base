@@ -20,6 +20,7 @@ import type {
   Work,
   WorkRelation,
 } from "../../domain/schemas/catalog.js";
+import { selectHeroImage } from "../../images/policy.js";
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { loadCatalog } from "../../lib/catalog.js";
@@ -108,14 +109,9 @@ export async function getStaticPaths() {
           Date.parse(left.episode.publishedAt);
         return dateOrder || left.evidence.id.localeCompare(right.evidence.id);
       });
-    const workImages = catalog.imageAssets
-      .filter(
-        (image) =>
-          image.workId === work.id &&
-          !image.broken &&
-          image.handling !== "display_prohibited",
-      )
-      .toSorted((left, right) => left.id.localeCompare(right.id));
+    const workImages = catalog.imageAssets.filter(
+      (image) => image.workId === work.id,
+    );
     const relationRecords = catalog.workRelations.flatMap((relation) => {
       if (relation.fromWorkId !== work.id) return [];
       const target = worksById.get(relation.toWorkId);
@@ -156,7 +152,7 @@ export async function getStaticPaths() {
         }),
         editionRecords,
         evidenceRecords,
-        heroImage: workImages[0] ?? null,
+        heroImage: selectHeroImage(work, workImages, catalog.generatedAt),
         hardRelations: relationRecords.filter(
           ({ relation }) => relation.kind !== "similar",
         ),
@@ -207,10 +203,12 @@ const work = Astro.props.work;
     <div class="cover-slot">
       {heroImage ? (
         <img
+          data-work-hero
           src={heroImage.url}
-          alt={`${work.title}的已核验图片`}
+          alt={`《${work.title}》封面`}
           width={heroImage.width}
           height={heroImage.height}
+          decoding="async"
         />
       ) : (
         <div class="typographic-cover" role="img" aria-label={`${work.title}暂无已核验图片`}>

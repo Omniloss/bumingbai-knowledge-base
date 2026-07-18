@@ -12,6 +12,10 @@ const OpenLibraryResponseSchema = z.object({
     }),
   ),
 });
+const OpenLibraryCoverSchema = z.object({
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+});
 
 export type OpenLibraryRecord = {
   externalId: string;
@@ -21,6 +25,9 @@ export type OpenLibraryRecord = {
   cover?: {
     handling: "hotlink_only";
     url: string;
+    sourcePageUrl: string;
+    width: number;
+    height: number;
   };
 };
 
@@ -36,6 +43,7 @@ function authorsMatch(authorNames: string[], queryNames: string[]): boolean {
 
 function toRecord(
   document: z.infer<typeof OpenLibraryResponseSchema>["docs"][number],
+  cover: OpenLibraryRecord["cover"],
 ): OpenLibraryRecord {
   const authorNames = document.author_name ?? [];
   const record: OpenLibraryRecord = {
@@ -47,12 +55,7 @@ function toRecord(
   if (document.first_publish_year !== undefined) {
     record.firstPublishYear = document.first_publish_year;
   }
-  if (document.cover_i !== undefined) {
-    record.cover = {
-      handling: "hotlink_only",
-      url: `https://covers.openlibrary.org/b/id/${document.cover_i}-L.jpg?default=false`,
-    };
-  }
+  if (cover !== undefined) record.cover = cover;
   return record;
 }
 
@@ -60,6 +63,30 @@ export class OpenLibraryClient implements ProviderClient<OpenLibraryRecord> {
   readonly name = "open_library" as const;
 
   constructor(private readonly fetcher: typeof fetch = fetch) {}
+
+  private async cover(
+    coverId: number | undefined,
+    workKey: string,
+  ): Promise<OpenLibraryRecord["cover"]> {
+    if (coverId === undefined) return undefined;
+    try {
+      const response = await this.fetcher(
+        `https://covers.openlibrary.org/b/id/${coverId}.json`,
+      );
+      if (!response.ok) return undefined;
+      const payload: unknown = await response.json();
+      const metadata = OpenLibraryCoverSchema.parse(payload);
+      return {
+        handling: "hotlink_only",
+        url: `https://covers.openlibrary.org/b/id/${coverId}-L.jpg?default=false`,
+        sourcePageUrl: `https://openlibrary.org${workKey}`,
+        width: metadata.width,
+        height: metadata.height,
+      };
+    } catch {
+      return undefined;
+    }
+  }
 
   async lookup(query: WorkLookup): Promise<ProviderResult<OpenLibraryRecord>> {
     const url = new URL("https://openlibrary.org/search.json");
@@ -75,16 +102,21 @@ export class OpenLibraryClient implements ProviderClient<OpenLibraryRecord> {
     const parsed = OpenLibraryResponseSchema.parse(payload);
     const title = normalize(query.title);
 
+    const matched = parsed.docs.filter(
+      (document) =>
+        normalize(document.title) === title &&
+        authorsMatch(document.author_name ?? [], query.creatorNames),
+    );
+    const records = await Promise.all(
+      matched.map(async (document) =>
+        toRecord(document, await this.cover(document.cover_i, document.key)),
+      ),
+    );
+
     return {
       provider: this.name,
       retrievedAt: new Date().toISOString(),
-      records: parsed.docs
-        .filter(
-          (document) =>
-            normalize(document.title) === title &&
-            authorsMatch(document.author_name ?? [], query.creatorNames),
-        )
-        .map(toRecord),
+      records,
     };
   }
 }

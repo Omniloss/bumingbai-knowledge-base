@@ -66,9 +66,9 @@ for (const viewport of VIEWPORTS) {
     });
 
     const main = page.getByRole("main");
-    const fallback = page.getByText("暂无已核验图片");
+    const hero = page.locator("[data-work-hero]");
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(fallback).toBeVisible();
+    await expect(hero).toBeVisible();
     await page.evaluate(async () => {
       await document.fonts.ready;
       await new Promise<void>((resolve) => {
@@ -76,7 +76,7 @@ for (const viewport of VIEWPORTS) {
       });
     });
     const initialBox = await main.boundingBox();
-    const initialFallbackBox = await fallback.boundingBox();
+    const initialHeroBox = await hero.boundingBox();
     await page.evaluate(
       () =>
         new Promise<void>((resolve) => {
@@ -84,11 +84,13 @@ for (const viewport of VIEWPORTS) {
         }),
     );
     const settledBox = await main.boundingBox();
-    const settledFallbackBox = await fallback.boundingBox();
+    const settledHeroBox = await hero.boundingBox();
 
     expect(settledBox).toEqual(initialBox);
-    expect(settledFallbackBox).toEqual(initialFallbackBox);
-    expect(blockedImageRequests).toEqual([]);
+    expect(settledHeroBox).toEqual(initialHeroBox);
+    expect(blockedImageRequests.map(decodeURI)).toContainEqual(
+      expect.stringContaining("/generated-covers/经济发展理论-6d5b7b.svg"),
+    );
     const badgeSignals = await page
       .locator(".status-badge")
       .evaluateAll((badges) =>

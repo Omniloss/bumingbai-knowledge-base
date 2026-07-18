@@ -11,6 +11,10 @@ const malformedFixtureUrl = new URL(
   "../fixtures/providers/open-library-malformed.json",
   import.meta.url,
 );
+const coverFixtureUrl = new URL(
+  "../fixtures/providers/open-library-cover.json",
+  import.meta.url,
+);
 const errorFixtureUrl = new URL(
   "../fixtures/providers/provider-error.json",
   import.meta.url,
@@ -29,13 +33,18 @@ describe("OpenLibraryClient", () => {
   it("returns only exact normalized title and author candidates", async () => {
     const requests: URL[] = [];
     const fetcher: typeof fetch = async (input) => {
-      requests.push(new URL(input instanceof Request ? input.url : input));
-      return new Response(await readFile(fixtureUrl, "utf8"), { status: 200 });
+      const url = new URL(input instanceof Request ? input.url : input);
+      requests.push(url);
+      const responseUrl =
+        url.hostname === "covers.openlibrary.org"
+          ? coverFixtureUrl
+          : fixtureUrl;
+      return new Response(await readFile(responseUrl, "utf8"), { status: 200 });
     };
 
     const result = await new OpenLibraryClient(fetcher).lookup(query);
 
-    expect(requests).toHaveLength(1);
+    expect(requests).toHaveLength(2);
     const request = requests[0];
     if (request === undefined)
       throw new Error("Expected one Open Library request");
@@ -53,8 +62,27 @@ describe("OpenLibraryClient", () => {
       cover: {
         handling: "hotlink_only",
         url: "https://covers.openlibrary.org/b/id/126481-L.jpg?default=false",
+        width: 1600,
+        height: 2400,
+        sourcePageUrl: "https://openlibrary.org/works/OL45804W",
       },
     });
+  });
+
+  it("preserves a bibliographic record when cover metadata is unavailable", async () => {
+    const fetcher: typeof fetch = async (input) => {
+      const url = new URL(input instanceof Request ? input.url : input);
+      if (url.hostname === "covers.openlibrary.org") {
+        return new Response("unavailable", { status: 503 });
+      }
+      return new Response(await readFile(fixtureUrl, "utf8"), { status: 200 });
+    };
+
+    const result = await new OpenLibraryClient(fetcher).lookup(query);
+
+    expect(result.records).toHaveLength(1);
+    expect(result.records[0]?.externalId).toBe("OL45804W");
+    expect(result.records[0]?.cover).toBeUndefined();
   });
 
   it("normalizes matches without consulting the runtime locale", async () => {

@@ -1,15 +1,28 @@
 ---
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import WorkCard from "../../components/WorkCard.astro";
+import { canUseAsThumbnail, selectHeroImage } from "../../images/policy.js";
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { listPublicWorks } from "../../lib/catalog.js";
+import { listPublicWorks, loadCatalog } from "../../lib/catalog.js";
 
+const catalog = await loadCatalog();
 const works = (await listPublicWorks()).filter(
   (work) =>
     work.verificationStatus === "verified" ||
     work.verificationStatus === "partially_verified",
 );
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this value in template markup.
+const workCards = works.map((work) => ({
+  work,
+  image: selectHeroImage(
+    work,
+    catalog.imageAssets.filter(
+      (image) => image.workId === work.id && canUseAsThumbnail(image),
+    ),
+    catalog.generatedAt,
+  ),
+}));
 const mediaOptions = [
   { label: "书籍", value: "book" },
   { label: "电影", value: "film" },
@@ -65,7 +78,7 @@ const availableStatusOptions = statusOptions.filter((option) =>
   </form>
 
   <section class="record-grid works-grid" aria-label="公开作品" data-work-list>
-    {works.map((work) => <WorkCard work={work} />)}
+    {workCards.map(({ image, work }) => <WorkCard image={image} work={work} />)}
   </section>
 
   <div class="filter-empty" data-filter-empty hidden>

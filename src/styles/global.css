@@ -268,6 +268,35 @@ a {
   margin: 0;
 }
 
+.work-card.has-thumbnail {
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.work-card-cover,
+.work-card-cover img {
+  display: block;
+  width: 100%;
+}
+
+.work-card-cover img {
+  aspect-ratio: var(--cover-aspect);
+  height: auto;
+  border: var(--rule-thin) solid var(--line);
+  object-fit: cover;
+}
+
+.work-card-content {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.work-card-content > * {
+  margin: 0;
+}
+
 .catalog-card :is(h2, h3, h4) {
   font-family: var(--font-serif);
   font-size: var(--text-card-title);

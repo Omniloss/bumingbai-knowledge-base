@@ -13,8 +13,12 @@
 - 硬关系从目录事实和公开证据确定性派生，同一期不参与相似分数，必须保持双向、稳定 ID 与来源可追溯。
 - `same_episode` 只属于硬关系；向量只能增强已有结构化相似度，不能单独推荐。
 - Workers AI 缺失凭据或临时失败必须回退且不得覆盖旧缓存，401/403 必须作为配置错误；所有外部响应均须经 Zod 解析。
+- 运行 `bun run tools/enrich-catalog.ts` 增量更新外部元数据、图片和作品关系；`--offline` 只读最近成功缓存，`--refresh` 强制刷新，两者不得同时使用。作品与提供方使用规范化 `WorkLookup` 的 SHA-256 指纹和稳定 `no-match` 标记跳过未变化请求，失败时保留旧缓存与旧目录数据。
+- 增强结果必须先通过 `CatalogSchema.parse` 和零条 `validateCatalog` 问题，再用同目录唯一临时文件原子写入四个目标 JSON；任一步失败必须清理临时文件并保留旧文件。
+- 相似关系不得混入 `same_episode` 等硬关系，结构化分数至少为 0.25，每部作品最多保留 6 条；向量只能增强已有非向量理由，Workers AI 向量只存缓存，不进入公开目录。
 - 新增同步或推荐逻辑时保留原始来源 URL、抓取时间和核验状态，使结果可追溯。
-- Open Library、TMDB、Wikidata 和 Commons 提供方只返回候选，不得改写目录事实；外部响应必须经 Zod 解析并通过注入 fetch 的固定 fixture 测试。Open Library 封面只热链接，TMDB 只保留 poster path，Commons 图片缺少来源页、许可、作者或 credit 时必须省略。
+- Open Library、TMDB、Wikidata 和 Commons 提供方只返回候选，不得改写目录事实；外部响应必须经 Zod 解析并通过注入 fetch 的固定 fixture 测试。Open Library 封面只热链接，TMDB 必须用搜索结果 poster path 匹配官方图片端点尺寸，Commons 图片缺少来源页、许可、作者、credit 或尺寸时必须省略。
+- 提供方图片尺寸只能来自官方尺寸接口，不得推测或编造；Open Library 与 TMDB 图片保持 `hotlink_only`，Commons 必须逐文件保存尺寸、来源页、许可和署名，只有识别出的自由或公版许可可标记 `mirror_allowed`，本任务不上传 R2。
 - `src/images/policy.ts` 只定义纯图像选择策略：首图按合资格的原版 hero、原版、译版、区域版顺序选择，同级按面积降序和稳定 ID 字典序决定；资格以最长边阈值判断。只有 `mirror_allowed` 图片可派生 WebP 或 AVIF，`hotlink_only` 必须直接使用提供方尺寸。
 - 公开方法页必须保留官方 TMDB 标志及原文声明 `This product uses the TMDB API but is not endorsed or certified by TMDB.`，TMDB token 只能通过运行时注入且不得记录。
 - 重复 Work 或 Edition 合并必须保留完整候选及原始置信度：先筛最高置信组，再按稳定键选值；复核描述必须覆盖导致冲突的完整载荷，同 ISBN 最高组冲突时所有关联 Edition 都须暂缓发布，结果不得依赖输入顺序。

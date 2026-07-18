@@ -125,17 +125,21 @@ test("non-book detail never renders book-only version fields", async ({
   });
 });
 
-test("work detail keeps image and relation gaps explicit", async ({ page }) => {
-  await test.step("Given the baseline book detail without image or relation records", () =>
-    page.goto(BOOK_PATH));
+test("work detail uses the generated cover and keeps missing similarity explicit", async ({
+  page,
+}) => {
+  await test.step("Given the enriched book detail", () => page.goto(BOOK_PATH));
 
   const headerSection = page.locator('[data-section-order="0"]');
   const hardRelations = page.locator('[data-section-order="3"]');
   const similarRelations = page.locator('[data-section-order="4"]');
 
-  await test.step("Then each gap is represented honestly instead of being fabricated", async () => {
-    await expect(headerSection.getByText("暂无已核验图片")).toBeVisible();
-    await expect(hardRelations.getByText("暂无已核验关联作品")).toBeVisible();
+  await test.step("Then the local fallback and derived hard relations are shown without fabricated similarity", async () => {
+    await expect(headerSection.locator("[data-work-hero]")).toHaveAttribute(
+      "src",
+      "/generated-covers/经济发展理论-6d5b7b.svg",
+    );
+    await expect(hardRelations.locator(".relation-record")).toHaveCount(2);
     await expect(
       similarRelations.getByText("暂无已核验相似作品"),
     ).toBeVisible();

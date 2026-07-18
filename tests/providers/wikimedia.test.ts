@@ -87,7 +87,9 @@ describe("WikimediaClient", () => {
       "query",
     ]);
     const commonsRequest = requests[2];
-    expect(commonsRequest?.searchParams.get("iiprop")).toBe("url|extmetadata");
+    expect(commonsRequest?.searchParams.get("iiprop")).toBe(
+      "url|size|extmetadata",
+    );
     expect(commonsRequest?.searchParams.get("iiextmetadatafilter")).toBe(
       "LicenseShortName|Artist|Credit",
     );
@@ -106,6 +108,9 @@ describe("WikimediaClient", () => {
       artist: "Example Archive",
       credit: "Example Archive collection",
       attribution: expect.any(String),
+      width: 1800,
+      height: 2700,
+      handling: "mirror_allowed",
     });
   });
 

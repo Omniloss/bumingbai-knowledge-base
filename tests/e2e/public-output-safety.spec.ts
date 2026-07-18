@@ -79,6 +79,7 @@ test("all generated pages keep one h1 and no unsafe or nonpublic markup", async 
     const html = await readFile(file, "utf8");
     scannedFiles += 1;
     expect(html.match(/<h1(?:\s|>)/gu) ?? [], file).toHaveLength(1);
+    expect(html, file).not.toContain("sync-candidates.json");
     expect(html, file).not.toMatch(FORBIDDEN_PUBLIC_REVIEW_COPY);
     expect(html, file).not.toContain('data-publication-status="withheld"');
     expect(html, file).not.toContain(
@@ -104,4 +105,7 @@ test("all generated pages keep one h1 and no unsafe or nonpublic markup", async 
     }
   }
   expect(scannedFiles).toBe(files.length);
+  await expect(
+    readFile("public/search-index.json", "utf8"),
+  ).resolves.not.toContain("sync-candidates.json");
 });

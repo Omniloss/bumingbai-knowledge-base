@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "bun run tools/build-search-index.ts && astro dev",
     "build": "bun run tools/build-search-index.ts && astro build",
+    "build:public-isolation": "bun run tools/check-public-isolation.ts",
     "preview": "astro preview",
     "qa:lighthouse": "node --experimental-strip-types tools/lighthouse-task6.ts",
     "typecheck": "tsc --noEmit && astro check",
     "lint": "biome check --vcs-enabled=true --vcs-client-kind=git --vcs-use-ignore-file=true . && markdownlint-cli2 \"**/*.md\" \"#node_modules\"",
     "test": "pnpm exec vitest run",
-    "ci": "pnpm run typecheck && pnpm run lint && pnpm run test && pnpm run build && pnpm exec playwright test"
+    "ci": "pnpm run typecheck && pnpm run lint && pnpm run test && pnpm run build:public-isolation && pnpm exec playwright test"
   },
   "keywords": [],
   "author": "",

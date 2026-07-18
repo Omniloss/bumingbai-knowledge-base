@@ -13,6 +13,19 @@ import type { RecommendationCandidate } from "./recommendation-parser.js";
 
 const writes = new Map<string, Promise<string>>();
 
+type DirectoryIdentity = {
+  path: string;
+  realPath: string;
+  dev: number;
+  ino: number;
+};
+type QueuePaths = {
+  root: DirectoryIdentity;
+  data: DirectoryIdentity;
+  review: DirectoryIdentity;
+  destination: string;
+};
+
 function compareText(left: string, right: string): number {
   return left === right ? 0 : left < right ? -1 : 1;
 }
@@ -40,12 +53,12 @@ function candidateKey(candidate: RecommendationCandidate): string {
 }
 
 function pathWithin(directory: string, path: string): boolean {
-  const pathFromDirectory = relative(directory, path);
+  const difference = relative(directory, path);
   return (
-    pathFromDirectory === "" ||
-    (!pathFromDirectory.startsWith(`..${sep}`) &&
-      pathFromDirectory !== ".." &&
-      !isAbsolute(pathFromDirectory))
+    difference === "" ||
+    (!difference.startsWith(`..${sep}`) &&
+      difference !== ".." &&
+      !isAbsolute(difference))
   );
 }
 
@@ -67,76 +80,107 @@ async function existingStats(path: string): Promise<Stats | undefined> {
   }
 }
 
-async function directory(path: string, label: string): Promise<void> {
-  const before = await existingStats(path);
-  if (before?.isSymbolicLink()) {
+function checkedDirectoryStats(stats: Stats, label: string): void {
+  if (stats.isSymbolicLink())
     throw new Error(`${label} must not be a symbolic link`);
-  }
-  if (before !== undefined && !before.isDirectory()) {
-    throw new Error(`${label} must be a directory`);
-  }
-  if (before === undefined) await mkdir(path);
-  const after = await lstat(path);
-  if (after.isSymbolicLink()) {
-    throw new Error(`${label} must not be a symbolic link`);
-  }
-  if (!after.isDirectory()) throw new Error(`${label} must be a directory`);
+  if (!stats.isDirectory()) throw new Error(`${label} must be a directory`);
 }
 
-async function queuePaths(root: string): Promise<{
-  directory: string;
-  destination: string;
-}> {
-  const rootPath = resolve(root);
-  const rootStats = await existingStats(rootPath);
-  if (rootStats?.isSymbolicLink()) {
-    throw new Error(
-      "Recommendation candidate queue root must not be a symbolic link",
-    );
-  }
-  if (rootStats === undefined || !rootStats.isDirectory()) {
-    throw new Error("Recommendation candidate queue root must be a directory");
-  }
-  const rootRealPath = await realpath(rootPath);
-  const dataPath = resolve(rootPath, "data");
-  await directory(dataPath, "Recommendation candidate queue parent");
-  const dataRealPath = await realpath(dataPath);
-  if (!pathWithin(rootRealPath, dataRealPath)) {
-    throw new Error("Recommendation candidate queue parent escapes root");
-  }
-  const reviewPath = resolve(dataPath, "review");
-  await directory(reviewPath, "Recommendation candidate queue parent");
-  const reviewRealPath = await realpath(reviewPath);
-  if (!pathWithin(rootRealPath, reviewRealPath)) {
-    throw new Error("Recommendation candidate queue parent escapes root");
-  }
+async function prepareDirectory(
+  path: string,
+  label: string,
+): Promise<DirectoryIdentity> {
+  const before = await existingStats(path);
+  if (before !== undefined) checkedDirectoryStats(before, label);
+  if (before === undefined) await mkdir(path);
+  const stats = await lstat(path);
+  checkedDirectoryStats(stats, label);
   return {
-    directory: reviewPath,
-    destination: resolve(reviewPath, "sync-candidates.json"),
+    path,
+    realPath: await realpath(path),
+    dev: stats.dev,
+    ino: stats.ino,
   };
 }
 
-async function verifyDestination(
-  destination: string,
-  directoryPath: string,
+async function prepareQueuePaths(root: string): Promise<QueuePaths> {
+  const rootPath = resolve(root);
+  const rootStats = await existingStats(rootPath);
+  if (rootStats === undefined)
+    throw new Error("Recommendation candidate queue root must be a directory");
+  checkedDirectoryStats(rootStats, "Recommendation candidate queue root");
+  const rootDirectory: DirectoryIdentity = {
+    path: rootPath,
+    realPath: await realpath(rootPath),
+    dev: rootStats.dev,
+    ino: rootStats.ino,
+  };
+  const data = await prepareDirectory(
+    resolve(rootPath, "data"),
+    "Recommendation candidate queue parent",
+  );
+  if (!pathWithin(rootDirectory.realPath, data.realPath)) {
+    throw new Error("Recommendation candidate queue parent escapes root");
+  }
+  const review = await prepareDirectory(
+    resolve(data.path, "review"),
+    "Recommendation candidate queue parent",
+  );
+  if (!pathWithin(rootDirectory.realPath, review.realPath)) {
+    throw new Error("Recommendation candidate queue parent escapes root");
+  }
+  return {
+    root: rootDirectory,
+    data,
+    review,
+    destination: resolve(review.path, "sync-candidates.json"),
+  };
+}
+
+async function revalidateDirectory(
+  directory: DirectoryIdentity,
+  label: string,
 ): Promise<void> {
-  const stats = await existingStats(destination);
-  if (stats?.isSymbolicLink()) {
-    throw new Error(
-      "Recommendation candidate queue destination must not be a symbolic link",
-    );
+  const stats = await lstat(directory.path);
+  checkedDirectoryStats(stats, label);
+  const currentRealPath = await realpath(directory.path);
+  if (
+    currentRealPath !== directory.realPath ||
+    stats.dev !== directory.dev ||
+    stats.ino !== directory.ino
+  ) {
+    throw new Error(`${label} identity changed`);
   }
-  if (stats !== undefined && !stats.isFile()) {
-    throw new Error(
-      "Recommendation candidate queue destination must be a file",
-    );
-  }
-  const directoryRealPath = await realpath(directoryPath);
-  if (!pathWithin(directoryRealPath, destination)) {
+}
+
+async function verifyDestination(paths: QueuePaths): Promise<void> {
+  if (!pathWithin(paths.review.path, paths.destination)) {
     throw new Error(
       "Recommendation candidate queue destination escapes review directory",
     );
   }
+  const stats = await existingStats(paths.destination);
+  if (stats?.isSymbolicLink())
+    throw new Error(
+      "Recommendation candidate queue destination must not be a symbolic link",
+    );
+  if (stats !== undefined && !stats.isFile())
+    throw new Error(
+      "Recommendation candidate queue destination must be a file",
+    );
+}
+
+async function revalidatePaths(paths: QueuePaths): Promise<void> {
+  await revalidateDirectory(paths.root, "Recommendation candidate queue root");
+  await revalidateDirectory(
+    paths.data,
+    "Recommendation candidate queue parent",
+  );
+  await revalidateDirectory(
+    paths.review,
+    "Recommendation candidate queue parent",
+  );
+  await verifyDestination(paths);
 }
 
 function serialize(
@@ -146,14 +190,11 @@ function serialize(
   const prior = writes.get(destination) ?? Promise.resolve(destination);
   const next = prior.catch(() => destination).then(write);
   writes.set(destination, next);
-  void next.then(
-    () => {
+  void next
+    .finally(() => {
       if (writes.get(destination) === next) writes.delete(destination);
-    },
-    () => {
-      if (writes.get(destination) === next) writes.delete(destination);
-    },
-  );
+    })
+    .catch(() => undefined);
   return next;
 }
 
@@ -169,18 +210,19 @@ export function queueRecommendationCandidates(
   });
 }
 
-export async function writeRecommendationCandidateQueue(
+export function writeRecommendationCandidateQueue(
   root: string,
   candidates: RecommendationCandidate[],
 ): Promise<string> {
-  const paths = await queuePaths(root);
-  return serialize(paths.destination, async () => {
-    await verifyDestination(paths.destination, paths.directory);
+  const lockKey = resolve(root, "data", "review", "sync-candidates.json");
+  return serialize(lockKey, async () => {
+    const paths = await prepareQueuePaths(root);
+    await verifyDestination(paths);
     const temporaryPath = resolve(
-      paths.directory,
+      paths.review.path,
       `.sync-candidates.json.${randomUUID()}.tmp`,
     );
-    if (!pathWithin(paths.directory, temporaryPath)) {
+    if (!pathWithin(paths.review.path, temporaryPath)) {
       throw new Error(
         "Recommendation candidate queue temporary path escapes review directory",
       );
@@ -191,7 +233,7 @@ export async function writeRecommendationCandidateQueue(
         `${JSON.stringify(queueRecommendationCandidates(candidates), null, 2)}\n`,
         { encoding: "utf8", flag: "wx" },
       );
-      await verifyDestination(paths.destination, paths.directory);
+      await revalidatePaths(paths);
       await rename(temporaryPath, paths.destination);
     } catch (error: unknown) {
       await rm(temporaryPath, { force: true }).catch(() => undefined);

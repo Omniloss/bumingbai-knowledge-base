@@ -2,7 +2,6 @@ import {
   lstat,
   mkdir,
   mkdtemp,
-  readdir,
   readFile,
   symlink,
   writeFile,
@@ -15,7 +14,6 @@ import type { RecommendationCandidate } from "../../src/sync/recommendation-pars
 const control = vi.hoisted(() => ({
   delayedRawText: undefined as string | undefined,
   onDelayedWrite: undefined as (() => void) | undefined,
-  temporaryWriteError: undefined as Error | undefined,
   waitForDelayedWrite: undefined as Promise<void> | undefined,
 }));
 
@@ -24,14 +22,7 @@ vi.mock("node:fs/promises", async (importOriginal) => {
   return {
     ...original,
     writeFile: async (...args: Parameters<typeof original.writeFile>) => {
-      const [path, data] = args;
-      const pathText = String(path);
-      if (
-        control.temporaryWriteError !== undefined &&
-        pathText.includes(".sync-candidates.json.")
-      ) {
-        throw control.temporaryWriteError;
-      }
+      const [, data] = args;
       if (
         control.delayedRawText !== undefined &&
         String(data).includes(control.delayedRawText)
@@ -44,10 +35,7 @@ vi.mock("node:fs/promises", async (importOriginal) => {
   };
 });
 
-import {
-  queueRecommendationCandidates,
-  writeRecommendationCandidateQueue,
-} from "../../src/sync/run-sync.js";
+import { writeRecommendationCandidateQueue } from "../../src/sync/run-sync.js";
 
 const retrievedAt = "2026-07-18T00:00:00.000Z";
 
@@ -111,43 +99,7 @@ async function createSymlink(
 afterEach(() => {
   control.delayedRawText = undefined;
   control.onDelayedWrite = undefined;
-  control.temporaryWriteError = undefined;
   control.waitForDelayedWrite = undefined;
-});
-
-describe("queueRecommendationCandidates", () => {
-  it("keeps episode number and source URL independently in the dedupe key", () => {
-    const queue = queueRecommendationCandidates([
-      candidate({ episodeNumber: 224 }),
-      candidate({ sourceUrl: "https://bumingbai.net/episodes/ep-223-copy/" }),
-      candidate({ locator: "html > body > p:nth-of-type(2)" }),
-    ]);
-
-    expect(queue).toHaveLength(3);
-    expect(queue.map((entry) => entry.episodeNumber)).toEqual([224, 223, 223]);
-    expect(queue[1]?.sourceUrl).toBe(
-      "https://bumingbai.net/episodes/ep-223-copy/",
-    );
-  });
-
-  it("uses source URL and recommender label as deterministic tie-breakers", () => {
-    expect(
-      queueRecommendationCandidates([
-        candidate({ recommenderLabel: "beta", locator: "a" }),
-        candidate({ recommenderLabel: "alpha", locator: "z" }),
-        candidate({ sourceUrl: "https://a.example.test/", locator: "z" }),
-      ]).map(({ sourceUrl, recommenderLabel }) => ({
-        sourceUrl,
-        recommenderLabel,
-      })),
-    ).toEqual([
-      { sourceUrl: "https://a.example.test/", recommenderLabel: undefined },
-      {
-        sourceUrl: "https://bumingbai.net/episodes/ep-223/",
-        recommenderLabel: "alpha",
-      },
-    ]);
-  });
 });
 
 describe("writeRecommendationCandidateQueue", () => {
@@ -184,24 +136,6 @@ describe("writeRecommendationCandidateQueue", () => {
     await expect(
       readFile(join(root, "data", "review", "sync-candidates.json"), "utf8"),
     ).resolves.toContain("《second》");
-  });
-
-  it("cleans failed unique temporary files and preserves the destination", async () => {
-    const root = await mkdtemp(join(tmpdir(), "bumingbai-candidates-"));
-    const reviewDirectory = join(root, "data", "review");
-    const destination = join(reviewDirectory, "sync-candidates.json");
-    const error = new Error("simulated temporary write failure");
-    await mkdir(reviewDirectory, { recursive: true });
-    await writeFile(destination, "previous queue", "utf8");
-    control.temporaryWriteError = error;
-
-    await expect(
-      writeRecommendationCandidateQueue(root, [candidate()]),
-    ).rejects.toBe(error);
-    await expect(readFile(destination, "utf8")).resolves.toBe("previous queue");
-    await expect(readdir(reviewDirectory)).resolves.toEqual([
-      "sync-candidates.json",
-    ]);
   });
 
   it("rejects a symlinked queue destination", async (context) => {

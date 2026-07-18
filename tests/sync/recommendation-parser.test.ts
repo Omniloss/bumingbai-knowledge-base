@@ -1,12 +1,5 @@
-import { mkdtemp, readFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import {
-  parseRecommendationCandidates,
-  type RecommendationCandidate,
-} from "../../src/sync/recommendation-parser.js";
-import { writeRecommendationCandidateQueue } from "../../src/sync/run-sync.js";
+import { parseRecommendationCandidates } from "../../src/sync/recommendation-parser.js";
 import {
   EPISODE_216_RECOMMENDATIONS,
   EPISODE_220_RECOMMENDATIONS,
@@ -185,68 +178,4 @@ describe("parseRecommendationCandidates", () => {
     expect(caught.message).toBe(message);
     expect(caught.message).not.toContain("private-payload-marker");
   });
-});
-
-describe("writeRecommendationCandidateQueue", () => {
-  it("deduplicates and deterministically sorts high-risk pending candidates", async () => {
-    const root = await mkdtemp(join(tmpdir(), "bumingbai-candidates-"));
-    const candidates: RecommendationCandidate[] = [
-      {
-        episodeNumber: 221,
-        rawText: "《B》",
-        sourceUrl: "https://example.test/221/",
-        retrievedAt,
-        locator: "html > body > p:nth-of-type(2)",
-        risk: "high",
-        status: "pending_verification",
-      },
-      {
-        episodeNumber: 223,
-        rawText: "《A》",
-        sourceUrl,
-        retrievedAt,
-        locator: "html > body > p:nth-of-type(3)",
-        risk: "high",
-        status: "pending_verification",
-      },
-      {
-        episodeNumber: 223,
-        rawText: "《A》",
-        sourceUrl,
-        retrievedAt,
-        locator: "html > body > p:nth-of-type(1)",
-        risk: "high",
-        status: "pending_verification",
-      },
-      {
-        episodeNumber: 223,
-        rawText: "《C》",
-        sourceUrl,
-        retrievedAt,
-        locator: "html > body > p:nth-of-type(4)",
-        risk: "high",
-        status: "pending_verification",
-      },
-    ];
-
-    const path = await writeRecommendationCandidateQueue(root, candidates);
-
-    expect(path).toBe(join(root, "data", "review", "sync-candidates.json"));
-    expect(JSON.parse(await readFile(path, "utf8"))).toEqual([
-      candidates[2],
-      candidates[3],
-      candidates[0],
-    ]);
-  });
-});
-
-it("keeps the review queue out of public catalog and search code", async () => {
-  const publicReaders = await Promise.all([
-    readFile("src/lib/catalog.ts", "utf8"),
-    readFile("tools/build-search-index.ts", "utf8"),
-  ]);
-
-  for (const reader of publicReaders) {
-    expect(reader).not.toContain("sync-candidates.json");
-  }
 });

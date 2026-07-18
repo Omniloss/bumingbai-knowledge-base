@@ -1,11 +1,11 @@
 import { createStableId } from "../domain/id.js";
 import type { ImageAsset, Work } from "../domain/schemas/catalog.js";
 
-function isEligible(asset: ImageAsset): boolean {
+function isEligible(asset: ImageAsset, minimumLongEdge: number): boolean {
   return (
     asset.handling !== "display_prohibited" &&
     !asset.broken &&
-    Math.max(asset.width, asset.height) >= 600
+    Math.max(asset.width, asset.height) >= minimumLongEdge
   );
 }
 
@@ -49,15 +49,24 @@ export function selectHeroImage(
   generatedAt: string,
 ): ImageAsset {
   return (
-    candidates.filter(isEligible).toSorted(compareCandidates)[0] ??
-    generatedFallback(work, generatedAt)
+    candidates
+      .filter((asset) => isEligible(asset, 600))
+      .toSorted(compareCandidates)[0] ?? generatedFallback(work, generatedAt)
+  );
+}
+
+export function selectThumbnailImage(
+  work: Work,
+  candidates: ImageAsset[],
+  generatedAt: string,
+): ImageAsset {
+  return (
+    candidates
+      .filter((asset) => isEligible(asset, 240))
+      .toSorted(compareCandidates)[0] ?? generatedFallback(work, generatedAt)
   );
 }
 
 export function canUseAsThumbnail(asset: ImageAsset): boolean {
-  return (
-    asset.handling !== "display_prohibited" &&
-    !asset.broken &&
-    Math.max(asset.width, asset.height) >= 240
-  );
+  return isEligible(asset, 240);
 }

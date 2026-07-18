@@ -130,13 +130,12 @@ describe("WikimediaClient", () => {
   it.each([
     ["search", "malformedSearch"],
     ["entities", "malformedEntities"],
-    ["commons", "malformedCommons"],
   ] as const)("rejects malformed %s response data", async (stage, fixtureKey) => {
     const fixture = await loadFixture();
     const fetcher = createFetcher({
       search: stage === "search" ? fixture[fixtureKey] : fixture.search,
       entities: stage === "entities" ? fixture[fixtureKey] : fixture.entities,
-      commons: stage === "commons" ? fixture[fixtureKey] : fixture.commons,
+      commons: fixture.commons,
     });
 
     await expect(
@@ -147,7 +146,6 @@ describe("WikimediaClient", () => {
   it.each([
     ["search", 503],
     ["entities", 502],
-    ["commons", 429],
   ] as const)("reports only provider and status for a non-2xx %s response", async (stage, status) => {
     const fixture = await loadFixture();
     const errorFixture = ErrorFixtureSchema.parse(
@@ -171,5 +169,37 @@ describe("WikimediaClient", () => {
     expect(error.message).not.toContain("super-secret-token");
     expect(error.message).not.toContain("response-private-material");
     expect(error.message).not.toContain("Authorization");
+  });
+
+  it("preserves Wikidata data when Commons returns a non-OK response", async () => {
+    const fixture = await loadFixture();
+    const result = await new WikimediaClient(
+      createFetcher({
+        search: fixture.search,
+        entities: fixture.entities,
+        commons: fixture.commons,
+        failure: { stage: "commons", status: 503, body: "unavailable" },
+      }),
+    ).lookup(query);
+
+    expect(result.records[0]).toMatchObject({
+      externalId: "Q1514127",
+      externalIds: { P648: ["OL45804W"] },
+    });
+    expect(result.records[0]?.image).toBeUndefined();
+  });
+
+  it("preserves Wikidata data when Commons metadata is malformed", async () => {
+    const fixture = await loadFixture();
+    const result = await new WikimediaClient(
+      createFetcher({
+        search: fixture.search,
+        entities: fixture.entities,
+        commons: fixture.malformedCommons,
+      }),
+    ).lookup(query);
+
+    expect(result.records[0]?.externalId).toBe("Q1514127");
+    expect(result.records[0]?.image).toBeUndefined();
   });
 });

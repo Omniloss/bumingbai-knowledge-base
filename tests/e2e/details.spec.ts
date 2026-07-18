@@ -146,6 +146,19 @@ test("work detail uses the generated cover and keeps missing similarity explicit
   });
 });
 
+test("work detail displays image license and attribution", async ({ page }) => {
+  await page.goto(BOOK_PATH);
+
+  const sourceSection = page.locator('[data-section-order="5"]');
+
+  await expect(
+    sourceSection.getByText("许可：site-generated", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    sourceSection.getByText("署名：不明白知识库", { exact: true }),
+  ).toBeVisible();
+});
+
 test("episode detail exposes confirmed guests and safe official source", async ({
   page,
 }) => {

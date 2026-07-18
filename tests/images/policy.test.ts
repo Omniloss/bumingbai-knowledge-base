@@ -5,7 +5,11 @@ import {
   ImageAssetSchema,
   WorkSchema,
 } from "../../src/domain/schemas/entities.js";
-import { canUseAsThumbnail, selectHeroImage } from "../../src/images/policy.js";
+import {
+  canUseAsThumbnail,
+  selectHeroImage,
+  selectThumbnailImage,
+} from "../../src/images/policy.js";
 
 const now = "2026-07-14T00:00:00.000Z";
 const work: Work = WorkSchema.parse({
@@ -173,5 +177,19 @@ describe("canUseAsThumbnail", () => {
         ImageAssetSchema.parse({ ...base, width: 239, height: 100 }),
       ),
     ).toBe(false);
+  });
+});
+
+describe("selectThumbnailImage", () => {
+  it("keeps an eligible 240px to 599px external image instead of replacing it", () => {
+    const thumbnail = ImageAssetSchema.parse({
+      ...original,
+      width: 320,
+      height: 480,
+    });
+    const candidates = [thumbnail];
+
+    expect(selectThumbnailImage(work, candidates, now)).toEqual(thumbnail);
+    expect(candidates).toEqual([thumbnail]);
   });
 });

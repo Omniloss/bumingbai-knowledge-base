@@ -3,8 +3,10 @@ import type { SourceRef } from "../domain/schemas/catalog.js";
 import { getHttpsExternalUrl } from "../lib/external-url.js";
 
 type DetailSource = {
+  readonly attribution?: string;
   readonly kind: SourceRef["kind"] | "image";
   readonly label: string;
+  readonly license?: string;
   readonly url: string;
 };
 
@@ -43,6 +45,12 @@ const displaySources = sources.map((source) => ({
           {source.httpsUrl ? (
             <a href={source.httpsUrl} rel="external noreferrer">{sourceKindLabels[source.kind]}</a>
           ) : <span>链接未通过 HTTPS 安全校验</span>}
+          {source.kind === "image" && source.license && (
+            <span>许可：{source.license}</span>
+          )}
+          {source.kind === "image" && source.attribution && (
+            <span>署名：{source.attribution}</span>
+          )}
         </li>
       ))}
     </ul>

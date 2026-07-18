@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { createStableId } from "../domain/id.js";
 import { validateCatalog } from "../domain/publication.js";
 import {
@@ -7,19 +6,16 @@ import {
   type ImageAsset,
   type ProviderRecord,
   type ReviewIssue,
+  type WorkRelation,
 } from "../domain/schemas/catalog.js";
-import { readProviderCache, writeProviderCache } from "../providers/cache.js";
-import type {
-  ProviderClient,
-  ProviderName,
-  ProviderResult,
-} from "../providers/types.js";
+import type { ProviderClient, ProviderName } from "../providers/types.js";
 import { buildHardRelations } from "../relations/hard-relations.js";
 import { candidateOutput } from "./candidate-output.js";
 import { type EmbeddingClient, loadEmbeddingVectors } from "./embeddings.js";
 import { mergeImages } from "./images.js";
 import { buildWorkLookup, lookupFingerprint } from "./lookup.js";
-import { parseProviderResult, providerCandidates } from "./provider-data.js";
+import { loadProviderResult } from "./provider-cache.js";
+import { providerCandidates } from "./provider-data.js";
 import { buildSimilarRelations } from "./similar-relations.js";
 
 export type EnrichmentOptions = {
@@ -43,47 +39,6 @@ function supportsMedia(
     );
   }
   return provider === "wikidata";
-}
-
-function safeProviderResult(
-  provider: ProviderName,
-  input: unknown,
-): ProviderResult<unknown> | undefined {
-  try {
-    return parseProviderResult(provider, input);
-  } catch (error: unknown) {
-    if (error instanceof z.ZodError) return undefined;
-    throw error;
-  }
-}
-
-async function providerResult(
-  client: ProviderClient<unknown>,
-  query: Parameters<ProviderClient<unknown>["lookup"]>[0],
-  options: EnrichmentOptions,
-): Promise<ProviderResult<unknown> | undefined> {
-  const cached = safeProviderResult(
-    client.name,
-    await readProviderCache(
-      options.cacheRoot,
-      client.name,
-      query.workId,
-      z.unknown(),
-    ),
-  );
-  if (options.offline) return cached;
-  try {
-    const fresh = parseProviderResult(client.name, await client.lookup(query));
-    await writeProviderCache(
-      options.cacheRoot,
-      client.name,
-      query.workId,
-      fresh,
-    );
-    return fresh;
-  } catch {
-    return cached;
-  }
 }
 
 function providerRecord(
@@ -117,6 +72,25 @@ function uniqueByIdInOrder<T extends { readonly id: string }>(
   return [...new Map(values.map((value) => [value.id, value])).values()];
 }
 
+function orderRelations(relations: readonly WorkRelation[]): WorkRelation[] {
+  const unique = uniqueById(relations);
+  return unique.toSorted((left, right) => {
+    const fromOrder = left.fromWorkId.localeCompare(right.fromWorkId);
+    if (fromOrder !== 0) return fromOrder;
+    if (left.kind === "similar" && right.kind === "similar") {
+      return (
+        (right.score ?? 0) - (left.score ?? 0) ||
+        left.toWorkId.localeCompare(right.toWorkId)
+      );
+    }
+    return (
+      left.kind.localeCompare(right.kind) ||
+      left.toWorkId.localeCompare(right.toWorkId) ||
+      left.id.localeCompare(right.id)
+    );
+  });
+}
+
 export async function enrichCatalog(
   catalog: Catalog,
   clients: ProviderClient<unknown>[],
@@ -142,7 +116,12 @@ export async function enrichCatalog(
         current.some((record) => record.normalizedHash === fingerprint)
       )
         continue;
-      const result = await providerResult(client, query, options);
+      const result = await loadProviderResult(
+        client,
+        query,
+        fingerprint,
+        options,
+      );
       if (result === undefined) continue;
 
       for (const record of current) {
@@ -210,7 +189,7 @@ export async function enrichCatalog(
   const editorialRelations = existing.workRelations.filter(
     (relation) => relation.kind === "editorial",
   );
-  const workRelations = uniqueById([
+  const workRelations = orderRelations([
     ...editorialRelations,
     ...hardRelations,
     ...buildSimilarRelations(existing, hardRelations, embeddings),
@@ -222,7 +201,12 @@ export async function enrichCatalog(
     providerRecords: uniqueById(records),
     reviewIssues: uniqueByIdInOrder([
       ...existing.reviewIssues,
-      ...generatedIssues,
+      ...generatedIssues.filter(
+        (issue) =>
+          !existing.reviewIssues.some(
+            (existingIssue) => existingIssue.id === issue.id,
+          ),
+      ),
     ]),
     workRelations,
   });

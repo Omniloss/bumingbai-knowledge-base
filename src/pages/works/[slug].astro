@@ -41,8 +41,10 @@ type RelationRecord = {
 };
 
 type DetailSource = {
+  readonly attribution?: string;
   readonly kind: SourceRef["kind"] | "image";
   readonly label: string;
+  readonly license?: string;
   readonly url: string;
 };
 
@@ -136,8 +138,10 @@ export async function getStaticPaths() {
         url: evidence.source.url,
       })),
       ...workImages.map((image) => ({
+        attribution: image.attribution,
         kind: "image" as const,
         label: "图片来源",
+        license: image.license,
         url: image.sourcePageUrl,
       })),
     ];

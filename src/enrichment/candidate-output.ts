@@ -50,6 +50,19 @@ function issue(
   };
 }
 
+function normalizedNames(names: readonly string[]): string[] {
+  return [...new Set(names.map(normalizeIdentityText))].toSorted();
+}
+
+function sameNames(left: readonly string[], right: readonly string[]): boolean {
+  const normalizedLeft = normalizedNames(left);
+  const normalizedRight = normalizedNames(right);
+  return (
+    normalizedLeft.length === normalizedRight.length &&
+    normalizedLeft.every((name, index) => name === normalizedRight[index])
+  );
+}
+
 function conflictIssues(
   work: Work,
   candidate: ProviderCandidate,
@@ -84,12 +97,7 @@ function conflictIssues(
     );
   }
   if (candidate.provider === "open_library" && creatorNames.length > 0) {
-    const expected = new Set(creatorNames.map(normalizeIdentityText));
-    if (
-      !candidate.value.authorNames.some((name) =>
-        expected.has(normalizeIdentityText(name)),
-      )
-    ) {
+    if (!sameNames(candidate.value.authorNames, creatorNames)) {
       issues.push(
         issue(
           work,

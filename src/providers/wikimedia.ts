@@ -1,6 +1,5 @@
 import { z } from "zod";
 import type { ProviderClient, ProviderResult, WorkLookup } from "./types.js";
-
 const SearchResponseSchema = z.object({
   search: z.array(
     z.object({
@@ -56,7 +55,6 @@ const CommonsResponseSchema = z.object({
     ),
   }),
 });
-
 export type CommonsImageCandidate = {
   url: string;
   sourcePageUrl: string;
@@ -165,17 +163,21 @@ export class WikimediaClient implements ProviderClient<WikimediaRecord> {
     filename: string | undefined,
   ): Promise<CommonsImageCandidate | undefined> {
     if (filename === undefined) return undefined;
-    const url = apiUrl("https://commons.wikimedia.org/w/api.php", {
-      action: "query",
-      format: "json",
-      prop: "imageinfo",
-      titles: `File:${filename}`,
-      iiprop: "url|size|extmetadata",
-      iiextmetadatafilter: "LicenseShortName|Artist|Credit",
-    });
-    return imageFromCommons(
-      await parseResponse(await this.fetcher(url), CommonsResponseSchema),
-    );
+    try {
+      const url = apiUrl("https://commons.wikimedia.org/w/api.php", {
+        action: "query",
+        format: "json",
+        prop: "imageinfo",
+        titles: `File:${filename}`,
+        iiprop: "url|size|extmetadata",
+        iiextmetadatafilter: "LicenseShortName|Artist|Credit",
+      });
+      return imageFromCommons(
+        await parseResponse(await this.fetcher(url), CommonsResponseSchema),
+      );
+    } catch {
+      return undefined;
+    }
   }
 
   async lookup(query: WorkLookup): Promise<ProviderResult<WikimediaRecord>> {

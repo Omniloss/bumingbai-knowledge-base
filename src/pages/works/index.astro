@@ -1,7 +1,7 @@
 ---
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import WorkCard from "../../components/WorkCard.astro";
-import { canUseAsThumbnail, selectHeroImage } from "../../images/policy.js";
+import { selectThumbnailImage } from "../../images/policy.js";
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { listPublicWorks, loadCatalog } from "../../lib/catalog.js";
@@ -15,11 +15,9 @@ const works = (await listPublicWorks()).filter(
 // biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this value in template markup.
 const workCards = works.map((work) => ({
   work,
-  image: selectHeroImage(
+  image: selectThumbnailImage(
     work,
-    catalog.imageAssets.filter(
-      (image) => image.workId === work.id && canUseAsThumbnail(image),
-    ),
+    catalog.imageAssets.filter((image) => image.workId === work.id),
     catalog.generatedAt,
   ),
 }));

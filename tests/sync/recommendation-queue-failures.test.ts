@@ -4,52 +4,73 @@ import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { RecommendationCandidate } from "../../src/sync/recommendation-parser.js";
 
-const control = vi.hoisted(() => ({
-  identityChanged: false,
-  renameError: undefined as Error | undefined,
-  temporaryWriteError: undefined as Error | undefined,
-  temporaryWritten: false,
-}));
+type Control = {
+  identityChanged: boolean;
+  renameError: Error | undefined;
+  renameErrors: Error[];
+  renameAttempts: number;
+  temporaryWriteError: Error | undefined;
+  temporaryWritten: boolean;
+};
 
-vi.mock("node:fs/promises", async (importOriginal) => {
-  const original = await importOriginal<typeof import("node:fs/promises")>();
+type QueueWriter =
+  typeof import("../../src/sync/run-sync.js").writeRecommendationCandidateQueue;
+
+function createControl(): Control {
   return {
-    ...original,
-    lstat: async (...args: Parameters<typeof original.lstat>) => {
-      const stats = await original.lstat(...args);
-      const path = String(args[0]).replaceAll("\\", "/");
-      if (
-        control.identityChanged &&
-        control.temporaryWritten &&
-        path.endsWith("/data/review")
-      ) {
-        const ino =
-          typeof stats.ino === "bigint" ? stats.ino + 1n : stats.ino + 1;
-        return Object.assign(Object.create(stats), { ino });
-      }
-      return stats;
-    },
-    rename: async (...args: Parameters<typeof original.rename>) => {
-      if (control.renameError !== undefined) throw control.renameError;
-      return original.rename(...args);
-    },
-    writeFile: async (...args: Parameters<typeof original.writeFile>) => {
-      const path = String(args[0]);
-      if (
-        control.temporaryWriteError !== undefined &&
-        path.includes(".sync-candidates.json.")
-      ) {
-        throw control.temporaryWriteError;
-      }
-      const result = await original.writeFile(...args);
-      if (path.includes(".sync-candidates.json."))
-        control.temporaryWritten = true;
-      return result;
-    },
+    identityChanged: false,
+    renameError: undefined,
+    renameErrors: [],
+    renameAttempts: 0,
+    temporaryWriteError: undefined,
+    temporaryWritten: false,
   };
-});
+}
 
-import { writeRecommendationCandidateQueue } from "../../src/sync/run-sync.js";
+async function queueWriter(control: Control): Promise<QueueWriter> {
+  vi.resetModules();
+  vi.doMock("node:fs/promises", async (importOriginal) => {
+    const original = await importOriginal<typeof import("node:fs/promises")>();
+    return {
+      ...original,
+      lstat: async (...args: Parameters<typeof original.lstat>) => {
+        const stats = await original.lstat(...args);
+        const path = String(args[0]).replaceAll("\\", "/");
+        if (
+          control.identityChanged &&
+          control.temporaryWritten &&
+          path.endsWith("/data/review")
+        ) {
+          const ino =
+            typeof stats.ino === "bigint" ? stats.ino + 1n : stats.ino + 1;
+          return Object.assign(Object.create(stats), { ino });
+        }
+        return stats;
+      },
+      rename: async (...args: Parameters<typeof original.rename>) => {
+        control.renameAttempts += 1;
+        const error = control.renameErrors.shift() ?? control.renameError;
+        if (error !== undefined) throw error;
+        return original.rename(...args);
+      },
+      writeFile: async (...args: Parameters<typeof original.writeFile>) => {
+        const path = String(args[0]);
+        if (
+          control.temporaryWriteError !== undefined &&
+          path.includes(".sync-candidates.json.")
+        ) {
+          throw control.temporaryWriteError;
+        }
+        const result = await original.writeFile(...args);
+        if (path.includes(".sync-candidates.json."))
+          control.temporaryWritten = true;
+        return result;
+      },
+    };
+  });
+  return (await import("../../src/sync/run-sync.js"))
+    .writeRecommendationCandidateQueue;
+}
 
 function candidate(): RecommendationCandidate {
   return {
@@ -74,14 +95,14 @@ async function destination(
 }
 
 afterEach(() => {
-  control.identityChanged = false;
-  control.renameError = undefined;
-  control.temporaryWriteError = undefined;
-  control.temporaryWritten = false;
+  vi.doUnmock("node:fs/promises");
+  vi.resetModules();
 });
 
 describe("recommendation queue failure handling", () => {
   it("cleans a failed temporary write and preserves the destination", async () => {
+    const control = createControl();
+    const writeRecommendationCandidateQueue = await queueWriter(control);
     const root = await mkdtemp(join(tmpdir(), "bumingbai-candidates-"));
     const target = await destination(root);
     const error = new Error("simulated temporary write failure");
@@ -97,6 +118,8 @@ describe("recommendation queue failure handling", () => {
   });
 
   it("cleans a temporary file when rename fails after its creation", async () => {
+    const control = createControl();
+    const writeRecommendationCandidateQueue = await queueWriter(control);
     const root = await mkdtemp(join(tmpdir(), "bumingbai-candidates-"));
     const target = await destination(root);
     const error = new Error("simulated rename failure");
@@ -109,9 +132,50 @@ describe("recommendation queue failure handling", () => {
     await expect(readdir(target.directory)).resolves.toEqual([
       "sync-candidates.json",
     ]);
+    expect(control.renameAttempts).toBe(1);
+  });
+
+  it("publishes after one transient Windows rename EPERM", async () => {
+    const control = createControl();
+    const writeRecommendationCandidateQueue = await queueWriter(control);
+    const root = await mkdtemp(join(tmpdir(), "bumingbai-candidates-"));
+    const target = await destination(root);
+    control.renameErrors = [
+      Object.assign(new Error("simulated Windows rename EPERM"), {
+        code: "EPERM",
+      }),
+    ];
+
+    await expect(
+      writeRecommendationCandidateQueue(root, [candidate()]),
+    ).resolves.toBe(target.path);
+    expect(control.renameAttempts).toBe(2);
+    await expect(readFile(target.path, "utf8")).resolves.toContain("《A》");
+  });
+
+  it("fails and cleans up after bounded persistent Windows rename EPERM", async () => {
+    const control = createControl();
+    const writeRecommendationCandidateQueue = await queueWriter(control);
+    const root = await mkdtemp(join(tmpdir(), "bumingbai-candidates-"));
+    const target = await destination(root);
+    const error = Object.assign(new Error("simulated Windows rename EPERM"), {
+      code: "EPERM",
+    });
+    control.renameErrors = [error, error, error];
+
+    await expect(
+      writeRecommendationCandidateQueue(root, [candidate()]),
+    ).rejects.toBe(error);
+    expect(control.renameAttempts).toBe(3);
+    await expect(readFile(target.path, "utf8")).resolves.toBe("previous queue");
+    await expect(readdir(target.directory)).resolves.toEqual([
+      "sync-candidates.json",
+    ]);
   });
 
   it("fails closed and cleans up when parent identity changes before rename", async () => {
+    const control = createControl();
+    const writeRecommendationCandidateQueue = await queueWriter(control);
     const root = await mkdtemp(join(tmpdir(), "bumingbai-candidates-"));
     const target = await destination(root);
     control.identityChanged = true;

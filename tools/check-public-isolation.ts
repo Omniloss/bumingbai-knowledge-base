@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { readdir, readFile, writeFile } from "node:fs/promises";
+import { lstat, readdir, readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -8,48 +8,92 @@ export const NONPUBLIC_SENTINEL = "__NONPUBLIC_SYNC_CANDIDATE_7f629d__";
 type GateOptions = {
   root?: string;
   runBuild?: () => Promise<void>;
+  buildTimeoutMilliseconds?: number;
 };
 
-async function deployedFiles(directory: string): Promise<string[]> {
-  const entries = await readdir(directory, { withFileTypes: true });
-  const files = await Promise.all(
-    entries.map(async (entry) => {
-      const path = join(directory, entry.name);
-      if (entry.isDirectory()) return deployedFiles(path);
-      return entry.isFile() ? [path] : [];
-    }),
-  );
-  return files.flat();
+const defaultBuildTimeoutMilliseconds = 120_000;
+
+function stop(child: ReturnType<typeof spawn>): void {
+  if (process.platform === "win32" && child.pid !== undefined) {
+    const killer = spawn("taskkill", ["/pid", String(child.pid), "/T", "/F"], {
+      stdio: "ignore",
+      windowsHide: true,
+    });
+    killer.unref();
+    return;
+  }
+  child.kill();
 }
 
-function run(command: string, args: string[], root: string): Promise<void> {
-  return new Promise((resolve, reject) => {
+function run(root: string, timeoutMilliseconds: number): Promise<void> {
+  const windows = process.platform === "win32";
+  const command = windows ? "cmd.exe" : "pnpm";
+  const args = windows
+    ? ["/d", "/s", "/c", "pnpm.cmd run build"]
+    : ["run", "build"];
+  return new Promise((resolveRun, rejectRun) => {
+    let settled = false;
     const child = spawn(command, args, {
       cwd: root,
       stdio: "inherit",
       shell: false,
     });
-    child.once("error", reject);
-    child.once("exit", (code) => {
-      if (code === 0) resolve();
-      else
-        reject(
-          new Error(
-            `${command} ${args.join(" ")} exited with ${code ?? "no code"}`,
-          ),
-        );
-    });
+    const finish = (callback: () => void): void => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      callback();
+    };
+    const timer = setTimeout(() => {
+      stop(child);
+      finish(() =>
+        rejectRun(
+          new Error(`pnpm run build timed out after ${timeoutMilliseconds}ms`),
+        ),
+      );
+    }, timeoutMilliseconds);
+    child.once("error", (error) => finish(() => rejectRun(error)));
+    child.once("exit", (code) =>
+      finish(() => {
+        if (code === 0) resolveRun();
+        else
+          rejectRun(
+            new Error(`pnpm run build exited with ${code ?? "no code"}`),
+          );
+      }),
+    );
   });
 }
 
+async function scanDeployedDirectory(
+  directory: string,
+  sentinel: Buffer,
+): Promise<void> {
+  const stats = await lstat(directory);
+  if (!stats.isDirectory() || stats.isSymbolicLink()) {
+    throw new Error("Public output contains a nonregular entry");
+  }
+  const entries = await readdir(directory, { withFileTypes: true });
+  for (const entry of entries) {
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) await scanDeployedDirectory(path, sentinel);
+    else if (entry.isFile()) {
+      if ((await readFile(path)).includes(sentinel)) {
+        throw new Error(
+          "Nonpublic recommendation sentinel leaked into public output",
+        );
+      }
+    } else throw new Error("Public output contains a nonregular entry");
+  }
+}
+
 async function assertAbsent(root: string): Promise<void> {
-  const files = await deployedFiles(join(root, "dist"));
-  const outputs = await Promise.all([
-    ...files.map((file) => readFile(file)),
-    readFile(join(root, "public", "search-index.json")),
-  ]);
+  const sentinel = Buffer.from(NONPUBLIC_SENTINEL);
+  await scanDeployedDirectory(join(root, "dist"), sentinel);
   if (
-    outputs.some((output) => output.includes(Buffer.from(NONPUBLIC_SENTINEL)))
+    (await readFile(join(root, "public", "search-index.json"))).includes(
+      sentinel,
+    )
   ) {
     throw new Error(
       "Nonpublic recommendation sentinel leaked into public output",
@@ -90,9 +134,8 @@ export async function runPublicIsolationGate(
     );
     await (options.runBuild?.() ??
       run(
-        process.platform === "win32" ? "pnpm.cmd" : "pnpm",
-        ["run", "build"],
         root,
+        options.buildTimeoutMilliseconds ?? defaultBuildTimeoutMilliseconds,
       ));
     await assertAbsent(root);
   } finally {

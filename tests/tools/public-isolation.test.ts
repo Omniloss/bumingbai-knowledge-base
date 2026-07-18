@@ -1,5 +1,11 @@
 import { spawn } from "node:child_process";
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import {
+  copyFile,
+  mkdir,
+  mkdtemp,
+  readFile,
+  writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -8,8 +14,10 @@ import {
   runPublicIsolationGate,
 } from "../../tools/check-public-isolation.js";
 
-async function createRoot(): Promise<{ root: string; queuePath: string }> {
-  const root = await mkdtemp(join(tmpdir(), "bumingbai-public-isolation-"));
+async function createRoot(
+  prefix = "bumingbai-public-isolation-",
+): Promise<{ root: string; queuePath: string }> {
+  const root = await mkdtemp(join(tmpdir(), prefix));
   const queuePath = join(root, "data", "review", "sync-candidates.json");
   await mkdir(join(root, "data", "review"), { recursive: true });
   await writeFile(queuePath, "[]\n", "utf8");
@@ -53,18 +61,24 @@ async function createMinimalProject(): Promise<{
   root: string;
   queuePath: string;
 }> {
-  const { root, queuePath } = await createRoot();
-  const tool = resolve(
+  const { root, queuePath } = await createRoot("bumingbai public-isolation-");
+  const sourceTool = resolve(
     process.cwd(),
     "tools",
     "check-public-isolation.ts",
   ).replaceAll("\\", "/");
+  const tool = join(root, "tool path", "check-public-isolation.ts").replaceAll(
+    "\\",
+    "/",
+  );
+  await mkdir(join(root, "tool path"), { recursive: true });
+  await copyFile(sourceTool, tool);
   await writeFile(
     join(root, "package.json"),
     JSON.stringify({
       scripts: {
         build: "node build.mjs",
-        "build:public-isolation": `bun run ${tool}`,
+        "build:public-isolation": `bun run ${JSON.stringify(tool)}`,
       },
     }),
     "utf8",
@@ -194,5 +208,5 @@ describe("runPublicIsolationGate", () => {
       "Nonpublic recommendation sentinel leaked into public output",
     );
     await expect(readFile(queuePath, "utf8")).resolves.toBe("[]\n");
-  });
+  }, 30_000);
 });

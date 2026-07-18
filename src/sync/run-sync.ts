@@ -1,14 +1,8 @@
 import { randomUUID } from "node:crypto";
 import type { Stats } from "node:fs";
-import {
-  lstat,
-  mkdir,
-  realpath,
-  rename,
-  rm,
-  writeFile,
-} from "node:fs/promises";
+import { lstat, mkdir, realpath, rm, writeFile } from "node:fs/promises";
 import { isAbsolute, relative, resolve, sep } from "node:path";
+import { renameQueue } from "./queue-rename.js";
 import type { RecommendationCandidate } from "./recommendation-parser.js";
 
 const writes = new Map<string, Promise<string>>();
@@ -233,8 +227,9 @@ export function writeRecommendationCandidateQueue(
         `${JSON.stringify(queueRecommendationCandidates(candidates), null, 2)}\n`,
         { encoding: "utf8", flag: "wx" },
       );
-      await revalidatePaths(paths);
-      await rename(temporaryPath, paths.destination);
+      await renameQueue(temporaryPath, paths.destination, () =>
+        revalidatePaths(paths),
+      );
     } catch (error: unknown) {
       await rm(temporaryPath, { force: true }).catch(() => undefined);
       throw error;

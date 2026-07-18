@@ -30,11 +30,7 @@ export type TmdbRecord = {
 };
 
 function normalize(value: string): string {
-  return value
-    .normalize("NFKC")
-    .trim()
-    .toLocaleLowerCase()
-    .replace(/\s+/g, " ");
+  return value.normalize("NFKC").trim().toLowerCase().replace(/\s+/g, " ");
 }
 
 function yearFromDate(value: string): number | undefined {

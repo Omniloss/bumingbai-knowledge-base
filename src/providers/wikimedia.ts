@@ -24,7 +24,9 @@ const EntitySchema = z.object({
   id: z.string(),
   labels: z.object({ en: LanguageValueSchema.optional() }).optional(),
   descriptions: z.object({ en: LanguageValueSchema.optional() }).optional(),
-  claims: z.record(z.string(), z.array(ClaimSchema)),
+  claims: z
+    .object({ P18: z.array(ClaimSchema).optional() })
+    .catchall(z.array(ClaimSchema)),
 });
 const EntitiesResponseSchema = z.object({
   entities: z.record(z.string(), EntitySchema),
@@ -93,7 +95,7 @@ function claimValues(
 ): Record<string, string[]> {
   const result: Record<string, string[]> = {};
   for (const [property, statements] of Object.entries(claims)) {
-    const values = statements.flatMap((statement) => {
+    const values = (statements ?? []).flatMap((statement) => {
       const value = stringClaimValue(statement, datatype);
       return value === undefined ? [] : [value];
     });
@@ -112,10 +114,10 @@ function stringClaimValue(
 }
 
 function firstClaim(
-  claims: z.infer<typeof EntitySchema>["claims"],
+  statements: z.infer<typeof ClaimSchema>[] | undefined,
   datatype: string,
 ): string | undefined {
-  for (const statement of Object.values(claims).flat()) {
+  for (const statement of statements ?? []) {
     const value = stringClaimValue(statement, datatype);
     if (value !== undefined) return value;
   }
@@ -215,7 +217,7 @@ export class WikimediaClient implements ProviderClient<WikimediaRecord> {
     entity: z.infer<typeof EntitySchema>,
   ): Promise<WikimediaRecord> {
     const image = await this.commonsImage(
-      firstClaim(entity.claims, "commonsMedia"),
+      firstClaim(entity.claims.P18, "commonsMedia"),
     );
     const record: WikimediaRecord = {
       externalId: entity.id,

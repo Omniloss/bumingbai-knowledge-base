@@ -31,6 +31,21 @@
           }
         },
         "claims": {
+          "P154": [
+            {
+              "mainsnak": {
+                "snaktype": "value",
+                "property": "P154",
+                "datatype": "commonsMedia",
+                "datavalue": {
+                  "value": "Speak Memory logo.svg",
+                  "type": "string"
+                }
+              },
+              "type": "statement",
+              "rank": "normal"
+            }
+          ],
           "P31": [
             {
               "mainsnak": {
@@ -139,6 +154,50 @@
                 "Artist": {
                   "value": "Example Archive",
                   "source": "commons-desc-page"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "malformedSearch": {
+    "success": 1,
+    "search": [
+      {
+        "id": 1514127,
+        "label": "Speak, Memory"
+      }
+    ]
+  },
+  "malformedEntities": {
+    "success": 1,
+    "entities": {
+      "Q1514127": {
+        "id": 1514127,
+        "claims": {}
+      }
+    }
+  },
+  "malformedCommons": {
+    "batchcomplete": "",
+    "query": {
+      "pages": {
+        "12345": {
+          "imageinfo": [
+            {
+              "url": "not-a-url",
+              "descriptionurl": "https://commons.wikimedia.org/wiki/File:Speak_Memory_first_edition.jpg",
+              "extmetadata": {
+                "LicenseShortName": {
+                  "value": "CC BY-SA 4.0"
+                },
+                "Artist": {
+                  "value": "Example Archive"
+                },
+                "Credit": {
+                  "value": "Example Archive collection"
                 }
               }
             }

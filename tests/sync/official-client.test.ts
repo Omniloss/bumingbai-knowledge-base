@@ -306,4 +306,89 @@ describe("OfficialClient", () => {
     );
     expect(error.message).not.toContain(invalidDate);
   });
+
+  it.each([
+    "Sat, 31 Feb 2026 12:54:34 GMT",
+    "Sun, 29 Feb 2025 12:54:34 GMT",
+    "Fri, 10 Jul 2026 24:54:34 GMT",
+    "Fri, 29 Feb 2024 12:54:34 GMT",
+  ])("rejects impossible RSS publication date %j without leaking it", async (invalidDate) => {
+    const fetcher: typeof fetch = async (input) => {
+      const url = new URL(input instanceof Request ? input.url : input);
+      return new Response(
+        url.hostname === "feeds.acast.com"
+          ? rss.replace("Fri, 10 Jul 2026 12:54:34 GMT", invalidDate)
+          : JSON.stringify([wordpressPost()]),
+        { status: 200 },
+      );
+    };
+
+    const error = await new OfficialClient(fetcher)
+      .fetchEpisodes("2026-07-18T00:00:00.000Z")
+      .then(
+        () => undefined,
+        (reason: unknown) => reason,
+      );
+
+    expect(error).toBeInstanceOf(Error);
+    if (!(error instanceof Error)) throw new Error("Expected official error");
+    expect(error.message).toBe(
+      "Official source response invalid: https://feeds.acast.com/public/shows/68004395b4ef799a7a410371 (200)",
+    );
+    expect(error.message).not.toContain(invalidDate);
+  });
+
+  it.each([
+    "2026-02-31T12:54:34Z",
+    "2025-02-29T12:54:34",
+  ])("rejects impossible WordPress GMT date %j without leaking it", async (invalidDate) => {
+    const fetcher: typeof fetch = async (input) => {
+      const url = new URL(input instanceof Request ? input.url : input);
+      return new Response(
+        url.hostname === "feeds.acast.com"
+          ? rss
+          : JSON.stringify([wordpressPost({ date_gmt: invalidDate })]),
+        { status: 200 },
+      );
+    };
+
+    const error = await new OfficialClient(fetcher)
+      .fetchEpisodes("2026-07-18T00:00:00.000Z")
+      .then(
+        () => undefined,
+        (reason: unknown) => reason,
+      );
+
+    expect(error).toBeInstanceOf(Error);
+    if (!(error instanceof Error)) throw new Error("Expected official error");
+    expect(error.message).toBe(
+      "Official source response invalid: https://bumingbai.net/wp-json/wp/v2/posts?per_page=100&page=1 (200)",
+    );
+    expect(error.message).not.toContain(invalidDate);
+  });
+
+  it("accepts a valid leap-day RSS and WordPress date", async () => {
+    const leapRss = rss.replace(
+      "Fri, 10 Jul 2026 12:54:34 GMT",
+      "Thu, 29 Feb 2024 12:54:34 GMT",
+    );
+    const wordpress = wordpressPost({ date_gmt: "2024-02-29T12:54:34Z" });
+    const fetcher: typeof fetch = async (input) => {
+      const url = new URL(input instanceof Request ? input.url : input);
+      return new Response(
+        url.hostname === "feeds.acast.com"
+          ? leapRss
+          : JSON.stringify([wordpress]),
+        { status: 200 },
+      );
+    };
+
+    const client = new OfficialClient(fetcher);
+    const episodes = await client.fetchEpisodes("2026-07-18T00:00:00.000Z");
+
+    expect(episodes[0]?.publishedAt).toBe("Thu, 29 Feb 2024 12:54:34 GMT");
+    expect(client.changes).not.toContainEqual(
+      expect.objectContaining({ field: "publishedAt" }),
+    );
+  });
 });

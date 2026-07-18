@@ -6,27 +6,130 @@ import type { OfficialEpisodeSnapshot, SyncChange } from "./types.js";
 const RSS_URL = "https://feeds.acast.com/public/shows/68004395b4ef799a7a410371";
 const WORDPRESS_URL = "https://bumingbai.net/wp-json/wp/v2/posts";
 const WORDPRESS_GMT_PATTERN =
-  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})?$/u;
+  /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(?:Z|[+-](\d{2}):(\d{2}))?$/u;
 const RSS_PUB_DATE_PATTERN =
-  /^(?:Sun|Mon|Tue|Wed|Thu|Fri|Sat), \d{2} (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4} \d{2}:\d{2}:\d{2} (?:GMT|[+-]\d{4})$/u;
+  /^(Sun|Mon|Tue|Wed|Thu|Fri|Sat), (\d{2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d{4}) (\d{2}):(\d{2}):(\d{2}) (?:GMT|[+-](\d{2})(\d{2}))$/u;
+const RSS_MONTHS = new Map([
+  ["Jan", 1],
+  ["Feb", 2],
+  ["Mar", 3],
+  ["Apr", 4],
+  ["May", 5],
+  ["Jun", 6],
+  ["Jul", 7],
+  ["Aug", 8],
+  ["Sep", 9],
+  ["Oct", 10],
+  ["Nov", 11],
+  ["Dec", 12],
+]);
+const RSS_WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-function timestamp(value: string, assumeUtc = false): number | undefined {
-  const normalized =
-    assumeUtc && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?$/u.test(value)
-      ? `${value}Z`
-      : value;
-  const parsed = Date.parse(normalized);
+function isLeapYear(year: number): boolean {
+  return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+}
+
+function validDateTime(
+  year: number,
+  month: number,
+  day: number,
+  hour: number,
+  minute: number,
+  second: number,
+): boolean {
+  const monthDays = [
+    31,
+    isLeapYear(year) ? 29 : 28,
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31,
+  ];
+  const maximumDay = monthDays[month - 1];
+  return (
+    Number.isInteger(year) &&
+    Number.isInteger(month) &&
+    Number.isInteger(day) &&
+    Number.isInteger(hour) &&
+    Number.isInteger(minute) &&
+    Number.isInteger(second) &&
+    month >= 1 &&
+    month <= 12 &&
+    maximumDay !== undefined &&
+    day >= 1 &&
+    day <= maximumDay &&
+    hour >= 0 &&
+    hour <= 23 &&
+    minute >= 0 &&
+    minute <= 59 &&
+    second >= 0 &&
+    second <= 59
+  );
+}
+
+function validOffset(
+  hour: string | undefined,
+  minute: string | undefined,
+): boolean {
+  if (hour === undefined && minute === undefined) return true;
+  if (hour === undefined || minute === undefined) return false;
+  return Number(hour) <= 23 && Number(minute) <= 59;
+}
+
+function parsedTimestamp(value: string): number | undefined {
+  const parsed = Date.parse(value);
   return Number.isNaN(parsed) ? undefined : parsed;
 }
 
 function wordpressGmtTimestamp(value: string): number | undefined {
-  if (!WORDPRESS_GMT_PATTERN.test(value)) return undefined;
-  return timestamp(value, true);
+  const match = WORDPRESS_GMT_PATTERN.exec(value);
+  if (match === null) return undefined;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const hour = Number(match[4]);
+  const minute = Number(match[5]);
+  const second = Number(match[6]);
+  if (
+    !validDateTime(year, month, day, hour, minute, second) ||
+    !validOffset(match[7], match[8])
+  ) {
+    return undefined;
+  }
+  const normalized =
+    match[7] === undefined && !value.endsWith("Z") ? `${value}Z` : value;
+  return parsedTimestamp(normalized);
 }
 
 function rssPublishedTimestamp(value: string): number | undefined {
-  if (!RSS_PUB_DATE_PATTERN.test(value)) return undefined;
-  return timestamp(value);
+  const match = RSS_PUB_DATE_PATTERN.exec(value);
+  if (match === null) return undefined;
+  const weekday = match[1];
+  const month = RSS_MONTHS.get(match[3] ?? "");
+  const year = Number(match[4]);
+  const day = Number(match[2]);
+  const hour = Number(match[5]);
+  const minute = Number(match[6]);
+  const second = Number(match[7]);
+  if (
+    weekday === undefined ||
+    month === undefined ||
+    !validDateTime(year, month, day, hour, minute, second) ||
+    !validOffset(match[8], match[9])
+  ) {
+    return undefined;
+  }
+  const parsed = parsedTimestamp(value);
+  if (parsed === undefined) return undefined;
+  return RSS_WEEKDAYS[new Date(parsed).getUTCDay()] === weekday
+    ? parsed
+    : undefined;
 }
 
 const WordpressPostSchema = z.object({

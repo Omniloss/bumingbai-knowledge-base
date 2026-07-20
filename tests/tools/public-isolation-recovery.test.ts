@@ -18,7 +18,7 @@ import {
 } from "../../tools/check-public-isolation.js";
 import {
   createQueueRecovery,
-  type PublicIsolationRecoveryCleanupError,
+  PublicIsolationRecoveryCleanupError,
   restoreQueueAndRemoveRecovery,
 } from "../../tools/public-isolation-recovery.js";
 
@@ -215,6 +215,41 @@ it("reports cleanup failure separately after canonical restoration", async () =>
     recoveryPath: recovery.path,
   } satisfies Partial<PublicIsolationRecoveryCleanupError>);
   expect(restored).toBe(true);
+});
+
+it("retains a setup recovery path when post-write cleanup fails", async () => {
+  const root = await createRoot();
+  const original = Buffer.from('[{"rawText":"private candidate"}]\n');
+  let revalidations = 0;
+  let retainedPath: string | undefined;
+  let failure: unknown;
+
+  try {
+    await createQueueRecovery({
+      bytes: original,
+      projectRootPath: root,
+      projectRootRealPath: await realpath(root),
+      revalidate: async () => {
+        revalidations += 1;
+        if (revalidations === 2) throw new Error("queue identity changed");
+      },
+      remove: async (recovery) => {
+        retainedPath = recovery.path;
+        throw new Error("remove failed");
+      },
+    });
+  } catch (error: unknown) {
+    failure = error;
+  }
+
+  expect(failure).toBeInstanceOf(PublicIsolationRecoveryCleanupError);
+  if (!(failure instanceof PublicIsolationRecoveryCleanupError)) {
+    throw new Error("Expected a recovery cleanup failure");
+  }
+  expect(failure.message).toContain("Canonical queue was not modified");
+  expect(failure.recoveryPath).toBe(retainedPath);
+  await expect(readFile(failure.recoveryPath)).resolves.toEqual(original);
+  await rm(dirname(failure.recoveryPath), { force: true, recursive: true });
 });
 
 it("retains recovery and skips cleanup when canonical restoration fails", async () => {

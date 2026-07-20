@@ -49,7 +49,15 @@ it("serializes fresh queue-tree creation across processes", async () => {
   await expect(Promise.all(results)).resolves.toEqual(
     Array.from({ length: 6 }, () => ({ code: 0, stderr: "" })),
   );
-  await expect(
-    readFile(join(root, "data", "review", "sync-candidates.json"), "utf8"),
-  ).resolves.toMatch(/process-\d/u);
+  const queue: unknown = JSON.parse(
+    await readFile(
+      join(root, "data", "review", "sync-candidates.json"),
+      "utf8",
+    ),
+  );
+  expect(queue).toEqual([
+    expect.objectContaining({
+      rawText: expect.stringMatching(/^process-\d$/u),
+    }),
+  ]);
 }, 30_000);

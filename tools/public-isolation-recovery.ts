@@ -13,6 +13,7 @@ type RecoveryOptions = {
   projectRootRealPath: string;
   recoveryBase?: string;
   revalidate: () => Promise<void>;
+  remove?: (recovery: QueueRecovery) => Promise<void>;
 };
 
 function within(root: string, path: string): boolean {
@@ -44,9 +45,17 @@ export class PublicIsolationRecoveryRequiredError extends Error {
 export class PublicIsolationRecoveryCleanupError extends Error {
   readonly recoveryPath: string;
 
-  constructor(recoveryPath: string, cause: unknown) {
+  constructor(
+    recoveryPath: string,
+    cause: unknown,
+    canonicalQueueState: "restored" | "unmodified" = "restored",
+  ) {
+    const queueState =
+      canonicalQueueState === "restored"
+        ? "Canonical queue restored"
+        : "Canonical queue was not modified";
     super(
-      `Canonical queue restored, but temporary recovery cleanup could not be confirmed at ${recoveryPath}`,
+      `${queueState}, but temporary recovery cleanup could not be confirmed at ${recoveryPath}`,
       { cause },
     );
     this.name = "PublicIsolationRecoveryCleanupError";
@@ -76,6 +85,7 @@ export async function createQueueRecovery(
     join(base, "bumingbai-public-isolation-recovery-"),
   );
   const path = join(directory, "sync-candidates.json");
+  const recovery = { directory, path };
   try {
     const parentStats = await lstat(directory);
     if (!parentStats.isDirectory() || parentStats.isSymbolicLink()) {
@@ -98,11 +108,20 @@ export async function createQueueRecovery(
       throw new Error("Recommendation candidate queue recovery must be a file");
     }
     await options.revalidate();
-    return { directory, path };
+    return recovery;
   } catch (error: unknown) {
-    await rm(directory, { force: true, recursive: true }).catch(
-      () => undefined,
-    );
+    try {
+      await (options.remove ?? removeQueueRecovery)(recovery);
+    } catch (cleanupError: unknown) {
+      throw new PublicIsolationRecoveryCleanupError(
+        path,
+        new AggregateError(
+          [error, cleanupError],
+          "Recovery setup failed and cleanup could not be confirmed",
+        ),
+        "unmodified",
+      );
+    }
     throw error;
   }
 }

@@ -144,8 +144,7 @@ export function assertSupportedWindowsArchitectureForTest(
 export function startWindowsProcessTracker(
   rootProcessId: number,
   provider: WindowsProcessProvider,
-  verifyParents: WindowsParentVerifier = async (parents) =>
-    parents.map((parent) => parent.processId),
+  verifyParents: WindowsParentVerifier,
   pollIntervalMilliseconds = POLL_INTERVAL_MILLISECONDS,
 ): WindowsProcessTracker {
   let stopping = false;

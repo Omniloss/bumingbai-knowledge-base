@@ -3,6 +3,7 @@ import {
   assertSupportedWindowsArchitectureForTest,
   filterSnapshotByVerifiedParentsForTest,
   mergeTrackedProcessSnapshot,
+  startWindowsProcessTracker,
   trackedParentsWithNewChildrenForTest,
   type WindowsProcessSnapshot,
 } from "../../tools/windows-process-tracker.js";
@@ -180,6 +181,45 @@ it("excludes a new child when its historical parent cannot be verified", () => {
   expect(
     filterSnapshotByVerifiedParentsForTest(initial, snapshot, parents, []),
   ).toEqual([root, intermediate]);
+});
+
+it("keeps an unverified historical child out of the live tracker", async () => {
+  const child: WindowsProcessSnapshot = {
+    name: "new-child.exe",
+    parentProcessId: intermediate.processId,
+    processId: 13,
+  };
+  let samples = 0;
+  let resolveFirstSample: (() => void) | undefined;
+  const firstSample = new Promise<void>((resolve) => {
+    resolveFirstSample = resolve;
+  });
+  const verifiedParents: number[][] = [];
+  const tracker = startWindowsProcessTracker(
+    root.processId,
+    async () => {
+      samples += 1;
+      if (samples === 1) {
+        resolveFirstSample?.();
+        return [root, intermediate];
+      }
+      return [root, intermediate, child];
+    },
+    async (parents) => {
+      verifiedParents.push(parents.map((parent) => parent.processId));
+      return [];
+    },
+    1,
+  );
+
+  await firstSample;
+  await tracker.snapshot();
+  const records = await tracker.stop();
+
+  expect(verifiedParents).toContainEqual([intermediate.processId]);
+  expect(records.some((process) => process.processId === child.processId)).toBe(
+    false,
+  );
 });
 
 it("fails explicitly on a Windows architecture without a bundled binary", () => {

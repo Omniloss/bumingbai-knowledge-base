@@ -5,14 +5,19 @@ import {
   readdir,
   readFile,
   rename,
+  rm,
   symlink,
   writeFile,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { expect, it } from "vitest";
 import { writeRecommendationCandidateQueue } from "../../src/sync/run-sync.js";
-import { runPublicIsolationGate } from "../../tools/check-public-isolation.js";
+import { BuildCleanupUnconfirmedError } from "../../tools/build-process.js";
+import {
+  PublicIsolationRecoveryRequiredError,
+  runPublicIsolationGate,
+} from "../../tools/check-public-isolation.js";
 
 async function createRoot(): Promise<string> {
   const root = await mkdtemp(join(tmpdir(), "bumingbai-public-isolation-"));
@@ -224,18 +229,28 @@ it("does not overwrite a dynamically replaced queue file", async () => {
   const queue = join(root, "data", "review", "sync-candidates.json");
   const replacement = join(root, "data", "review", "replacement.json");
 
-  await expect(
-    runPublicIsolationGate({
+  let failure: unknown;
+  try {
+    await runPublicIsolationGate({
       root,
       runBuild: async () => {
         await writeFile(replacement, '["replacement"]\n');
         await rename(replacement, queue);
       },
-    }),
-  ).rejects.toThrow(
+    });
+  } catch (error: unknown) {
+    failure = error;
+  }
+  expect(failure).toBeInstanceOf(PublicIsolationRecoveryRequiredError);
+  if (!(failure instanceof PublicIsolationRecoveryRequiredError)) {
+    throw new Error("Expected a recovery-required isolation failure");
+  }
+  expect(failure.message).toContain(
     "Recommendation candidate queue destination identity changed",
   );
   await expect(readFile(queue, "utf8")).resolves.toBe('["replacement"]\n');
+  await expect(readFile(failure.recoveryPath, "utf8")).resolves.toBe("[]\n");
+  await rm(dirname(failure.recoveryPath), { force: true, recursive: true });
 });
 
 it("does not write restoration bytes after the review directory is swapped", async () => {
@@ -244,26 +259,51 @@ it("does not write restoration bytes after the review directory is swapped", asy
   const movedReview = join(root, "moved-review");
   const replacementQueue = join(review, "sync-candidates.json");
 
-  await expect(
-    runPublicIsolationGate({
+  let failure: unknown;
+  try {
+    await runPublicIsolationGate({
       root,
       runBuild: async () => {
         await rename(review, movedReview);
         await mkdir(review);
         await writeFile(replacementQueue, '["replacement"]\n');
       },
-    }),
-  ).rejects.toThrow("Recommendation candidate queue parent identity changed");
+    });
+  } catch (error: unknown) {
+    failure = error;
+  }
+  expect(failure).toBeInstanceOf(PublicIsolationRecoveryRequiredError);
+  if (!(failure instanceof PublicIsolationRecoveryRequiredError)) {
+    throw new Error("Expected a recovery-required isolation failure");
+  }
+  expect(failure.message).toContain(
+    "Recommendation candidate queue parent identity changed",
+  );
   await expect(readFile(replacementQueue, "utf8")).resolves.toBe(
     '["replacement"]\n',
   );
   await expect(readdir(review)).resolves.toEqual(["sync-candidates.json"]);
+  await expect(readFile(failure.recoveryPath, "utf8")).resolves.toBe("[]\n");
+  await rm(dirname(failure.recoveryPath), { force: true, recursive: true });
 });
 
-it("restores the original queue bytes without a UTF-8 round trip", async () => {
+it("rejects invalid UTF-8 without changing the original queue bytes", async () => {
   const root = await createRoot();
   const queue = join(root, "data", "review", "sync-candidates.json");
   const original = Buffer.from([91, 34, 255, 34, 93, 10]);
+  await writeFile(queue, original);
+
+  await expect(
+    runPublicIsolationGate({ root, runBuild: async () => undefined }),
+  ).rejects.toThrow("Recommendation candidate queue must contain valid JSON");
+
+  await expect(readFile(queue)).resolves.toEqual(original);
+});
+
+it("restores valid noncanonical JSON bytes exactly", async () => {
+  const root = await createRoot();
+  const queue = join(root, "data", "review", "sync-candidates.json");
+  const original = Buffer.from(" [ ] \r\n");
   await mkdir(join(root, "dist"));
   await mkdir(join(root, "public"));
   await writeFile(join(root, "public", "search-index.json"), "[]\n");
@@ -272,4 +312,37 @@ it("restores the original queue bytes without a UTF-8 round trip", async () => {
   await runPublicIsolationGate({ root, runBuild: async () => undefined });
 
   await expect(readFile(queue)).resolves.toEqual(original);
+});
+
+it("quarantines the original queue when process cleanup is unconfirmed", async () => {
+  const root = await createRoot();
+  const queue = join(root, "data", "review", "sync-candidates.json");
+  const original = Buffer.from('[{"rawText":"private candidate"}]\n');
+  await writeFile(queue, original);
+
+  let failure: unknown;
+  try {
+    await runPublicIsolationGate({
+      root,
+      runBuild: async () => {
+        throw new BuildCleanupUnconfirmedError(new Error("inspection failed"));
+      },
+    });
+  } catch (error: unknown) {
+    failure = error;
+  }
+  expect(failure).toBeInstanceOf(PublicIsolationRecoveryRequiredError);
+  if (!(failure instanceof PublicIsolationRecoveryRequiredError)) {
+    throw new Error("Expected a recovery-required isolation failure");
+  }
+
+  await expect(readFile(queue, "utf8")).resolves.toContain(
+    "__NONPUBLIC_SYNC_CANDIDATE_7f629d__",
+  );
+  await expect(readFile(queue, "utf8")).resolves.not.toContain(
+    "private candidate",
+  );
+  expect(failure.recoveryPath.startsWith(root)).toBe(false);
+  await expect(readFile(failure.recoveryPath)).resolves.toEqual(original);
+  await rm(dirname(failure.recoveryPath), { force: true, recursive: true });
 });

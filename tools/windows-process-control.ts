@@ -1,14 +1,15 @@
 import { spawn } from "node:child_process";
+import {
+  liveWindowsProcessRecords,
+  type ProcessRecord,
+} from "./windows-process-inspection.js";
 import type {
   TrackedWindowsProcessSnapshot,
   WindowsProcessTracker,
 } from "./windows-process-tracker.js";
 
-export type ProcessRecord = {
-  createdAt: string;
-  parentProcessId: number;
-  processId: number;
-};
+export type { ProcessRecord } from "./windows-process-inspection.js";
+
 type ProcessExit = { code: number | null };
 type Clock = {
   deadlineMilliseconds?: number;
@@ -52,76 +53,6 @@ function remaining(deadline: number, now: () => number): number {
   if (milliseconds <= 0)
     throw new Error("Windows process termination exceeded deadline");
   return milliseconds;
-}
-
-async function capture(
-  command: string,
-  args: string[],
-  timeoutMilliseconds: number,
-): Promise<string> {
-  const child = spawn(command, args, {
-    stdio: ["ignore", "pipe", "ignore"],
-    windowsHide: true,
-  });
-  let output = "";
-  child.stdout?.setEncoding("utf8");
-  child.stdout?.on("data", (chunk: string) => {
-    output += chunk;
-  });
-  const exit = exited(child);
-  if (!(await exitsWithin(exit, timeoutMilliseconds))) {
-    child.kill();
-    throw new Error(`${command} did not terminate`);
-  }
-  if ((await exit).code !== 0) throw new Error(`${command} failed`);
-  return output;
-}
-
-function identityRows(
-  value: unknown,
-): Array<{ createdAt: string; processId: number }> {
-  const values = Array.isArray(value) ? value : [value];
-  return values.flatMap((item) => {
-    if (typeof item !== "object" || item === null) return [];
-    const processId = "ProcessId" in item ? Number(item.ProcessId) : Number.NaN;
-    const createdAt = "CreationDate" in item ? String(item.CreationDate) : "";
-    return Number.isInteger(processId) && createdAt !== ""
-      ? [{ createdAt, processId }]
-      : [];
-  });
-}
-
-async function liveRecords(
-  tracked: readonly TrackedWindowsProcessSnapshot[],
-  timeoutMilliseconds: number,
-): Promise<ProcessRecord[]> {
-  if (tracked.length === 0) return [];
-  const trackedByPid = new Map(
-    tracked.map((process) => [process.processId, process]),
-  );
-  const pids = [...trackedByPid.keys()].join(",");
-  const output = await capture(
-    "powershell.exe",
-    [
-      "-NoLogo",
-      "-NoProfile",
-      "-NonInteractive",
-      "-Command",
-      `@(Get-Process -Id ${pids} -ErrorAction SilentlyContinue) | ForEach-Object { [PSCustomObject]@{ ProcessId = $_.Id; CreationDate = $_.StartTime.ToUniversalTime().ToString('o') } } | ConvertTo-Json -Compress`,
-    ],
-    timeoutMilliseconds,
-  );
-  if (output.trim() === "") return [];
-  return identityRows(JSON.parse(output)).flatMap((identity) => {
-    const observed = trackedByPid.get(identity.processId);
-    const createdAt = Date.parse(identity.createdAt);
-    if (!Number.isFinite(createdAt)) {
-      throw new Error("Unable to inspect Windows process identity");
-    }
-    return observed === undefined || createdAt > observed.observedAt
-      ? []
-      : [{ ...identity, parentProcessId: observed.parentProcessId }];
-  });
 }
 
 function sameProcess(left: ProcessRecord, right: ProcessRecord): boolean {
@@ -262,7 +193,7 @@ export async function terminateTrackedWindows(
   const deadline = Date.now() + SHUTDOWN_TIMEOUT;
   try {
     const initialTracked = await tracker.snapshot();
-    const initialLive = await liveRecords(
+    const initialLive = await liveWindowsProcessRecords(
       initialTracked,
       remaining(deadline, Date.now),
     );
@@ -272,15 +203,15 @@ export async function terminateTrackedWindows(
       initialLive,
     );
     const query: WindowsQuery = async (timeout) =>
-      liveRecords(await tracker.snapshot(), timeout);
+      liveWindowsProcessRecords(await tracker.snapshot(), timeout);
     await terminateWindowsForTest(root, graph, query, taskkill, {
       deadlineMilliseconds: remaining(deadline, Date.now),
       inspect: async (target, timeout) => {
         const tracked = tracker
           .records()
           .filter((process) => process.processId === target.processId);
-        return (await liveRecords(tracked, timeout)).find((process) =>
-          sameProcess(process, target),
+        return (await liveWindowsProcessRecords(tracked, timeout)).find(
+          (process) => sameProcess(process, target),
         );
       },
     });

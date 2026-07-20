@@ -68,6 +68,7 @@ async function createMinimalProject(): Promise<{
     "build-process.ts",
     "public-artifact-scan.ts",
     "windows-process-control.ts",
+    "windows-process-inspection.ts",
     "windows-process-tracker.ts",
   ];
   const toolDirectory = join(root, "tool path");

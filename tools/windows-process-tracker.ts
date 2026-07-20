@@ -5,6 +5,7 @@ export type WindowsProcessSnapshot = {
 };
 export type TrackedWindowsProcessSnapshot = WindowsProcessSnapshot & {
   observedAt: number;
+  retired: boolean;
 };
 
 export type WindowsProcessProvider = () => Promise<WindowsProcessSnapshot[]>;
@@ -28,32 +29,51 @@ export function mergeTrackedProcessSnapshot(
   observedAt = Date.now(),
 ): Map<number, TrackedWindowsProcessSnapshot> {
   const merged = new Map(tracked);
+  const currentByPid = new Map(
+    snapshot.map((process) => [process.processId, process]),
+  );
+  for (const [processId, process] of merged) {
+    const current = currentByPid.get(processId);
+    if (current === undefined || current.name !== process.name) {
+      merged.set(processId, { ...process, retired: true });
+    }
+  }
   const children = new Map<number, WindowsProcessSnapshot[]>();
   for (const process of snapshot) {
     const siblings = children.get(process.parentProcessId) ?? [];
     siblings.push(process);
     children.set(process.parentProcessId, siblings);
     if (process.processId === rootProcessId && !merged.has(process.processId)) {
-      merged.set(process.processId, { ...process, observedAt });
+      merged.set(process.processId, { ...process, observedAt, retired: false });
     }
   }
 
-  const pending = [rootProcessId, ...merged.keys()];
+  const pending = [...merged.values()]
+    .filter((process) => !process.retired)
+    .map((process) => process.processId);
   const visited = new Set<number>();
   while (pending.length > 0) {
     const parentProcessId = pending.pop();
     if (parentProcessId === undefined || visited.has(parentProcessId)) continue;
     visited.add(parentProcessId);
     for (const child of children.get(parentProcessId) ?? []) {
-      if (!merged.has(child.processId))
-        merged.set(child.processId, { ...child, observedAt });
-      pending.push(child.processId);
+      let trackedChild = merged.get(child.processId);
+      if (trackedChild === undefined) {
+        trackedChild = {
+          ...child,
+          observedAt,
+          retired: false,
+        };
+        merged.set(child.processId, trackedChild);
+      }
+      if (!trackedChild.retired) pending.push(child.processId);
     }
   }
   return merged;
 }
 
 export async function loadWindowsProcessProvider(): Promise<WindowsProcessProvider> {
+  assertSupportedWindowsArchitectureForTest();
   const processTree = await import("@vscode/windows-process-tree");
   return () =>
     new Promise((resolveProcesses, rejectProcesses) => {
@@ -71,6 +91,16 @@ export async function loadWindowsProcessProvider(): Promise<WindowsProcessProvid
         rejectProcesses(error);
       }
     });
+}
+
+export function assertSupportedWindowsArchitectureForTest(
+  architecture = process.arch,
+): void {
+  if (architecture !== "x64") {
+    throw new Error(
+      `Windows build process tracking requires x64, received ${architecture}`,
+    );
+  }
 }
 
 export function startWindowsProcessTracker(

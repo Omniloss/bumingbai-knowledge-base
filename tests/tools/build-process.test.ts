@@ -1,5 +1,7 @@
 import { expect, it, vi } from "vitest";
 import {
+  type BuildCleanupUnconfirmedError,
+  requireConfirmedCleanupForTest,
   requireTaskkillSuccessForTest,
   terminatePosixGroupForTest,
   terminateWindowsForTest,
@@ -121,4 +123,14 @@ it("fails once the Windows lifecycle deadline is exhausted", async () => {
       { deadlineMilliseconds: 30, now: () => clock },
     ),
   ).rejects.toThrow("Windows process termination exceeded deadline");
+});
+
+it("classifies cleanup rejection as unconfirmed lifecycle state", async () => {
+  const failure = new Error("inspection failed");
+  await expect(
+    requireConfirmedCleanupForTest(Promise.reject(failure)),
+  ).rejects.toMatchObject({
+    cause: failure,
+    name: "BuildCleanupUnconfirmedError",
+  } satisfies Partial<BuildCleanupUnconfirmedError>);
 });

@@ -23,6 +23,23 @@ type Clock = {
 
 const SHUTDOWN_TIMEOUT = 15_000;
 
+export class BuildCleanupUnconfirmedError extends Error {
+  constructor(cause: unknown) {
+    super("Build process cleanup could not be confirmed", { cause });
+    this.name = "BuildCleanupUnconfirmedError";
+  }
+}
+
+export async function requireConfirmedCleanupForTest(
+  cleanup: Promise<void>,
+): Promise<void> {
+  try {
+    await cleanup;
+  } catch (error: unknown) {
+    throw new BuildCleanupUnconfirmedError(error);
+  }
+}
+
 function wait(milliseconds: number): Promise<void> {
   return new Promise((resolveWait) => setTimeout(resolveWait, milliseconds));
 }
@@ -143,7 +160,9 @@ export async function runBuild(
   });
   try {
     const result = await Promise.race([exit, timeoutSignal]);
-    await cleanup(child, exit, platform, tracker);
+    await requireConfirmedCleanupForTest(
+      cleanup(child, exit, platform, tracker),
+    );
     if (result === "timeout") {
       throw new Error(
         `pnpm run build timed out after ${timeoutMilliseconds}ms`,

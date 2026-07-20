@@ -1,6 +1,8 @@
 allowBuilds:
   '@vscode/windows-process-tree': false
   esbuild: true
+  sharp: true
+  workerd: true
 
 overrides:
   "lighthouse>@sentry/node": "10.66.0"

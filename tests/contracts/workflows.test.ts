@@ -105,4 +105,24 @@ describe("GitHub Actions workflows", () => {
     expect(JSON.stringify(sync)).not.toContain("--no-verify");
     expect(JSON.stringify(sync)).not.toContain("push origin main");
   });
+
+  it("deploys only main with read-only repository permissions", async () => {
+    const deploy = await loadWorkflow("deploy.yml");
+    expectRuntimeActions(deploy, "deploy");
+    expect(deploy.on?.push).toEqual({ branches: ["main"] });
+    expect(deploy.permissions).toEqual({ contents: "read" });
+    expect(runs(deploy, "deploy")).toEqual(
+      expect.arrayContaining([
+        "script/ci",
+        "script/build",
+        "pnpm exec playwright test tests/e2e/home.spec.ts tests/e2e/entity-pages.spec.ts --project=desktop",
+        "pnpm exec wrangler deploy --dry-run",
+        "pnpm exec wrangler deploy",
+      ]),
+    );
+    expect(JSON.stringify(deploy)).toContain("CLOUDFLARE_API_TOKEN");
+    expect(JSON.stringify(deploy)).toContain("CLOUDFLARE_ACCOUNT_ID");
+    expect(deploy.on?.pull_request).toBeUndefined();
+    expect(deploy.on?.schedule).toBeUndefined();
+  });
 });

@@ -45,3 +45,4 @@
 - 节目和作品详情页只能通过 `CatalogRepository` 连接公开实体与可发布推荐证据；作品详情固定保留图像、推荐证据、版本、强关联、相似作品和来源六个有序区段，缺失数据必须显示诚实空状态，书籍版本信息不得套用到非书作品。
 - 只有“官方文字稿说话人标签”“官方节目简介明确说明”“节目标题明确列名或角色”三类 `guest_evidence` 可生成公开 Person；包含“未逐一列名”或“未在标题或简介中明确列名”的占位文本必须保留到审核问题，不得拆分或发布为 Person。
 - 每次对项目结构、数据契约、脚本命令或关键限制作出有意义的修改后，同步修订本文件。
+- Task 3 scope gate: official raw snapshots and whitelisted normalized episode fields may update public catalogs; every recommendation candidate queue change, entity addition or deletion, source or ID change, and non-whitelisted field requires review. `script/sync` never publishes recommendation evidence, commits, pushes, or opens a pull request.

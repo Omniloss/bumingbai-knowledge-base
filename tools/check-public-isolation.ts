@@ -1,13 +1,5 @@
 import { randomUUID } from "node:crypto";
-import {
-  lstat,
-  mkdtemp,
-  readFile,
-  realpath,
-  rm,
-  writeFile,
-} from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { lstat, readFile, realpath, rm, writeFile } from "node:fs/promises";
 import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 import { withQueueLock } from "../src/sync/queue-lock.js";
@@ -17,6 +9,17 @@ import {
   scanPublicArtifact,
   scanPublicDirectory,
 } from "./public-artifact-scan.js";
+import {
+  createQueueRecovery,
+  PublicIsolationRecoveryRequiredError,
+  restoreQueueAndRemoveRecovery,
+  validateQueueBytes,
+} from "./public-isolation-recovery.js";
+
+export {
+  PublicIsolationRecoveryCleanupError,
+  PublicIsolationRecoveryRequiredError,
+} from "./public-isolation-recovery.js";
 
 export const NONPUBLIC_SENTINEL = "__NONPUBLIC_SYNC_CANDIDATE_7f629d__";
 
@@ -24,31 +27,17 @@ type GateOptions = {
   root?: string;
   runBuild?: () => Promise<void>;
   buildTimeoutMilliseconds?: number;
+  recoveryBase?: string;
 };
 
 const defaultBuildTimeoutMilliseconds = 120_000;
-
-export class PublicIsolationRecoveryRequiredError extends Error {
-  readonly recoveryPath: string;
-
-  constructor(recoveryPath: string, cause: unknown) {
-    const reason =
-      cause instanceof Error
-        ? cause.message
-        : "Public isolation queue restoration failed";
-    super(`${reason}; original queue recovery retained at ${recoveryPath}`, {
-      cause,
-    });
-    this.name = "PublicIsolationRecoveryRequiredError";
-    this.recoveryPath = recoveryPath;
-  }
-}
 
 type Directory = { dev: number; ino: number; path: string; realPath: string };
 type Queue = {
   destination: string;
   leaf: { dev: number; ino: number };
   review: Directory;
+  root: Directory;
   directories: Directory[];
 };
 
@@ -105,6 +94,7 @@ async function inspectQueue(root: string): Promise<Queue> {
     destination,
     leaf: { dev: leaf.dev, ino: leaf.ino },
     review,
+    root: rootDirectory,
     directories: [rootDirectory, data, review],
   };
 }
@@ -171,48 +161,6 @@ async function assertAbsent(root: string): Promise<void> {
   );
 }
 
-function validateQueue(originalQueue: Uint8Array): void {
-  let parsed: unknown;
-  try {
-    const text = new TextDecoder("utf-8", { fatal: true }).decode(
-      originalQueue,
-    );
-    parsed = JSON.parse(text);
-  } catch {
-    throw new Error("Recommendation candidate queue must contain valid JSON");
-  }
-  if (!Array.isArray(parsed)) {
-    throw new Error("Recommendation candidate queue must be a JSON array");
-  }
-}
-
-async function writeRecovery(queue: Queue, bytes: Uint8Array): Promise<string> {
-  const recoveryRoot = join(tmpdir(), "bumingbai-public-isolation-recovery-");
-  await revalidateQueue(queue);
-  const recoveryDirectory = await mkdtemp(recoveryRoot);
-  const recovery = join(recoveryDirectory, "sync-candidates.json");
-  try {
-    const parentStats = await lstat(recoveryDirectory);
-    if (!parentStats.isDirectory() || parentStats.isSymbolicLink()) {
-      throw new Error(
-        "Recommendation candidate queue recovery parent must be a directory",
-      );
-    }
-    await writeFile(recovery, bytes, { flag: "wx", mode: 0o600 });
-    const stats = await lstat(recovery);
-    if (!stats.isFile() || stats.isSymbolicLink()) {
-      throw new Error("Recommendation candidate queue recovery must be a file");
-    }
-    await revalidateQueue(queue);
-    return recovery;
-  } catch (error: unknown) {
-    await rm(recoveryDirectory, { force: true, recursive: true }).catch(
-      () => undefined,
-    );
-    throw error;
-  }
-}
-
 export async function runPublicIsolationGate(
   options: GateOptions = {},
 ): Promise<void> {
@@ -221,8 +169,16 @@ export async function runPublicIsolationGate(
   await withQueueLock(queue.destination, async () => {
     await revalidateQueue(queue);
     const originalQueue = await readFile(queue.destination);
-    validateQueue(originalQueue);
-    const recovery = await writeRecovery(queue, originalQueue);
+    validateQueueBytes(originalQueue);
+    const recovery = await createQueueRecovery({
+      bytes: originalQueue,
+      projectRootPath: queue.root.path,
+      projectRootRealPath: queue.root.realPath,
+      revalidate: () => revalidateQueue(queue),
+      ...(options.recoveryBase === undefined
+        ? {}
+        : { recoveryBase: options.recoveryBase }),
+    });
     const candidates = [
       {
         rawText: NONPUBLIC_SENTINEL,
@@ -249,7 +205,7 @@ export async function runPublicIsolationGate(
       if (error instanceof BuildCleanupUnconfirmedError) {
         cleanupConfirmed = false;
         failure = {
-          error: new PublicIsolationRecoveryRequiredError(recovery, error),
+          error: new PublicIsolationRecoveryRequiredError(recovery.path, error),
         };
       } else {
         failure = { error };
@@ -257,12 +213,11 @@ export async function runPublicIsolationGate(
     }
     if (cleanupConfirmed) {
       try {
-        if (restoreRequired) await writeQueue(queue, originalQueue);
-        await rm(resolve(recovery, ".."), { force: true, recursive: true });
+        await restoreQueueAndRemoveRecovery(recovery, async () => {
+          if (restoreRequired) await writeQueue(queue, originalQueue);
+        });
       } catch (error: unknown) {
-        failure = {
-          error: new PublicIsolationRecoveryRequiredError(recovery, error),
-        };
+        failure = { error };
       }
     }
     if (failure !== undefined) throw failure.error;

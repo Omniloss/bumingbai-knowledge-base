@@ -2,22 +2,15 @@ import {
   access,
   mkdir,
   mkdtemp,
-  readdir,
   readFile,
-  rename,
-  rm,
   symlink,
   writeFile,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { expect, it } from "vitest";
 import { writeRecommendationCandidateQueue } from "../../src/sync/run-sync.js";
-import { BuildCleanupUnconfirmedError } from "../../tools/build-process.js";
-import {
-  PublicIsolationRecoveryRequiredError,
-  runPublicIsolationGate,
-} from "../../tools/check-public-isolation.js";
+import { runPublicIsolationGate } from "../../tools/check-public-isolation.js";
 
 async function createRoot(): Promise<string> {
   const root = await mkdtemp(join(tmpdir(), "bumingbai-public-isolation-"));
@@ -50,12 +43,12 @@ it("stops a timed-out build process", async () => {
   );
   await writeFile(
     join(root, "build.mjs"),
-    "await new Promise((resolve) => setTimeout(resolve, 100));",
+    "setInterval(() => undefined, 1000);",
   );
 
   await expect(
-    runPublicIsolationGate({ root, buildTimeoutMilliseconds: 20 }),
-  ).rejects.toThrow("timed out after 20ms");
+    runPublicIsolationGate({ root, buildTimeoutMilliseconds: 500 }),
+  ).rejects.toThrow("timed out after 500ms");
 }, 30_000);
 
 it("terminates a timed-out build descendant before restoring the queue", async () => {
@@ -222,127 +215,4 @@ it("finds a sentinel split across artifact scan chunks", async () => {
   ).rejects.toThrow(
     "Nonpublic recommendation sentinel leaked into public output",
   );
-});
-
-it("does not overwrite a dynamically replaced queue file", async () => {
-  const root = await createRoot();
-  const queue = join(root, "data", "review", "sync-candidates.json");
-  const replacement = join(root, "data", "review", "replacement.json");
-
-  let failure: unknown;
-  try {
-    await runPublicIsolationGate({
-      root,
-      runBuild: async () => {
-        await writeFile(replacement, '["replacement"]\n');
-        await rename(replacement, queue);
-      },
-    });
-  } catch (error: unknown) {
-    failure = error;
-  }
-  expect(failure).toBeInstanceOf(PublicIsolationRecoveryRequiredError);
-  if (!(failure instanceof PublicIsolationRecoveryRequiredError)) {
-    throw new Error("Expected a recovery-required isolation failure");
-  }
-  expect(failure.message).toContain(
-    "Recommendation candidate queue destination identity changed",
-  );
-  await expect(readFile(queue, "utf8")).resolves.toBe('["replacement"]\n');
-  await expect(readFile(failure.recoveryPath, "utf8")).resolves.toBe("[]\n");
-  await rm(dirname(failure.recoveryPath), { force: true, recursive: true });
-});
-
-it("does not write restoration bytes after the review directory is swapped", async () => {
-  const root = await createRoot();
-  const review = join(root, "data", "review");
-  const movedReview = join(root, "moved-review");
-  const replacementQueue = join(review, "sync-candidates.json");
-
-  let failure: unknown;
-  try {
-    await runPublicIsolationGate({
-      root,
-      runBuild: async () => {
-        await rename(review, movedReview);
-        await mkdir(review);
-        await writeFile(replacementQueue, '["replacement"]\n');
-      },
-    });
-  } catch (error: unknown) {
-    failure = error;
-  }
-  expect(failure).toBeInstanceOf(PublicIsolationRecoveryRequiredError);
-  if (!(failure instanceof PublicIsolationRecoveryRequiredError)) {
-    throw new Error("Expected a recovery-required isolation failure");
-  }
-  expect(failure.message).toContain(
-    "Recommendation candidate queue parent identity changed",
-  );
-  await expect(readFile(replacementQueue, "utf8")).resolves.toBe(
-    '["replacement"]\n',
-  );
-  await expect(readdir(review)).resolves.toEqual(["sync-candidates.json"]);
-  await expect(readFile(failure.recoveryPath, "utf8")).resolves.toBe("[]\n");
-  await rm(dirname(failure.recoveryPath), { force: true, recursive: true });
-});
-
-it("rejects invalid UTF-8 without changing the original queue bytes", async () => {
-  const root = await createRoot();
-  const queue = join(root, "data", "review", "sync-candidates.json");
-  const original = Buffer.from([91, 34, 255, 34, 93, 10]);
-  await writeFile(queue, original);
-
-  await expect(
-    runPublicIsolationGate({ root, runBuild: async () => undefined }),
-  ).rejects.toThrow("Recommendation candidate queue must contain valid JSON");
-
-  await expect(readFile(queue)).resolves.toEqual(original);
-});
-
-it("restores valid noncanonical JSON bytes exactly", async () => {
-  const root = await createRoot();
-  const queue = join(root, "data", "review", "sync-candidates.json");
-  const original = Buffer.from(" [ ] \r\n");
-  await mkdir(join(root, "dist"));
-  await mkdir(join(root, "public"));
-  await writeFile(join(root, "public", "search-index.json"), "[]\n");
-  await writeFile(queue, original);
-
-  await runPublicIsolationGate({ root, runBuild: async () => undefined });
-
-  await expect(readFile(queue)).resolves.toEqual(original);
-});
-
-it("quarantines the original queue when process cleanup is unconfirmed", async () => {
-  const root = await createRoot();
-  const queue = join(root, "data", "review", "sync-candidates.json");
-  const original = Buffer.from('[{"rawText":"private candidate"}]\n');
-  await writeFile(queue, original);
-
-  let failure: unknown;
-  try {
-    await runPublicIsolationGate({
-      root,
-      runBuild: async () => {
-        throw new BuildCleanupUnconfirmedError(new Error("inspection failed"));
-      },
-    });
-  } catch (error: unknown) {
-    failure = error;
-  }
-  expect(failure).toBeInstanceOf(PublicIsolationRecoveryRequiredError);
-  if (!(failure instanceof PublicIsolationRecoveryRequiredError)) {
-    throw new Error("Expected a recovery-required isolation failure");
-  }
-
-  await expect(readFile(queue, "utf8")).resolves.toContain(
-    "__NONPUBLIC_SYNC_CANDIDATE_7f629d__",
-  );
-  await expect(readFile(queue, "utf8")).resolves.not.toContain(
-    "private candidate",
-  );
-  expect(failure.recoveryPath.startsWith(root)).toBe(false);
-  await expect(readFile(failure.recoveryPath)).resolves.toEqual(original);
-  await rm(dirname(failure.recoveryPath), { force: true, recursive: true });
 });

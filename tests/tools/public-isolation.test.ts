@@ -67,6 +67,7 @@ async function createMinimalProject(): Promise<{
     "check-public-isolation.ts",
     "build-process.ts",
     "public-artifact-scan.ts",
+    "public-isolation-recovery.ts",
     "windows-process-control.ts",
     "windows-process-inspection.ts",
     "windows-process-tracker.ts",

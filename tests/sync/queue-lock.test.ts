@@ -1,5 +1,11 @@
+import { once } from "node:events";
 import { mkdtemp } from "node:fs/promises";
-import { createServer, type Server } from "node:net";
+import {
+  createConnection,
+  createServer,
+  type Server,
+  type Socket,
+} from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { expect, it } from "vitest";
@@ -86,6 +92,46 @@ it("releases the lease after the protected operation rejects", async () => {
   await expect(withQueueLock(queue, async () => "recovered")).resolves.toBe(
     "recovered",
   );
+});
+
+it("does not enter the protected operation after its deadline", async () => {
+  const root = await mkdtemp(join(tmpdir(), "bumingbai-lock-"));
+  const queue = join(root, "sync-candidates.json");
+  let entered = false;
+
+  await expect(
+    withQueueLock(
+      queue,
+      async () => {
+        entered = true;
+      },
+      0,
+    ),
+  ).rejects.toThrow("Recommendation candidate queue lock timed out");
+  expect(entered).toBe(false);
+});
+
+it("closes within a bound when a loopback client connects", async () => {
+  const root = await mkdtemp(join(tmpdir(), "bumingbai-lock-"));
+  const queue = join(root, "sync-candidates.json");
+  let client: Socket | undefined;
+  const operation = withQueueLock(queue, async () => {
+    client = createConnection({
+      host: "127.0.0.1",
+      port: queueLockPortForTest(queue),
+    });
+    await once(client, "connect");
+    return "released";
+  });
+
+  try {
+    await expect(
+      Promise.race([operation, wait(250).then(() => "release timed out")]),
+    ).resolves.toBe("released");
+  } finally {
+    client?.destroy();
+    await operation.catch(() => undefined);
+  }
 });
 
 it("normalizes Windows target casing to one lease", () => {

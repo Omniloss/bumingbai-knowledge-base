@@ -211,8 +211,8 @@ export function writeRecommendationCandidateQueue(
 ): Promise<string> {
   const lockKey = resolve(root, "data", "review", "sync-candidates.json");
   return serialize(lockKey, async () => {
-    const paths = await prepareQueuePaths(root);
-    return withQueueLock(paths.destination, async () => {
+    return withQueueLock(lockKey, async () => {
+      const paths = await prepareQueuePaths(root);
       await revalidatePaths(paths);
       const temporaryPath = resolve(
         paths.review.path,

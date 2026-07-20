@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { verifyTrackedWindowsProcessParents } from "./windows-process-inspection.js";
 import {
   loadWindowsProcessProvider,
   startWindowsProcessTracker,
@@ -152,7 +153,11 @@ export async function runBuild(
   const exit = exited(child);
   const tracker =
     windows && child.pid !== undefined && provider !== undefined
-      ? startWindowsProcessTracker(child.pid, provider)
+      ? startWindowsProcessTracker(
+          child.pid,
+          provider,
+          verifyTrackedWindowsProcessParents,
+        )
       : undefined;
   let timeout: NodeJS.Timeout | undefined;
   const timeoutSignal = new Promise<"timeout">((resolveTimeout) => {

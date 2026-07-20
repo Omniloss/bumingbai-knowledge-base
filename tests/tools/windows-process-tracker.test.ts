@@ -1,7 +1,9 @@
 import { expect, it } from "vitest";
 import {
   assertSupportedWindowsArchitectureForTest,
+  filterSnapshotByVerifiedParentsForTest,
   mergeTrackedProcessSnapshot,
+  trackedParentsWithNewChildrenForTest,
   type WindowsProcessSnapshot,
 } from "../../tools/windows-process-tracker.js";
 
@@ -118,6 +120,66 @@ it("does not absorb children after a tracked parent PID is retired", () => {
     observed(intermediate, 100, true),
   );
   expect(afterPidReuse.has(13)).toBe(false);
+});
+
+it("retires a same-name PID when its parent identity changes", () => {
+  const initial = mergeTrackedProcessSnapshot(
+    root.processId,
+    new Map(),
+    [root, intermediate],
+    100,
+  );
+  const afterPidReuse = mergeTrackedProcessSnapshot(
+    root.processId,
+    initial,
+    [
+      root,
+      { ...intermediate, parentProcessId: 99 },
+      { name: "unrelated-child.exe", parentProcessId: 11, processId: 13 },
+    ],
+    200,
+  );
+
+  expect(afterPidReuse.get(intermediate.processId)).toEqual(
+    observed(intermediate, 100, true),
+  );
+  expect(afterPidReuse.has(13)).toBe(false);
+});
+
+it("requires identity verification before a historical parent adopts a child", () => {
+  const initial = mergeTrackedProcessSnapshot(
+    root.processId,
+    new Map(),
+    [root, intermediate],
+    100,
+  );
+
+  expect(
+    trackedParentsWithNewChildrenForTest(initial, [
+      root,
+      intermediate,
+      { name: "new-child.exe", parentProcessId: 11, processId: 13 },
+    ]),
+  ).toEqual([observed(intermediate, 100)]);
+});
+
+it("excludes a new child when its historical parent cannot be verified", () => {
+  const initial = mergeTrackedProcessSnapshot(
+    root.processId,
+    new Map(),
+    [root, intermediate],
+    100,
+  );
+  const snapshot = [
+    root,
+    intermediate,
+    { name: "new-child.exe", parentProcessId: 11, processId: 13 },
+  ];
+  const parents = trackedParentsWithNewChildrenForTest(initial, snapshot);
+
+  expect(
+    filterSnapshotByVerifiedParentsForTest(initial, snapshot, parents, []),
+  ).toEqual([root, intermediate]);
 });
 
 it("fails explicitly on a Windows architecture without a bundled binary", () => {

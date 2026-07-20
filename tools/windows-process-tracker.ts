@@ -9,6 +9,9 @@ export type TrackedWindowsProcessSnapshot = WindowsProcessSnapshot & {
 };
 
 export type WindowsProcessProvider = () => Promise<WindowsProcessSnapshot[]>;
+export type WindowsParentVerifier = (
+  parents: readonly TrackedWindowsProcessSnapshot[],
+) => Promise<readonly number[]>;
 
 export type WindowsProcessTracker = {
   records: () => TrackedWindowsProcessSnapshot[];
@@ -34,7 +37,11 @@ export function mergeTrackedProcessSnapshot(
   );
   for (const [processId, process] of merged) {
     const current = currentByPid.get(processId);
-    if (current === undefined || current.name !== process.name) {
+    if (
+      current === undefined ||
+      current.name !== process.name ||
+      current.parentProcessId !== process.parentProcessId
+    ) {
       merged.set(processId, { ...process, retired: true });
     }
   }
@@ -72,6 +79,37 @@ export function mergeTrackedProcessSnapshot(
   return merged;
 }
 
+export function trackedParentsWithNewChildrenForTest(
+  tracked: ReadonlyMap<number, TrackedWindowsProcessSnapshot>,
+  snapshot: readonly WindowsProcessSnapshot[],
+): TrackedWindowsProcessSnapshot[] {
+  const parents = new Map<number, TrackedWindowsProcessSnapshot>();
+  for (const process of snapshot) {
+    if (tracked.has(process.processId)) continue;
+    const parent = tracked.get(process.parentProcessId);
+    if (parent !== undefined && !parent.retired) {
+      parents.set(parent.processId, parent);
+    }
+  }
+  return [...parents.values()];
+}
+
+export function filterSnapshotByVerifiedParentsForTest(
+  tracked: ReadonlyMap<number, TrackedWindowsProcessSnapshot>,
+  snapshot: readonly WindowsProcessSnapshot[],
+  parents: readonly TrackedWindowsProcessSnapshot[],
+  verifiedParentIds: readonly number[],
+): WindowsProcessSnapshot[] {
+  const candidates = new Set(parents.map((parent) => parent.processId));
+  const verified = new Set(verifiedParentIds);
+  return snapshot.filter(
+    (process) =>
+      tracked.has(process.processId) ||
+      !candidates.has(process.parentProcessId) ||
+      verified.has(process.parentProcessId),
+  );
+}
+
 export async function loadWindowsProcessProvider(): Promise<WindowsProcessProvider> {
   assertSupportedWindowsArchitectureForTest();
   const processTree = await import("@vscode/windows-process-tree");
@@ -106,6 +144,8 @@ export function assertSupportedWindowsArchitectureForTest(
 export function startWindowsProcessTracker(
   rootProcessId: number,
   provider: WindowsProcessProvider,
+  verifyParents: WindowsParentVerifier = async (parents) =>
+    parents.map((parent) => parent.processId),
   pollIntervalMilliseconds = POLL_INTERVAL_MILLISECONDS,
 ): WindowsProcessTracker {
   let stopping = false;
@@ -115,10 +155,18 @@ export function startWindowsProcessTracker(
 
   const sample = (): Promise<void> => {
     samples = samples.then(async () => {
+      const snapshot = await provider();
+      const parents = trackedParentsWithNewChildrenForTest(tracked, snapshot);
+      const verified = parents.length === 0 ? [] : await verifyParents(parents);
       tracked = mergeTrackedProcessSnapshot(
         rootProcessId,
         tracked,
-        await provider(),
+        filterSnapshotByVerifiedParentsForTest(
+          tracked,
+          snapshot,
+          parents,
+          verified,
+        ),
       );
     });
     return samples;

@@ -67,6 +67,28 @@ function identityRows(
   });
 }
 
+export function matchTrackedWindowsProcessIdentitiesForTest(
+  tracked: readonly TrackedWindowsProcessSnapshot[],
+  identities: ReadonlyArray<{ createdAt: string; processId: number }>,
+): ProcessRecord[] {
+  const trackedByPid = new Map(
+    tracked.map((process) => [process.processId, process]),
+  );
+  return identities.flatMap((identity) => {
+    const observed = trackedByPid.get(identity.processId);
+    const createdAt = Date.parse(identity.createdAt);
+    if (!Number.isFinite(createdAt)) {
+      throw new Error("Unable to inspect Windows process identity");
+    }
+    if (observed !== undefined && createdAt > observed.observedAt) {
+      throw new Error("Tracked Windows process identity changed");
+    }
+    return observed === undefined
+      ? []
+      : [{ ...identity, parentProcessId: observed.parentProcessId }];
+  });
+}
+
 export async function liveWindowsProcessRecords(
   tracked: readonly TrackedWindowsProcessSnapshot[],
   timeoutMilliseconds: number,
@@ -88,14 +110,16 @@ export async function liveWindowsProcessRecords(
     timeoutMilliseconds,
   );
   if (output.trim() === "") return [];
-  return identityRows(JSON.parse(output)).flatMap((identity) => {
-    const observed = trackedByPid.get(identity.processId);
-    const createdAt = Date.parse(identity.createdAt);
-    if (!Number.isFinite(createdAt)) {
-      throw new Error("Unable to inspect Windows process identity");
-    }
-    return observed === undefined || createdAt > observed.observedAt
-      ? []
-      : [{ ...identity, parentProcessId: observed.parentProcessId }];
-  });
+  return matchTrackedWindowsProcessIdentitiesForTest(
+    [...trackedByPid.values()],
+    identityRows(JSON.parse(output)),
+  );
+}
+
+export async function verifyTrackedWindowsProcessParents(
+  tracked: readonly TrackedWindowsProcessSnapshot[],
+  timeoutMilliseconds = 5_000,
+): Promise<readonly number[]> {
+  const live = await liveWindowsProcessRecords(tracked, timeoutMilliseconds);
+  return live.map((process) => process.processId);
 }

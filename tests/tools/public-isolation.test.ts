@@ -4,6 +4,7 @@ import {
   mkdir,
   mkdtemp,
   readFile,
+  symlink,
   writeFile,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -66,6 +67,8 @@ async function createMinimalProject(): Promise<{
     "check-public-isolation.ts",
     "build-process.ts",
     "public-artifact-scan.ts",
+    "windows-process-control.ts",
+    "windows-process-tracker.ts",
   ];
   const toolDirectory = join(root, "tool path");
   const syncDirectory = join(root, "src", "sync");
@@ -75,6 +78,11 @@ async function createMinimalProject(): Promise<{
   );
   await mkdir(join(root, "tool path"), { recursive: true });
   await mkdir(syncDirectory, { recursive: true });
+  await symlink(
+    resolve(process.cwd(), "node_modules"),
+    join(root, "node_modules"),
+    process.platform === "win32" ? "junction" : "dir",
+  );
   await Promise.all(
     sourceTools.map((name) =>
       copyFile(

@@ -1,4 +1,5 @@
 allowBuilds:
+  '@vscode/windows-process-tree': false
   esbuild: true
 
 overrides:

@@ -2,7 +2,9 @@ import {
   access,
   mkdir,
   mkdtemp,
+  readdir,
   readFile,
+  rename,
   symlink,
   writeFile,
 } from "node:fs/promises";
@@ -75,6 +77,30 @@ await new Promise(() => {});`,
   ).rejects.toThrow("timed out after 500ms");
   await expect(readFile(queue, "utf8")).resolves.toBe("[]\n");
   await new Promise((resolveDelay) => setTimeout(resolveDelay, 12500));
+  await expect(access(marker)).rejects.toThrow();
+}, 30_000);
+
+it("terminates a successful build descendant before restoring the queue", async () => {
+  const root = await createRoot();
+  const marker = join(root, "successful-descendant-marker");
+  const queue = join(root, "data", "review", "sync-candidates.json");
+  await mkdir(join(root, "dist"));
+  await mkdir(join(root, "public"));
+  await writeFile(join(root, "public", "search-index.json"), "[]\n");
+  await writeFile(
+    join(root, "package.json"),
+    JSON.stringify({ scripts: { build: "node build.mjs" } }),
+  );
+  const writer = `setTimeout(() => require("node:fs").writeFileSync(${JSON.stringify(marker)}, "orphan"), 6000)`;
+  await writeFile(
+    join(root, "build.mjs"),
+    `import { spawn } from "node:child_process";
+spawn(process.execPath, ["-e", ${JSON.stringify(writer)}], { stdio: "ignore" }).unref();`,
+  );
+
+  await runPublicIsolationGate({ root, buildTimeoutMilliseconds: 5_000 });
+  await expect(readFile(queue, "utf8")).resolves.toBe("[]\n");
+  await new Promise((resolveDelay) => setTimeout(resolveDelay, 6500));
   await expect(access(marker)).rejects.toThrow();
 }, 30_000);
 
@@ -191,4 +217,59 @@ it("finds a sentinel split across artifact scan chunks", async () => {
   ).rejects.toThrow(
     "Nonpublic recommendation sentinel leaked into public output",
   );
+});
+
+it("does not overwrite a dynamically replaced queue file", async () => {
+  const root = await createRoot();
+  const queue = join(root, "data", "review", "sync-candidates.json");
+  const replacement = join(root, "data", "review", "replacement.json");
+
+  await expect(
+    runPublicIsolationGate({
+      root,
+      runBuild: async () => {
+        await writeFile(replacement, '["replacement"]\n');
+        await rename(replacement, queue);
+      },
+    }),
+  ).rejects.toThrow(
+    "Recommendation candidate queue destination identity changed",
+  );
+  await expect(readFile(queue, "utf8")).resolves.toBe('["replacement"]\n');
+});
+
+it("does not write restoration bytes after the review directory is swapped", async () => {
+  const root = await createRoot();
+  const review = join(root, "data", "review");
+  const movedReview = join(root, "moved-review");
+  const replacementQueue = join(review, "sync-candidates.json");
+
+  await expect(
+    runPublicIsolationGate({
+      root,
+      runBuild: async () => {
+        await rename(review, movedReview);
+        await mkdir(review);
+        await writeFile(replacementQueue, '["replacement"]\n');
+      },
+    }),
+  ).rejects.toThrow("Recommendation candidate queue parent identity changed");
+  await expect(readFile(replacementQueue, "utf8")).resolves.toBe(
+    '["replacement"]\n',
+  );
+  await expect(readdir(review)).resolves.toEqual(["sync-candidates.json"]);
+});
+
+it("restores the original queue bytes without a UTF-8 round trip", async () => {
+  const root = await createRoot();
+  const queue = join(root, "data", "review", "sync-candidates.json");
+  const original = Buffer.from([91, 34, 255, 34, 93, 10]);
+  await mkdir(join(root, "dist"));
+  await mkdir(join(root, "public"));
+  await writeFile(join(root, "public", "search-index.json"), "[]\n");
+  await writeFile(queue, original);
+
+  await runPublicIsolationGate({ root, runBuild: async () => undefined });
+
+  await expect(readFile(queue)).resolves.toEqual(original);
 });

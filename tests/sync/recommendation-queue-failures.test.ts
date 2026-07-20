@@ -48,22 +48,28 @@ async function queueWriter(control: Control): Promise<QueueWriter> {
         return stats;
       },
       rename: async (...args: Parameters<typeof original.rename>) => {
-        control.renameAttempts += 1;
-        const error = control.renameErrors.shift() ?? control.renameError;
-        if (error !== undefined) throw error;
+        const temporary = String(args[0]).replaceAll("\\", "/");
+        const destination = String(args[1]).replaceAll("\\", "/");
+        const publishesQueue =
+          temporary.endsWith(".tmp") &&
+          destination.endsWith("/sync-candidates.json");
+        if (publishesQueue) {
+          control.renameAttempts += 1;
+          const error = control.renameErrors.shift() ?? control.renameError;
+          if (error !== undefined) throw error;
+        }
         return original.rename(...args);
       },
       writeFile: async (...args: Parameters<typeof original.writeFile>) => {
         const path = String(args[0]);
         if (
           control.temporaryWriteError !== undefined &&
-          path.includes(".sync-candidates.json.")
+          path.endsWith(".tmp")
         ) {
           throw control.temporaryWriteError;
         }
         const result = await original.writeFile(...args);
-        if (path.includes(".sync-candidates.json."))
-          control.temporaryWritten = true;
+        if (path.endsWith(".tmp")) control.temporaryWritten = true;
         return result;
       },
     };

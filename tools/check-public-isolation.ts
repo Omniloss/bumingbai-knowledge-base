@@ -23,6 +23,7 @@ const defaultBuildTimeoutMilliseconds = 120_000;
 type Directory = { dev: number; ino: number; path: string; realPath: string };
 type Queue = {
   destination: string;
+  leaf: { dev: number; ino: number };
   review: Directory;
   directories: Directory[];
 };
@@ -76,7 +77,12 @@ async function inspectQueue(root: string): Promise<Queue> {
       "Recommendation candidate queue destination must be a file",
     );
   }
-  return { destination, review, directories: [rootDirectory, data, review] };
+  return {
+    destination,
+    leaf: { dev: leaf.dev, ino: leaf.ino },
+    review,
+    directories: [rootDirectory, data, review],
+  };
 }
 
 async function revalidateQueue(queue: Queue): Promise<void> {
@@ -99,18 +105,32 @@ async function revalidateQueue(queue: Queue): Promise<void> {
       "Recommendation candidate queue destination must be a file",
     );
   }
+  if (leaf.dev !== queue.leaf.dev || leaf.ino !== queue.leaf.ino) {
+    throw new Error(
+      "Recommendation candidate queue destination identity changed",
+    );
+  }
 }
 
-async function writeQueue(queue: Queue, bytes: string): Promise<void> {
+async function writeQueue(queue: Queue, bytes: Uint8Array): Promise<void> {
   const temporary = join(
     queue.review.path,
     `.sync-candidates.json.${randomUUID()}.tmp`,
   );
   try {
-    await writeFile(temporary, bytes, { encoding: "utf8", flag: "wx" });
+    await revalidateQueue(queue);
+    await writeFile(temporary, bytes, { flag: "wx" });
+    await revalidateQueue(queue);
     await renameQueue(temporary, queue.destination, () =>
       revalidateQueue(queue),
     );
+    const published = await lstat(queue.destination);
+    if (!published.isFile() || published.isSymbolicLink()) {
+      throw new Error(
+        "Recommendation candidate queue destination must be a file",
+      );
+    }
+    queue.leaf = { dev: published.dev, ino: published.ino };
   } catch (error: unknown) {
     await rm(temporary, { force: true }).catch(() => undefined);
     throw error;
@@ -147,15 +167,18 @@ export async function runPublicIsolationGate(
   const queue = await inspectQueue(root);
   await withQueueLock(queue.destination, async () => {
     await revalidateQueue(queue);
-    const originalQueue = await readFile(queue.destination, "utf8");
-    const candidates = queueCandidates(originalQueue);
+    const originalQueue = await readFile(queue.destination);
+    const candidates = queueCandidates(originalQueue.toString("utf8"));
     candidates.push({
       rawText: NONPUBLIC_SENTINEL,
       risk: "high",
       status: "pending_verification",
     });
     try {
-      await writeQueue(queue, `${JSON.stringify(candidates, null, 2)}\n`);
+      await writeQueue(
+        queue,
+        Buffer.from(`${JSON.stringify(candidates, null, 2)}\n`),
+      );
       await (options.runBuild?.() ??
         runBuild(
           root,

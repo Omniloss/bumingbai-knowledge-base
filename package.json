@@ -41,6 +41,7 @@
     "@biomejs/biome": "^2.5.3",
     "@playwright/test": "^1.61.1",
     "@types/node": "24.13.3",
+    "@vscode/windows-process-tree": "0.8.0",
     "lighthouse": "^13.4.0",
     "markdownlint-cli2": "^0.23.0",
     "puppeteer-core": "^25.3.0",

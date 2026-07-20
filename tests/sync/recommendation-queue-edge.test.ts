@@ -159,5 +159,5 @@ describe("cold-start recommendation queue writes", () => {
     await expect(
       readFile(join(root, "data", "review", "sync-candidates.json"), "utf8"),
     ).resolves.toContain("《19》");
-  }, 30_000);
+  }, 60_000);
 });

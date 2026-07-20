@@ -1,12 +1,27 @@
 import { spawn } from "node:child_process";
+import {
+  loadWindowsProcessProvider,
+  startWindowsProcessTracker,
+  type WindowsProcessTracker,
+} from "./windows-process-tracker.js";
 
-type ProcessExit = { code: number | null };
-type ProcessRecord = {
-  createdAt: string;
-  parentProcessId: number;
-  processId: number;
+export {
+  type ProcessRecord,
+  requireTaskkillSuccessForTest,
+  terminateWindowsForTest,
+} from "./windows-process-control.js";
+
+import { terminateTrackedWindows } from "./windows-process-control.js";
+
+export type ProcessExit = { code: number | null };
+type Signal = (pid: number, signal: NodeJS.Signals | 0) => void;
+type Clock = {
+  deadlineMilliseconds?: number;
+  graceMilliseconds?: number;
+  now?: () => number;
 };
-type Signal = (pid: number, signal: NodeJS.Signals) => void;
+
+const SHUTDOWN_TIMEOUT = 15_000;
 
 function wait(milliseconds: number): Promise<void> {
   return new Promise((resolveWait) => setTimeout(resolveWait, milliseconds));
@@ -19,107 +34,23 @@ function exited(child: ReturnType<typeof spawn>): Promise<ProcessExit> {
   });
 }
 
-async function exitsWithin(
-  exit: Promise<ProcessExit>,
-  milliseconds: number,
-): Promise<boolean> {
-  return Promise.race([
-    exit.then(() => true),
-    wait(milliseconds).then(() => false),
-  ]);
+function remaining(deadline: number, now: () => number): number {
+  const milliseconds = deadline - now();
+  if (milliseconds <= 0) throw new Error("Build process did not terminate");
+  return milliseconds;
 }
 
-async function taskkill(pid: number): Promise<number | null> {
-  const child = spawn("taskkill", ["/pid", String(pid), "/T", "/F"], {
-    stdio: "ignore",
-    windowsHide: true,
-  });
-  const exit = exited(child);
-  if (!(await exitsWithin(exit, 5_000))) {
-    child.kill();
-    throw new Error("taskkill did not terminate");
-  }
-  return (await exit).code;
-}
-
-export async function requireTaskkillSuccessForTest(
-  taskkillResult: Promise<number | null>,
-): Promise<void> {
-  if ((await taskkillResult) !== 0) {
-    throw new Error("taskkill failed");
-  }
-}
-
-async function capture(command: string, args: string[]): Promise<string> {
-  const child = spawn(command, args, { stdio: ["ignore", "pipe", "ignore"] });
-  let output = "";
-  child.stdout?.setEncoding("utf8");
-  child.stdout?.on("data", (chunk: string) => {
-    output += chunk;
-  });
-  const exit = exited(child);
-  if (!(await exitsWithin(exit, 5_000))) {
-    child.kill();
-    throw new Error(`${command} did not terminate`);
-  }
-  return output;
-}
-
-function processRecords(value: unknown): ProcessRecord[] {
-  const values = Array.isArray(value) ? value : [value];
-  return values.flatMap((item) => {
-    if (typeof item !== "object" || item === null) return [];
-    const processId = "ProcessId" in item ? Number(item.ProcessId) : Number.NaN;
-    const parentProcessId =
-      "ParentProcessId" in item ? Number(item.ParentProcessId) : Number.NaN;
-    const createdAt = "CreationDate" in item ? String(item.CreationDate) : "";
-    return Number.isInteger(processId) &&
-      Number.isInteger(parentProcessId) &&
-      createdAt !== ""
-      ? [{ processId, parentProcessId, createdAt }]
-      : [];
-  });
-}
-
-async function windowsProcesses(): Promise<ProcessRecord[]> {
-  const output = await capture("powershell.exe", [
-    "-NoProfile",
-    "-NonInteractive",
-    "-Command",
-    "Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId,CreationDate | ConvertTo-Json -Compress",
-  ]);
-  const records = processRecords(JSON.parse(output));
-  if (records.length === 0)
-    throw new Error("Unable to inspect Windows process tree");
-  return records;
-}
-
-function descendants(records: ProcessRecord[], pid: number): ProcessRecord[] {
-  const pending = [pid];
-  const found: ProcessRecord[] = [];
-  while (pending.length > 0) {
-    const parent = pending.pop();
-    for (const record of records) {
-      if (record.parentProcessId === parent) {
-        found.push(record);
-        pending.push(record.processId);
-      }
+function groupAlive(pid: number, signal: Signal): boolean {
+  try {
+    signal(-pid, 0);
+    return true;
+  } catch (error: unknown) {
+    if (typeof error === "object" && error !== null && "code" in error) {
+      if (error.code === "ESRCH") return false;
+      if (error.code === "EPERM") return true;
     }
+    throw error;
   }
-  return found.reverse();
-}
-
-function stillRunning(
-  records: ProcessRecord[],
-  known: ProcessRecord[],
-): ProcessRecord[] {
-  return known.filter((target) =>
-    records.some(
-      (current) =>
-        current.processId === target.processId &&
-        current.createdAt === target.createdAt,
-    ),
-  );
 }
 
 export async function terminatePosixGroupForTest(
@@ -127,9 +58,33 @@ export async function terminatePosixGroupForTest(
   rootExit: Promise<ProcessExit>,
   signal: Signal,
   pause: (milliseconds: number) => Promise<void>,
+  options: Clock = {},
 ): Promise<void> {
-  signal(-pid, "SIGTERM");
-  await pause(500);
+  const now = options.now ?? Date.now;
+  const deadline = now() + (options.deadlineMilliseconds ?? SHUTDOWN_TIMEOUT);
+  const grace = options.graceMilliseconds ?? 500;
+  let rootExited = false;
+  void rootExit.then(() => {
+    rootExited = true;
+  });
+  try {
+    signal(-pid, "SIGTERM");
+  } catch (error: unknown) {
+    if (
+      !(
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "ESRCH"
+      )
+    )
+      throw error;
+    while (!rootExited) {
+      await pause(Math.min(50, remaining(deadline, now)));
+    }
+    return;
+  }
+  await pause(Math.min(grace, remaining(deadline, now)));
   try {
     signal(-pid, "SIGKILL");
   } catch (error: unknown) {
@@ -143,35 +98,23 @@ export async function terminatePosixGroupForTest(
     )
       throw error;
   }
-  if (!(await exitsWithin(rootExit, 5_000)))
-    throw new Error("Build process did not terminate");
+  while (true) {
+    if (rootExited && !groupAlive(pid, signal)) return;
+    await pause(Math.min(50, remaining(deadline, now)));
+  }
 }
 
-async function terminate(
+async function cleanup(
   child: ReturnType<typeof spawn>,
   exit: Promise<ProcessExit>,
   platform: NodeJS.Platform,
+  tracker?: WindowsProcessTracker,
 ): Promise<void> {
   if (child.pid === undefined) throw new Error("Build process has no PID");
   if (platform === "win32") {
-    const before = await windowsProcesses();
-    const root = before.find((record) => record.processId === child.pid);
-    if (root === undefined) return;
-    const known = [root, ...descendants(before, child.pid)];
-    for (const target of [...known].reverse()) {
-      const result = await taskkill(target.processId);
-      if (result !== 0) {
-        const current = await windowsProcesses();
-        if (stillRunning(current, [target]).length > 0) {
-          await requireTaskkillSuccessForTest(Promise.resolve(result));
-        }
-      }
-    }
-    if (!(await exitsWithin(exit, 5_000)))
-      throw new Error("Build process did not terminate");
-    const after = await windowsProcesses();
-    if (stillRunning(after, known).length > 0)
-      throw new Error("Build process tree did not terminate");
+    if (tracker === undefined)
+      throw new Error("Windows process tracker is unavailable");
+    await terminateTrackedWindows(child.pid, exit, tracker);
     return;
   }
   await terminatePosixGroupForTest(child.pid, exit, process.kill, wait);
@@ -183,20 +126,25 @@ export async function runBuild(
   platform: NodeJS.Platform = process.platform,
 ): Promise<void> {
   const windows = platform === "win32";
+  const provider = windows ? await loadWindowsProcessProvider() : undefined;
   const child = spawn(
     windows ? "cmd.exe" : "pnpm",
     windows ? ["/d", "/s", "/c", "pnpm.cmd run build"] : ["run", "build"],
     { cwd: root, stdio: "inherit", shell: false, detached: !windows },
   );
   const exit = exited(child);
+  const tracker =
+    windows && child.pid !== undefined && provider !== undefined
+      ? startWindowsProcessTracker(child.pid, provider)
+      : undefined;
   let timeout: NodeJS.Timeout | undefined;
   const timeoutSignal = new Promise<"timeout">((resolveTimeout) => {
     timeout = setTimeout(() => resolveTimeout("timeout"), timeoutMilliseconds);
   });
   try {
     const result = await Promise.race([exit, timeoutSignal]);
+    await cleanup(child, exit, platform, tracker);
     if (result === "timeout") {
-      await terminate(child, exit, platform);
       throw new Error(
         `pnpm run build timed out after ${timeoutMilliseconds}ms`,
       );

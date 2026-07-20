@@ -46,3 +46,4 @@
 - 只有“官方文字稿说话人标签”“官方节目简介明确说明”“节目标题明确列名或角色”三类 `guest_evidence` 可生成公开 Person；包含“未逐一列名”或“未在标题或简介中明确列名”的占位文本必须保留到审核问题，不得拆分或发布为 Person。
 - 每次对项目结构、数据契约、脚本命令或关键限制作出有意义的修改后，同步修订本文件。
 - Task 3 scope gate: official raw snapshots and whitelisted normalized episode fields may update public catalogs; every recommendation candidate queue change, entity addition or deletion, source or ID change, and non-whitelisted field requires review. `script/sync` never publishes recommendation evidence, commits, pushes, or opens a pull request.
+- `.github/workflows/sync.yml` 每 6 小时同步一次并只通过 `tools/open-sync-pr.ts` 更新 `automation/episode-sync` 或 `automation/review-queue`；低风险 PR 仅设置 GitHub auto-merge，高风险 PR 必须人工审核，任何自动化都不得直接推送默认分支。Actions 使用已核实的 `actions/checkout@v6`、`actions/setup-node@v6`、`pnpm/action-setup@v6` 和 `oven-sh/setup-bun@v2`，pnpm 版本必须与项目工具链一致。

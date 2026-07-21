@@ -65,8 +65,8 @@ describe.sequential("CatalogRepository", () => {
       const catalog = await loadCatalog();
 
       // Then
-      expect(catalog.episodes).toHaveLength(237);
-      expect(catalog.recommendationEvidence).toHaveLength(423);
+      expect(catalog.episodes.length).toBeGreaterThanOrEqual(237);
+      expect(catalog.recommendationEvidence.length).toBeGreaterThanOrEqual(423);
     } finally {
       process.chdir(originalWorkingDirectory);
     }

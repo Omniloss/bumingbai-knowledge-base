@@ -36,8 +36,6 @@ jobs:
           "./src/config/site.ts"; parseSiteConfig(process.env)'
       - run: pnpm exec playwright install --with-deps chromium
       - run: script/ci
-      - run: script/build
-      - run: pnpm exec playwright test tests/e2e/home.spec.ts tests/e2e/entity-pages.spec.ts --project=desktop
       - name: Validate deployment package
         run: pnpm exec wrangler deploy --dry-run
       - name: Deploy static assets

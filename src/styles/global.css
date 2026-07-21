@@ -91,6 +91,7 @@ a {
 
 .site-header nav {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-4);
 }
 
@@ -156,6 +157,10 @@ a {
   flex-wrap: wrap;
   gap: var(--space-4);
   margin-top: var(--space-8);
+}
+
+.detail-actions {
+  margin: var(--space-6) 0 0;
 }
 
 .button {
@@ -541,6 +546,11 @@ a {
 .relation-record > *,
 .episode-recommendation > * {
   margin-top: 0;
+}
+
+.detail-page-header > .detail-actions,
+.work-detail-header > .detail-actions {
+  margin-top: var(--space-6);
 }
 
 .detail-page-header h1 {

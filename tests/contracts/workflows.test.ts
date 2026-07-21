@@ -27,6 +27,7 @@ const WorkflowSchema = z.looseObject({
     .record(
       z.string(),
       z.looseObject({
+        env: z.record(z.string(), z.string()).optional(),
         steps: z.array(WorkflowStepSchema).optional(),
         permissions: z.unknown().optional(),
       }),
@@ -54,6 +55,13 @@ function steps(workflow: Workflow, job: string): readonly WorkflowStep[] {
   return workflow.jobs?.[job]?.steps ?? [];
 }
 
+function expectPublicEnvironment(workflow: Workflow, job: string): void {
+  expect(workflow.jobs?.[job]?.env).toEqual({
+    PUBLIC_REPOSITORY_URL: ["$", "{{ vars.PUBLIC_REPOSITORY_URL }}"].join(""),
+    PUBLIC_SITE_URL: ["$", "{{ vars.PUBLIC_SITE_URL }}"].join(""),
+  });
+}
+
 function expectRuntimeActions(workflow: Workflow, job: string): void {
   const actions = steps(workflow, job);
   expect(actions.map((step) => step.uses).filter(Boolean)).toEqual([
@@ -71,21 +79,19 @@ describe("GitHub Actions workflows", () => {
   it("runs the complete pull request checks with read-only permissions", async () => {
     const ci = await loadWorkflow("ci.yml");
     expectRuntimeActions(ci, "check");
+    expectPublicEnvironment(ci, "check");
     expect(ci.on?.pull_request).toBeDefined();
     expect(ci.permissions).toEqual({ contents: "read" });
-    expect(runs(ci, "check")).toEqual(
-      expect.arrayContaining([
-        "script/ci",
-        "script/build",
-        "pnpm exec playwright test",
-      ]),
-    );
+    expect(runs(ci, "check")).toContain("script/ci");
+    expect(runs(ci, "check")).not.toContain("script/build");
+    expect(runs(ci, "check")).not.toContain("pnpm exec playwright test");
     expect(JSON.stringify(ci)).not.toContain("CLOUDFLARE_");
   });
 
   it("schedules sync without direct default-branch pushes", async () => {
     const sync = await loadWorkflow("sync.yml");
     expectRuntimeActions(sync, "sync");
+    expectPublicEnvironment(sync, "sync");
     expect(sync.on?.schedule?.[0]?.cron).toBe("17 */6 * * *");
     expect(sync.on?.workflow_dispatch).toBeDefined();
     expect(steps(sync, "sync")[0]).toMatchObject({
@@ -100,8 +106,9 @@ describe("GitHub Actions workflows", () => {
       "pull-requests": "write",
     });
     expect(runs(sync, "sync")).toEqual(
-      expect.arrayContaining(["script/sync", "script/ci", "script/build"]),
+      expect.arrayContaining(["script/sync", "script/ci"]),
     );
+    expect(runs(sync, "sync")).not.toContain("script/build");
     expect(JSON.stringify(sync)).not.toContain("--no-verify");
     expect(JSON.stringify(sync)).not.toContain("push origin main");
   });
@@ -109,16 +116,19 @@ describe("GitHub Actions workflows", () => {
   it("deploys only main with read-only repository permissions", async () => {
     const deploy = await loadWorkflow("deploy.yml");
     expectRuntimeActions(deploy, "deploy");
+    expectPublicEnvironment(deploy, "deploy");
     expect(deploy.on?.push).toEqual({ branches: ["main"] });
     expect(deploy.permissions).toEqual({ contents: "read" });
     expect(runs(deploy, "deploy")).toEqual(
       expect.arrayContaining([
         "script/ci",
-        "script/build",
-        "pnpm exec playwright test tests/e2e/home.spec.ts tests/e2e/entity-pages.spec.ts --project=desktop",
         "pnpm exec wrangler deploy --dry-run",
         "pnpm exec wrangler deploy",
       ]),
+    );
+    expect(runs(deploy, "deploy")).not.toContain("script/build");
+    expect(runs(deploy, "deploy")).not.toContain(
+      "pnpm exec playwright test tests/e2e/home.spec.ts tests/e2e/entity-pages.spec.ts tests/e2e/deployment-smoke.spec.ts --project=desktop",
     );
     expect(JSON.stringify(deploy)).toContain("CLOUDFLARE_API_TOKEN");
     expect(JSON.stringify(deploy)).toContain("CLOUDFLARE_ACCOUNT_ID");

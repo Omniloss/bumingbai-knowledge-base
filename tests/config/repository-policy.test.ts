@@ -27,7 +27,11 @@ describe("repository verification policy", () => {
       ),
     );
 
-    expect(packageJson.scripts.ci).toContain("pnpm run build");
-    expect(packageJson.scripts.ci).toContain("pnpm exec playwright test");
+    const steps = packageJson.scripts.ci.split(" && ");
+    expect(steps).toContain("pnpm run build");
+    expect(steps).toContain("pnpm exec playwright test");
+    expect(steps.indexOf("pnpm run build")).toBeLessThan(
+      steps.indexOf("pnpm exec playwright test"),
+    );
   });
 });

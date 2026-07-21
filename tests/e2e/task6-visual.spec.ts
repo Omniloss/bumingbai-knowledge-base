@@ -3,9 +3,26 @@ import path from "node:path";
 import { expect, type Page, test } from "@playwright/test";
 
 type VisualState = {
+  readonly fullPage?: boolean;
   readonly name: string;
   readonly open: (page: Page) => Promise<void>;
+  readonly waitForImages?: boolean;
 };
+
+async function waitForImages(page: Page): Promise<void> {
+  await page.locator("img").evaluateAll(async (images) => {
+    await Promise.all(
+      images.map(async (image) => {
+        if (!(image instanceof HTMLImageElement)) return;
+        if (image.complete) return;
+        await new Promise<void>((resolve) => {
+          image.addEventListener("load", () => resolve(), { once: true });
+          image.addEventListener("error", () => resolve(), { once: true });
+        });
+      }),
+    );
+  });
+}
 
 const OUTPUT_PATH = path.join(
   process.cwd(),
@@ -86,28 +103,47 @@ const states: readonly VisualState[] = [
     },
   },
   {
+    fullPage: true,
     name: "methodology",
     open: (page) => page.goto("/about/methodology/").then(() => undefined),
   },
   {
+    fullPage: true,
+    name: "credits",
+    open: (page) => page.goto("/about/credits/").then(() => undefined),
+    waitForImages: true,
+  },
+  {
+    fullPage: true,
+    name: "report-error",
+    open: (page) => page.goto("/report-error/").then(() => undefined),
+  },
+  {
+    fullPage: true,
     name: "episode-detail",
     open: (page) => page.goto("/episodes/ep-220/").then(() => undefined),
   },
   {
+    fullPage: true,
     name: "episode-non-https",
     open: (page) => page.goto("/episodes/ep-110/").then(() => undefined),
   },
   {
+    fullPage: true,
     name: "book-detail",
     open: (page) =>
       page.goto("/works/经济发展理论-6d5b7b/").then(() => undefined),
+    waitForImages: true,
   },
   {
+    fullPage: true,
     name: "film-detail",
     open: (page) =>
       page.goto("/works/惊爆十三天-53a333/").then(() => undefined),
+    waitForImages: true,
   },
   {
+    fullPage: true,
     name: "person-public",
     open: (page) => page.goto("/people/袁莉-102966/").then(() => undefined),
   },
@@ -125,8 +161,10 @@ test("capture every Task 6 template and state from the production build", async 
     for (const state of states) {
       await page.unrouteAll({ behavior: "wait" });
       await state.open(page);
+      if (state.waitForImages) await waitForImages(page);
       await page.screenshot({
         animations: "disabled",
+        fullPage: state.fullPage === true,
         path: path.join(OUTPUT_PATH, `${state.name}-${viewport.name}.png`),
       });
     }
@@ -168,8 +206,10 @@ test("capture a bounded long generated cover on desktop and mobile", async ({
     await expect(
       page.getByRole("img", { name: "长标题生成封面" }),
     ).toBeVisible();
+    await waitForImages(page);
     await page.screenshot({
       animations: "disabled",
+      fullPage: true,
       path: path.join(
         OUTPUT_PATH,
         `generated-cover-production-long-title-${viewport.name}.png`,

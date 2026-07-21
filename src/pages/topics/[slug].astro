@@ -1,5 +1,7 @@
 ---
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import ReportErrorLink from "../../components/ReportErrorLink.astro";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import WorkCard from "../../components/WorkCard.astro";
 import { isPublicEntity } from "../../domain/publication.js";
 import type {
@@ -71,6 +73,9 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
     <h1>{topic.name}</h1>
     <p>{topic.description}</p>
     {topic.aliases.length > 0 && <p>别名：{topic.aliases.join("、")}</p>}
+    <p class="detail-actions">
+      <ReportErrorLink entityId={topic.id} pagePath={`/topics/${topic.slug}/`} title={topic.name} />
+    </p>
   </header>
 
   <section class="entity-collection" aria-labelledby="topic-episodes-heading">

@@ -2,6 +2,8 @@
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import EvidencePanel from "../../components/EvidencePanel.astro";
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import ReportErrorLink from "../../components/ReportErrorLink.astro";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import StatusBadge from "../../components/StatusBadge.astro";
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import WorkRelationSection from "../../components/WorkRelationSection.astro";
@@ -219,6 +221,9 @@ const work = Astro.props.work;
           </div>
         </dl>
       )}
+      <p class="detail-actions">
+        <ReportErrorLink entityId={work.id} pagePath={`/works/${work.slug}/`} title={work.title} />
+      </p>
     </header>
   </section>
 

@@ -43,6 +43,31 @@ const cases = [
     path: "/episodes/",
     phrase: "官方身份",
   },
+  {
+    locator: '[aria-labelledby="tmdb-heading"]',
+    path: "/about/credits/",
+    phrase: "发行信息和原版海报候选",
+  },
+  {
+    locator: '[aria-labelledby="workers-ai-heading"]',
+    path: "/about/credits/",
+    phrase: "结构化推荐仍可工作",
+  },
+  {
+    locator: '[aria-labelledby="report-steps-heading"]',
+    path: "/report-error/",
+    phrase: "通过拉取请求进入",
+  },
+  {
+    locator: '[aria-labelledby="report-steps-heading"]',
+    path: "/report-error/",
+    phrase: "修改历史",
+  },
+  {
+    locator: '[aria-labelledby="report-scope-heading"]',
+    path: "/report-error/",
+    phrase: "仅有印象",
+  },
 ] as const;
 
 for (const item of cases) {

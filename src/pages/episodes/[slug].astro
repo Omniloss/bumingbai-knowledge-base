@@ -2,6 +2,8 @@
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import CjkTitle from "../../components/CjkTitle.astro";
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import ReportErrorLink from "../../components/ReportErrorLink.astro";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import WorkCard from "../../components/WorkCard.astro";
 import {
   canPublishRecommendation,
@@ -137,6 +139,9 @@ const officialUrl = getHttpsExternalUrl(episode.officialUrl);
         </dd>
       </div>
     </dl>
+    <p class="detail-actions">
+      <ReportErrorLink entityId={episode.id} pagePath={`/episodes/${episode.slug}/`} title={episode.title} />
+    </p>
   </header>
 
   <section class="detail-section episode-recommendations">

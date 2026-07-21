@@ -2,6 +2,8 @@
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import CjkTitle from "../../components/CjkTitle.astro";
 // biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import ReportErrorLink from "../../components/ReportErrorLink.astro";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
 import WorkCard from "../../components/WorkCard.astro";
 import {
   canPublishRecommendation,
@@ -88,6 +90,9 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
     <h1>{person.name}</h1>
     <p>公开角色：{person.roles.map((role) => ROLE_LABELS[role]).join("、")}</p>
     {person.aliases.length > 0 && <p>别名：{person.aliases.join("、")}</p>}
+    <p class="detail-actions">
+      <ReportErrorLink entityId={person.id} pagePath={`/people/${person.slug}/`} title={person.name} />
+    </p>
   </header>
 
   <section class="entity-collection" aria-labelledby="person-episodes-heading">

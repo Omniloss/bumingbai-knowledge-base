@@ -48,3 +48,4 @@
 - Task 3 scope gate: official raw snapshots and whitelisted normalized episode fields may update public catalogs; every recommendation candidate queue change, entity addition or deletion, source or ID change, and non-whitelisted field requires review. `script/sync` never publishes recommendation evidence, commits, pushes, or opens a pull request.
 - `.github/workflows/sync.yml` 每 6 小时同步一次并只通过 `tools/open-sync-pr.ts` 更新 `automation/episode-sync` 或 `automation/review-queue`；低风险 PR 仅设置 GitHub auto-merge，高风险 PR 必须人工审核，任何自动化都不得直接推送默认分支。Actions 使用已核实的 `actions/checkout@v6`、`actions/setup-node@v6`、`pnpm/action-setup@v6` 和 `oven-sh/setup-bun@v2`，pnpm 版本必须与项目工具链一致。
 - Cloudflare Workers 仅使用 `wrangler.jsonc` 发布 `dist/` 静态资产；`.github/workflows/deploy.yml` 只在 `main` 推送后运行，部署前必须通过完整检查和 Wrangler dry-run，账号 ID 与 API token 只能来自 GitHub Secrets。
+- 同步或部署失败时按 `docs/operations.md` 恢复，禁止用不完整数据覆盖线上版本；公开纠错链接只允许预填实体 ID、公开标题和公开页面 URL。

@@ -1,0 +1,40 @@
+{
+  "source": "official RSS and WordPress",
+  "retrieved_at": "2026-07-14T00:00:00.000Z",
+  "episode_count": 1,
+  "recommendation_count": 1,
+  "episodes": [
+    {
+      "episode_number": 4,
+      "title": "伊险峰/杨樱：上海封城中的文艺复兴",
+      "published_at": "Fri, 17 Jun 2022 09:00:00 GMT",
+      "duration": "01:00:00",
+      "official_url": "https://bumingbai.net/2022/06/17/ep-004/",
+      "transcript_url": "https://bumingbai.net/2022/06/17/ep-004-transcript/",
+      "guest_or_participants": "伊险峰、杨樱",
+      "guest_evidence": "官方节目简介明确说明",
+      "recommendation_status": "官方简介明确标注"
+    }
+  ],
+  "recommendations": [
+    {
+      "episode_number": 4,
+      "recommendation_order": 1,
+      "recommender": "杨樱",
+      "raw_entry": "《休战》 普里莫·莱维 著",
+      "title": "休战",
+      "original_title": "La tregua",
+      "creator": "普里莫·莱维",
+      "media_type": "书籍/文本",
+      "item_source_url": "https://book.douban.com/subject/10577893/",
+      "has_chinese_translation": "有，已定位到具体中文版本",
+      "translator": "杨晨光",
+      "publisher": "中信出版社",
+      "publication_year": "2015",
+      "isbn": "9787508652535",
+      "translation_quality": "未核实",
+      "metadata_source_url": "https://book.douban.com/subject/10577893/",
+      "metadata_status": "已抓取推荐链接元数据"
+    }
+  ]
+}

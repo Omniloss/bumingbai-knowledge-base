@@ -1,0 +1,152 @@
+---
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import WorkCard from "../../components/WorkCard.astro";
+import { isPublicEntity } from "../../domain/publication.js";
+import { selectThumbnailImage } from "../../images/policy.js";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { listPublicWorks, loadCatalog } from "../../lib/catalog.js";
+
+const catalog = await loadCatalog();
+const works = (await listPublicWorks()).filter(isPublicEntity);
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this value in template markup.
+const workCards = works.map((work) => ({
+  work,
+  image: selectThumbnailImage(
+    work,
+    catalog.imageAssets.filter((image) => image.workId === work.id),
+    catalog.generatedAt,
+  ),
+}));
+const mediaOptions = [
+  { label: "书籍", value: "book" },
+  { label: "电影", value: "film" },
+  { label: "电视剧", value: "television" },
+  { label: "纪录片", value: "documentary" },
+  { label: "播客", value: "podcast" },
+  { label: "其他", value: "other" },
+] as const;
+const statusOptions = [
+  { label: "已核验", value: "verified" },
+  { label: "部分核验", value: "partially_verified" },
+] as const;
+// biome-ignore lint/correctness/noUnusedVariables: Astro renders this collection in template markup.
+const availableMediaOptions = mediaOptions.filter((option) =>
+  works.some((work) => work.mediaType === option.value),
+);
+// biome-ignore lint/correctness/noUnusedVariables: Astro renders this collection in template markup.
+const availableStatusOptions = statusOptions.filter((option) =>
+  works.some((work) => work.verificationStatus === option.value),
+);
+---
+
+<BaseLayout title="作品索引｜不明白知识库" description="按媒介和核验状态浏览公开推荐作品">
+  <header class="collection-header">
+    <p class="eyebrow">作品索引</p>
+    <h1>全部公开作品</h1>
+    <p>按媒介类型和核验状态筛选；每一项都来自<span class="keep-together">公开的正式推荐证据</span>。</p>
+  </header>
+
+  <form class="filter-bar" action="/works/" method="get" data-works-filter>
+    <div class="filter-field">
+      <label for="media-filter">媒介类型</label>
+      <select id="media-filter" name="media">
+        <option value="">全部媒介</option>
+        {availableMediaOptions.map((option) => (
+          <option value={option.value}>{option.label}</option>
+        ))}
+      </select>
+    </div>
+    <div class="filter-field">
+      <label for="status-filter">核验状态</label>
+      <select id="status-filter" name="status">
+        <option value="">全部状态</option>
+        {availableStatusOptions.map((option) => (
+          <option value={option.value}>{option.label}</option>
+        ))}
+      </select>
+    </div>
+    <button class="button button-secondary" type="reset">重置筛选</button>
+    <output class="filter-count" aria-live="polite" for="media-filter status-filter" data-filter-count>
+      共 {works.length} 部作品
+    </output>
+  </form>
+
+  <section class="record-grid works-grid" aria-label="公开作品" data-work-list>
+    {workCards.map(({ image, work }) => <WorkCard image={image} work={work} />)}
+  </section>
+
+  <div class="filter-empty" data-filter-empty hidden>
+    <p>没有符合当前筛选条件的作品。</p>
+    <button class="button button-secondary" type="button" data-clear-filters>清除筛选</button>
+  </div>
+</BaseLayout>
+
+<script>
+  const form = document.querySelector("[data-works-filter]");
+  const emptyState = document.querySelector("[data-filter-empty]");
+  const count = document.querySelector("[data-filter-count]");
+
+  if (
+    form instanceof HTMLFormElement &&
+    emptyState instanceof HTMLElement &&
+    count instanceof HTMLOutputElement
+  ) {
+    const media = form.elements.namedItem("media");
+    const status = form.elements.namedItem("status");
+    const cards = Array.from(
+      document.querySelectorAll("[data-work-card]"),
+    ).filter((card): card is HTMLElement => card instanceof HTMLElement);
+
+    if (media instanceof HTMLSelectElement && status instanceof HTMLSelectElement) {
+      const applyFilters = () => {
+        let visibleCount = 0;
+        for (const card of cards) {
+          const matchesMedia =
+            media.value === "" || card.dataset["media"] === media.value;
+          const matchesStatus =
+            status.value === "" ||
+            card.dataset["verificationStatus"] === status.value;
+          card.hidden = !(matchesMedia && matchesStatus);
+          if (!card.hidden) visibleCount += 1;
+        }
+
+        count.textContent = `共 ${visibleCount} 部作品`;
+        emptyState.hidden = visibleCount !== 0;
+
+        const query = new URLSearchParams();
+        if (media.value !== "") query.set("media", media.value);
+        if (status.value !== "") query.set("status", status.value);
+        const queryString = query.toString();
+        const nextUrl =
+          queryString === ""
+            ? window.location.pathname
+            : `${window.location.pathname}?${queryString}`;
+        window.history.replaceState(null, "", nextUrl);
+      };
+
+      const query = new URLSearchParams(window.location.search);
+      media.value = query.get("media") ?? "";
+      status.value = query.get("status") ?? "";
+      applyFilters();
+
+      form.addEventListener("change", applyFilters);
+      form.addEventListener("reset", (event) => {
+        event.preventDefault();
+        media.value = "";
+        status.value = "";
+        applyFilters();
+      });
+      for (const clearButton of document.querySelectorAll(
+        "[data-clear-filters]",
+      )) {
+        clearButton.addEventListener("click", () => {
+          media.value = "";
+          status.value = "";
+          applyFilters();
+          media.focus();
+        });
+      }
+    }
+  }
+</script>

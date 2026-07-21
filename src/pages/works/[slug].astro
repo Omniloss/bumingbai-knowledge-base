@@ -1,0 +1,243 @@
+---
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import EvidencePanel from "../../components/EvidencePanel.astro";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import ReportErrorLink from "../../components/ReportErrorLink.astro";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import StatusBadge from "../../components/StatusBadge.astro";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import WorkRelationSection from "../../components/WorkRelationSection.astro";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import WorkSourceSection from "../../components/WorkSourceSection.astro";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import WorkVersionSection from "../../components/WorkVersionSection.astro";
+import {
+  canPublishRecommendation,
+  isPublicEntity,
+} from "../../domain/publication.js";
+import type {
+  Edition,
+  Episode,
+  ImageAsset,
+  Person,
+  RecommendationEvidence,
+  Work,
+  WorkRelation,
+} from "../../domain/schemas/catalog.js";
+import { selectHeroImage } from "../../images/policy.js";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadCatalog } from "../../lib/catalog.js";
+import {
+  type DetailSource,
+  mergeDetailSources,
+} from "../../lib/detail-sources.js";
+
+type EvidenceRecord = {
+  readonly episode: Episode;
+  readonly evidence: RecommendationEvidence;
+};
+
+type EditionRecord = {
+  readonly edition: Edition;
+  readonly translators: readonly Person[];
+};
+
+type RelationRecord = {
+  readonly relation: WorkRelation;
+  readonly target: Work;
+};
+
+interface Props {
+  readonly work: Work;
+  readonly creators: readonly Person[];
+  readonly editionRecords: readonly EditionRecord[];
+  readonly evidenceRecords: readonly EvidenceRecord[];
+  readonly heroImage: ImageAsset | null;
+  readonly hardRelations: readonly RelationRecord[];
+  readonly similarRelations: readonly RelationRecord[];
+  readonly sources: readonly DetailSource[];
+}
+
+export async function getStaticPaths() {
+  const catalog = await loadCatalog();
+  const publicEpisodes = catalog.episodes.filter(isPublicEntity);
+  const publicPeople = catalog.people.filter(isPublicEntity);
+  const publicWorks = catalog.works.filter(isPublicEntity);
+  const episodesById = new Map(
+    publicEpisodes.map((episode) => [episode.id, episode]),
+  );
+  const peopleById = new Map(publicPeople.map((person) => [person.id, person]));
+  const worksById = new Map(publicWorks.map((work) => [work.id, work]));
+
+  return publicWorks.map((work) => {
+    const editions = catalog.editions
+      .filter(
+        (edition) => edition.workId === work.id && isPublicEntity(edition),
+      )
+      .toSorted((left, right) =>
+        left.title.localeCompare(right.title, "zh-CN"),
+      );
+    const editionRecords = editions.map((edition) => ({
+      edition,
+      translators: edition.translatorIds.flatMap((translatorId) => {
+        const translator = peopleById.get(translatorId);
+        return translator ? [translator] : [];
+      }),
+    }));
+    const evidenceRecords = catalog.recommendationEvidence
+      .filter(
+        (evidence) =>
+          evidence.workId === work.id && canPublishRecommendation(evidence),
+      )
+      .flatMap((evidence) => {
+        const episode = episodesById.get(evidence.episodeId);
+        return episode ? [{ episode, evidence }] : [];
+      })
+      .toSorted((left, right) => {
+        const dateOrder =
+          Date.parse(right.episode.publishedAt) -
+          Date.parse(left.episode.publishedAt);
+        return dateOrder || left.evidence.id.localeCompare(right.evidence.id);
+      });
+    const workImages = catalog.imageAssets.filter(
+      (image) => image.workId === work.id,
+    );
+    const relationRecords = catalog.workRelations.flatMap((relation) => {
+      if (relation.fromWorkId !== work.id) return [];
+      const target = worksById.get(relation.toWorkId);
+      return target ? [{ relation, target }] : [];
+    });
+    const entitySources: readonly DetailSource[] = [
+      ...work.sources.map((source) => ({
+        kind: source.kind,
+        label: "作品数据来源",
+        url: source.url,
+      })),
+      ...editions.flatMap((edition) =>
+        edition.sources.map((source) => ({
+          kind: source.kind,
+          label: "版本数据来源",
+          url: source.url,
+        })),
+      ),
+      ...evidenceRecords.map(({ evidence }) => ({
+        kind: evidence.source.kind,
+        label: "推荐证据来源",
+        url: evidence.source.url,
+      })),
+      ...workImages.map((image) => ({
+        attribution: image.attribution,
+        kind: "image" as const,
+        label: "图片来源",
+        license: image.license,
+        url: image.sourcePageUrl,
+      })),
+    ];
+
+    return {
+      params: { slug: work.slug },
+      props: {
+        work,
+        creators: work.creatorIds.flatMap((creatorId) => {
+          const creator = peopleById.get(creatorId);
+          return creator ? [creator] : [];
+        }),
+        editionRecords,
+        evidenceRecords,
+        heroImage: selectHeroImage(work, workImages, catalog.generatedAt),
+        hardRelations: relationRecords.filter(
+          ({ relation }) => relation.kind !== "similar",
+        ),
+        similarRelations: relationRecords.filter(
+          ({ relation }) => relation.kind === "similar",
+        ),
+        sources: mergeDetailSources(entitySources),
+      },
+    };
+  });
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates these maps in template markup.
+const mediaLabels = {
+  book: "书籍",
+  documentary: "纪录片",
+  film: "电影",
+  other: "其他",
+  podcast: "播客",
+  television: "电视剧",
+} as const satisfies Record<Work["mediaType"], string>;
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this prop in template markup.
+const creators = Astro.props.creators;
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this prop in template markup.
+const editionRecords = Astro.props.editionRecords;
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this prop in template markup.
+const evidenceRecords = Astro.props.evidenceRecords;
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this prop in template markup.
+const hardRelations = Astro.props.hardRelations;
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this prop in template markup.
+const heroImage = Astro.props.heroImage;
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this prop in template markup.
+const similarRelations = Astro.props.similarRelations;
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this prop in template markup.
+const sources = Astro.props.sources;
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this prop in template markup.
+const work = Astro.props.work;
+---
+
+<BaseLayout title={`${work.title}｜不明白知识库`} description={`${work.title}的推荐证据、版本与来源`}>
+  <section class="work-detail-header" data-section-order="0">
+    <div class="cover-slot">
+      {heroImage ? (
+        <img
+          data-work-hero
+          src={heroImage.url}
+          alt={`《${work.title}》封面`}
+          width={heroImage.width}
+          height={heroImage.height}
+          decoding="async"
+        />
+      ) : (
+        <div class="typographic-cover" role="img" aria-label={`${work.title}暂无已核验图片`}>
+          <span class="eyebrow">{mediaLabels[work.mediaType]}</span>
+          <span class="cover-title">{work.title}</span>
+          <span class="cover-empty">暂无已核验图片</span>
+        </div>
+      )}
+    </div>
+    <header class="detail-page-header">
+      <p class="eyebrow">{mediaLabels[work.mediaType]}</p>
+      <h1>{work.title}</h1>
+      {work.originalTitle && work.originalTitle !== work.title && (
+        <p class="original-title" lang="und">{work.originalTitle}</p>
+      )}
+      <StatusBadge status={work.verificationStatus} />
+      {work.mediaType === "book" && (
+        <dl class="fact-list compact-facts">
+          <div>
+            <dt>作者</dt>
+            <dd>{creators.length > 0 ? creators.map((creator) => creator.name).join("、") : "暂无已核验作者信息"}</dd>
+          </div>
+        </dl>
+      )}
+      <p class="detail-actions">
+        <ReportErrorLink entityId={work.id} pagePath={`/works/${work.slug}/`} title={work.title} />
+      </p>
+    </header>
+  </section>
+
+  <section class="detail-section" data-section-order="1">
+    <header><p class="eyebrow">优先核验</p><h2>推荐出处</h2></header>
+    <div class="evidence-list">
+      {evidenceRecords.length > 0 ? evidenceRecords.map(({ evidence, episode }) => (
+        <EvidencePanel evidence={evidence} episodeTitle={episode.title} episodeSlug={episode.slug} />
+      )) : <p class="detail-empty">暂无已核验推荐出处。</p>}
+    </div>
+  </section>
+
+  <WorkVersionSection creators={creators} editionRecords={editionRecords} work={work} />
+  <WorkRelationSection records={hardRelations} variant="hard" />
+  <WorkRelationSection records={similarRelations} variant="similar" />
+  <WorkSourceSection sources={sources} />
+</BaseLayout>

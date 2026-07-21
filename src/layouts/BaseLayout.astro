@@ -1,0 +1,31 @@
+---
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import SiteHeader from "../components/SiteHeader.astro";
+import "../styles/global.css";
+
+interface Props {
+  readonly title: string;
+  readonly description: string;
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates these props in template markup.
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <link rel="icon" href="data:," />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">跳到正文</a>
+    <SiteHeader />
+    <main id="content" class="page-shell">
+      <slot />
+    </main>
+  </body>
+</html>

@@ -1,0 +1,109 @@
+---
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import ReportErrorLink from "../../components/ReportErrorLink.astro";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import WorkCard from "../../components/WorkCard.astro";
+import { isPublicEntity } from "../../domain/publication.js";
+import type {
+  Episode,
+  Person,
+  Topic,
+  Work,
+} from "../../domain/schemas/catalog.js";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadCatalog } from "../../lib/catalog.js";
+
+type Props = {
+  readonly topic: Topic;
+  readonly episodes: readonly Episode[];
+  readonly people: readonly Person[];
+  readonly works: readonly Work[];
+};
+
+export async function getStaticPaths() {
+  const catalog = await loadCatalog();
+  const publicEpisodes = catalog.episodes.filter(isPublicEntity);
+  const publicPeople = catalog.people.filter(isPublicEntity);
+  const publicWorks = catalog.works.filter(isPublicEntity);
+  const peopleById = new Map(publicPeople.map((person) => [person.id, person]));
+
+  return catalog.topics.filter(isPublicEntity).map((topic) => {
+    const episodes = publicEpisodes
+      .filter((episode) => episode.topicIds.includes(topic.id))
+      .toSorted((left, right) =>
+        right.publishedAt.localeCompare(left.publishedAt),
+      );
+    const works = publicWorks
+      .filter((work) => work.topicIds.includes(topic.id))
+      .toSorted((left, right) =>
+        left.title.localeCompare(right.title, "zh-CN"),
+      );
+    const people = [
+      ...new Set([
+        ...episodes.flatMap((episode) => episode.guestIds),
+        ...works.flatMap((work) => work.creatorIds),
+      ]),
+    ]
+      .flatMap((personId) => {
+        const person = peopleById.get(personId);
+        return person ? [person] : [];
+      })
+      .toSorted((left, right) => left.name.localeCompare(right.name, "zh-CN"));
+
+    return {
+      params: { slug: topic.slug },
+      props: { episodes, people, topic, works },
+    };
+  });
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates these props in template markup.
+const { episodes, people, topic, works } = Astro.props;
+// biome-ignore lint/correctness/noUnusedVariables: Astro formats dates in template markup.
+const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
+  dateStyle: "long",
+  timeZone: "Asia/Shanghai",
+});
+---
+
+<BaseLayout title={`${topic.name}｜不明白知识库`} description={`${topic.name}的公开节目、人物与作品`}>
+  <header class="collection-header entity-header">
+    <p class="eyebrow">主题</p>
+    <h1>{topic.name}</h1>
+    <p>{topic.description}</p>
+    {topic.aliases.length > 0 && <p>别名：{topic.aliases.join("、")}</p>}
+    <p class="detail-actions">
+      <ReportErrorLink entityId={topic.id} pagePath={`/topics/${topic.slug}/`} title={topic.name} />
+    </p>
+  </header>
+
+  <section class="entity-collection" aria-labelledby="topic-episodes-heading">
+    <header><p class="eyebrow">节目</p><h2 id="topic-episodes-heading">相关节目</h2></header>
+    {episodes.length > 0 ? (
+      <div class="record-list">
+        {episodes.map((episode) => (
+          <article class="catalog-card episode-card">
+            <p class="eyebrow">{episode.number === null ? "特别节目" : `第 ${episode.number} 期`}</p>
+            <h3><a href={`/episodes/${episode.slug}/`}>{episode.title}</a></h3>
+            <p class="record-meta"><time datetime={episode.publishedAt}>{dateFormatter.format(new Date(episode.publishedAt))}</time></p>
+          </article>
+        ))}
+      </div>
+    ) : <p class="detail-empty">暂无已核验相关节目。</p>}
+  </section>
+
+  <section class="entity-collection" aria-labelledby="topic-people-heading">
+    <header><p class="eyebrow">人物</p><h2 id="topic-people-heading">相关人物</h2></header>
+    {people.length > 0 ? (
+      <ul class="entity-link-list">{people.map((person) => <li><a href={`/people/${person.slug}/`}>{person.name}</a></li>)}</ul>
+    ) : <p class="detail-empty">暂无已核验相关人物。</p>}
+  </section>
+
+  <section class="entity-collection" aria-labelledby="topic-works-heading">
+    <header><p class="eyebrow">作品</p><h2 id="topic-works-heading">相关作品</h2></header>
+    {works.length > 0 ? (
+      <div class="record-grid">{works.map((work) => <WorkCard work={work} />)}</div>
+    ) : <p class="detail-empty">暂无已核验相关作品。</p>}
+  </section>
+</BaseLayout>

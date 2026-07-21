@@ -1,0 +1,57 @@
+---
+import type { ImageAsset, Work } from "../domain/schemas/catalog.js";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import CjkTitle from "./CjkTitle.astro";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import StatusBadge from "./StatusBadge.astro";
+
+interface Props {
+  readonly headingLevel?: 2 | 4;
+  readonly image?: ImageAsset;
+  readonly work: Work;
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this map in template markup.
+const mediaLabels = {
+  book: "书籍",
+  documentary: "纪录片",
+  film: "电影",
+  other: "其他",
+  podcast: "播客",
+  television: "电视剧",
+} as const satisfies Record<Work["mediaType"], string>;
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this prop in template markup.
+const { headingLevel = 2, image, work } = Astro.props;
+---
+
+<article
+  class:list={["catalog-card", "work-card", { "has-thumbnail": image !== undefined }]}
+  data-work-card
+  data-media={work.mediaType}
+  data-publication-status={work.publicationStatus}
+  data-verification-status={work.verificationStatus}
+>
+  {image && (
+    <a class="work-card-cover" href={`/works/${work.slug}/`} aria-label={`查看《${work.title}》`}>
+      <img
+        src={image.url}
+        alt={`《${work.title}》封面`}
+        width={image.width}
+        height={image.height}
+        loading="lazy"
+        decoding="async"
+      />
+    </a>
+  )}
+  <div class="work-card-content">
+    <p class="eyebrow">{mediaLabels[work.mediaType]}</p>
+    {headingLevel === 4 ? (
+      <h4><a href={`/works/${work.slug}/`}><CjkTitle value={work.title} /></a></h4>
+    ) : (
+      <h2><a href={`/works/${work.slug}/`}><CjkTitle value={work.title} /></a></h2>
+    )}
+    {work.originalTitle && <p class="original-title" lang="und">{work.originalTitle}</p>}
+    <StatusBadge status={work.verificationStatus} />
+  </div>
+</article>

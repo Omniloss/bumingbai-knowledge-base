@@ -1,0 +1,70 @@
+---
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="数据来源与致谢｜不明白知识库" description="外部数据、图片与辅助服务的用途和署名要求">
+  <header class="collection-header">
+    <p class="eyebrow">数据来源与致谢</p>
+    <h1>外部数据如何参与资料核验</h1>
+    <p>外部服务只生成候选元数据、图片或相似度信号，不能替代节目官方来源和人工核验。每条公开记录仍保留自己的来源与核验状态。</p>
+  </header>
+
+  <section class="methodology-section" aria-labelledby="open-library-heading">
+    <h2 id="open-library-heading"><a class="keep-together" href="https://openlibrary.org/developers" rel="external noreferrer">Open Library</a></h2>
+    <p>用于图书、作者、版本、ISBN 和原版封面的候选匹配。请求保持低频并缓存结果，不把 <span class="keep-together">Open Library</span> 当作站点的实时后端。</p>
+    <p><a class="keep-together" href="https://openlibrary.org/developers/licensing" rel="external noreferrer">Open Library 的许可说明</a>指出，Internet Archive 不对数据库内容主张新增权利，但既有内容在不同地区仍可能涉及原有权利。封面只从官方封面服务引用，并保留来源记录。</p>
+  </section>
+
+  <section class="methodology-section" aria-labelledby="tmdb-heading">
+    <h2 id="tmdb-heading">The Movie Database</h2>
+    <div class="tmdb-attribution">
+      <a href="https://www.themoviedb.org/" aria-label="The Movie Database (TMDB)" rel="external noreferrer">
+        <img
+          src="/vendor/tmdb-logo.svg"
+          alt="The Movie Database (TMDB) logo"
+          width="180"
+          loading="eager"
+        />
+      </a>
+      <p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+    </div>
+    <p>TMDB 用于影视标题、演职员、<span class="keep-together">发行信息和原版海报候选</span>。候选必须经过核验才可进入公开目录；<span class="keep-together">商业化前</span>必须停止自动同步并重新确认许可。</p>
+  </section>
+
+  <section class="methodology-section" aria-labelledby="wikidata-heading">
+    <h2 id="wikidata-heading"><a href="https://www.wikidata.org/wiki/Wikidata:Licensing" rel="external noreferrer">Wikidata</a></h2>
+    <p>用于多语言名称、创作者身份和跨库标识候选。Wikidata 主、属性和词位命名空间中的<span class="keep-together">结构化数据</span>采用 CC0；这不代表与条目关联的图片也自动采用 CC0。</p>
+  </section>
+
+  <section class="methodology-section" aria-labelledby="commons-heading">
+    <h2 id="commons-heading"><a href="https://commons.wikimedia.org/wiki/Commons:Reusing_content_outside_Wikimedia" rel="external noreferrer">Wikimedia Commons</a></h2>
+    <p>用于许可明确的开放图片候选。每个文件的作者、来源页、具体许可证和署名要求分别保存；<span class="keep-together">需要署名</span>或相同方式共享时，按文件页的实际许可执行。</p>
+  </section>
+
+  <section class="methodology-section" aria-labelledby="workers-ai-heading">
+    <h2 id="workers-ai-heading"><a href="https://developers.cloudflare.com/workers-ai/" rel="external noreferrer">Cloudflare Workers AI</a></h2>
+    <p>可选地在构建期生成文本向量，作为中英文主题相似度的补充信号。模型输出不作为事实来源，额度不足或服务不可用时跳过向量更新，<span class="keep-together">结构化推荐仍可工作</span>。</p>
+    <p>不同模型可能适用各自的开源或其他许可，使用前按 <a href="https://developers.cloudflare.com/workers-ai/platform/data-usage/" rel="external noreferrer">Workers AI 数据使用说明</a>核对。</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .tmdb-attribution {
+    display: grid;
+    gap: 0.75rem;
+    justify-items: start;
+    margin: 1rem 0;
+  }
+
+  .tmdb-attribution img {
+    display: block;
+    height: auto;
+    max-width: 11.25rem;
+    width: 100%;
+  }
+
+  .tmdb-attribution p {
+    margin: 0;
+  }
+</style>

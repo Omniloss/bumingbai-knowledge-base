@@ -1,0 +1,35 @@
+---
+import { parseSiteConfig } from "../config/site.js";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const { repositoryUrl } = parseSiteConfig({
+  PUBLIC_REPOSITORY_URL: import.meta.env.PUBLIC_REPOSITORY_URL,
+  PUBLIC_SITE_URL: import.meta.env.PUBLIC_SITE_URL,
+});
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this URL in template markup.
+const issuesUrl = new URL("issues", `${repositoryUrl}/`).toString();
+---
+
+<BaseLayout title="报告资料错误｜不明白知识库" description="通过公开 GitHub Issue 提交可核验的资料纠错">
+  <header class="collection-header">
+    <p class="eyebrow">公开纠错</p>
+    <h1><span class="keep-together">报告资料错误</span></h1>
+    <p>每个节目、作品、人物和主题详情页都提供预填的 GitHub Issue 链接。链接只携带公开标题、实体 ID 和公开页面 URL。</p>
+  </header>
+
+  <section class="methodology-section" aria-labelledby="report-steps-heading">
+    <h2 id="report-steps-heading">提交步骤</h2>
+    <ol>
+      <li>回到包含错误的详情页，选择“<span class="keep-together">报告资料错误</span>”。</li>
+      <li>在预填 Issue 中说明错误字段、正确内容<span class="keep-together">和可公开访问的可靠来源</span>。</li>
+      <li>提交后由维护者核对。被采纳的修订<span class="keep-together">通过拉取请求进入</span>数据文件，并保留<span class="keep-together">修改历史</span>。</li>
+    </ol>
+    <p><a class="button button-secondary" href={issuesUrl} rel="external noreferrer">查看公开问题列表</a></p>
+  </section>
+
+  <section class="methodology-section" aria-labelledby="report-scope-heading">
+    <h2 id="report-scope-heading">什么会被核验</h2>
+    <p>优先处理节目与推荐对应关系、作品原名、<span class="keep-together">创作者</span>、版本、译者、图片许可和来源链接。<span class="keep-together">仅有印象</span>、搜索摘要或无法定位的转述，不会直接改写<span class="keep-together">公开记录</span>。</p>
+  </section>
+</BaseLayout>

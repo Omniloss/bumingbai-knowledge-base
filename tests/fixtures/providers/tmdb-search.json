@@ -1,0 +1,129 @@
+{
+  "movie": {
+    "page": 1,
+    "results": [
+      {
+        "id": 123,
+        "title": "변호인",
+        "original_title": "The Attorney",
+        "original_language": "ko",
+        "release_date": "2013-12-18",
+        "poster_path": "/poster.jpg"
+      },
+      {
+        "id": 124,
+        "title": "The Attorney",
+        "original_title": "Counsel",
+        "original_language": "ko",
+        "release_date": "2013-12-18",
+        "poster_path": "/localized-title-decoy.jpg"
+      },
+      {
+        "id": 125,
+        "title": "The Attorney",
+        "original_title": "The Attorney",
+        "original_language": "en",
+        "release_date": "2013-12-18",
+        "poster_path": "/wrong-language.jpg"
+      },
+      {
+        "id": 126,
+        "title": "변호인",
+        "original_title": "The Attorney",
+        "original_language": "ko",
+        "release_date": "2014-01-01",
+        "poster_path": "/wrong-year.jpg"
+      }
+    ],
+    "total_pages": 1,
+    "total_results": 4
+  },
+  "tv": {
+    "page": 1,
+    "results": [
+      {
+        "id": 456,
+        "name": "시그널",
+        "original_name": "Signal",
+        "original_language": "ko",
+        "first_air_date": "2016-01-22",
+        "poster_path": "/signal.jpg"
+      },
+      {
+        "id": 457,
+        "name": "Signal",
+        "original_name": "Radio Wave",
+        "original_language": "ko",
+        "first_air_date": "2016-01-22",
+        "poster_path": "/localized-title-decoy-tv.jpg"
+      },
+      {
+        "id": 458,
+        "name": "Signal US",
+        "original_name": "Signal",
+        "original_language": "en",
+        "first_air_date": "2016-01-22",
+        "poster_path": "/signal-us.jpg"
+      }
+    ],
+    "total_pages": 1,
+    "total_results": 3
+  },
+  "movieImages": {
+    "id": 123,
+    "posters": [
+      {
+        "file_path": "/poster.jpg",
+        "width": 2000,
+        "height": 3000,
+        "iso_639_1": "ko"
+      }
+    ]
+  },
+  "tvImages": {
+    "id": 456,
+    "posters": [
+      {
+        "file_path": "/signal.jpg",
+        "width": 1000,
+        "height": 1500,
+        "iso_639_1": "ko"
+      }
+    ]
+  },
+  "tvUsImages": {
+    "id": 458,
+    "posters": [
+      {
+        "file_path": "/signal-us.jpg",
+        "width": 800,
+        "height": 1200,
+        "iso_639_1": "en"
+      }
+    ]
+  },
+  "malformedMovie": {
+    "results": [
+      {
+        "id": "123",
+        "title": "변호인",
+        "original_title": "The Attorney",
+        "original_language": "ko",
+        "release_date": "2013-12-18",
+        "poster_path": "/poster.jpg"
+      }
+    ]
+  },
+  "malformedTv": {
+    "results": [
+      {
+        "id": 456,
+        "name": "시그널",
+        "original_name": "Signal",
+        "original_language": ["ko"],
+        "first_air_date": "2016-01-22",
+        "poster_path": "/signal.jpg"
+      }
+    ]
+  }
+}

@@ -1,0 +1,230 @@
+import { expect, it } from "vitest";
+import {
+  assertSupportedWindowsArchitectureForTest,
+  filterSnapshotByVerifiedParentsForTest,
+  mergeTrackedProcessSnapshot,
+  startWindowsProcessTracker,
+  trackedParentsWithNewChildrenForTest,
+  type WindowsProcessSnapshot,
+} from "../../tools/windows-process-tracker.js";
+
+const root: WindowsProcessSnapshot = {
+  name: "cmd.exe",
+  parentProcessId: 1,
+  processId: 10,
+};
+const intermediate: WindowsProcessSnapshot = {
+  name: "node.exe",
+  parentProcessId: 10,
+  processId: 11,
+};
+const orphan: WindowsProcessSnapshot = {
+  name: "node.exe",
+  parentProcessId: 11,
+  processId: 12,
+};
+
+function observed(
+  process: WindowsProcessSnapshot,
+  observedAt: number,
+  retired = false,
+): WindowsProcessSnapshot & { observedAt: number; retired: boolean } {
+  return { ...process, observedAt, retired };
+}
+
+it("retains an orphan after its intermediate parent disappears", () => {
+  const initial = mergeTrackedProcessSnapshot(
+    root.processId,
+    new Map(),
+    [root, intermediate, orphan],
+    100,
+  );
+  const afterParentsExit = mergeTrackedProcessSnapshot(
+    root.processId,
+    initial,
+    [orphan],
+    200,
+  );
+
+  expect([...afterParentsExit.values()]).toEqual([
+    observed(root, 100, true),
+    observed(intermediate, 100, true),
+    observed(orphan, 100),
+  ]);
+});
+
+it("does not absorb an unrelated process tree", () => {
+  const unrelated: WindowsProcessSnapshot = {
+    name: "unrelated.exe",
+    parentProcessId: 99,
+    processId: 100,
+  };
+
+  const tracked = mergeTrackedProcessSnapshot(
+    root.processId,
+    new Map(),
+    [root, unrelated],
+    100,
+  );
+
+  expect([...tracked.values()]).toEqual([observed(root, 100)]);
+});
+
+it("retains the first observation when a tracked PID is reused", () => {
+  const initial = mergeTrackedProcessSnapshot(
+    root.processId,
+    new Map(),
+    [root, intermediate, orphan],
+    100,
+  );
+  const reused = mergeTrackedProcessSnapshot(
+    root.processId,
+    initial,
+    [
+      {
+        name: "unrelated.exe",
+        parentProcessId: 99,
+        processId: orphan.processId,
+      },
+    ],
+    200,
+  );
+
+  expect(reused.get(orphan.processId)).toEqual(observed(orphan, 100, true));
+});
+
+it("does not absorb children after a tracked parent PID is retired", () => {
+  const initial = mergeTrackedProcessSnapshot(
+    root.processId,
+    new Map(),
+    [root, intermediate],
+    100,
+  );
+  const afterParentExit = mergeTrackedProcessSnapshot(
+    root.processId,
+    initial,
+    [root],
+    200,
+  );
+  const afterPidReuse = mergeTrackedProcessSnapshot(
+    root.processId,
+    afterParentExit,
+    [
+      root,
+      { ...intermediate, name: "node.exe" },
+      { name: "unrelated-child.exe", parentProcessId: 11, processId: 13 },
+    ],
+    300,
+  );
+
+  expect(afterPidReuse.get(intermediate.processId)).toEqual(
+    observed(intermediate, 100, true),
+  );
+  expect(afterPidReuse.has(13)).toBe(false);
+});
+
+it("retires a same-name PID when its parent identity changes", () => {
+  const initial = mergeTrackedProcessSnapshot(
+    root.processId,
+    new Map(),
+    [root, intermediate],
+    100,
+  );
+  const afterPidReuse = mergeTrackedProcessSnapshot(
+    root.processId,
+    initial,
+    [
+      root,
+      { ...intermediate, parentProcessId: 99 },
+      { name: "unrelated-child.exe", parentProcessId: 11, processId: 13 },
+    ],
+    200,
+  );
+
+  expect(afterPidReuse.get(intermediate.processId)).toEqual(
+    observed(intermediate, 100, true),
+  );
+  expect(afterPidReuse.has(13)).toBe(false);
+});
+
+it("requires identity verification before a historical parent adopts a child", () => {
+  const initial = mergeTrackedProcessSnapshot(
+    root.processId,
+    new Map(),
+    [root, intermediate],
+    100,
+  );
+
+  expect(
+    trackedParentsWithNewChildrenForTest(initial, [
+      root,
+      intermediate,
+      { name: "new-child.exe", parentProcessId: 11, processId: 13 },
+    ]),
+  ).toEqual([observed(intermediate, 100)]);
+});
+
+it("excludes a new child when its historical parent cannot be verified", () => {
+  const initial = mergeTrackedProcessSnapshot(
+    root.processId,
+    new Map(),
+    [root, intermediate],
+    100,
+  );
+  const snapshot = [
+    root,
+    intermediate,
+    { name: "new-child.exe", parentProcessId: 11, processId: 13 },
+  ];
+  const parents = trackedParentsWithNewChildrenForTest(initial, snapshot);
+
+  expect(
+    filterSnapshotByVerifiedParentsForTest(initial, snapshot, parents, []),
+  ).toEqual([root, intermediate]);
+});
+
+it("keeps an unverified historical child out of the live tracker", async () => {
+  const child: WindowsProcessSnapshot = {
+    name: "new-child.exe",
+    parentProcessId: intermediate.processId,
+    processId: 13,
+  };
+  let samples = 0;
+  let resolveFirstSample: (() => void) | undefined;
+  const firstSample = new Promise<void>((resolve) => {
+    resolveFirstSample = resolve;
+  });
+  const verifiedParents: number[][] = [];
+  const tracker = startWindowsProcessTracker(
+    root.processId,
+    async () => {
+      samples += 1;
+      if (samples === 1) {
+        resolveFirstSample?.();
+        return [root, intermediate];
+      }
+      return [root, intermediate, child];
+    },
+    async (parents) => {
+      verifiedParents.push(parents.map((parent) => parent.processId));
+      return [];
+    },
+    1,
+  );
+
+  await firstSample;
+  await tracker.snapshot();
+  const records = await tracker.stop();
+
+  expect(verifiedParents).toContainEqual([intermediate.processId]);
+  expect(records.some((process) => process.processId === child.processId)).toBe(
+    false,
+  );
+});
+
+it("fails explicitly on a Windows architecture without a bundled binary", () => {
+  expect(() => assertSupportedWindowsArchitectureForTest("arm64")).toThrow(
+    "Windows build process tracking requires x64, received arm64",
+  );
+  expect(() => assertSupportedWindowsArchitectureForTest("x64")).not.toThrow();
+});

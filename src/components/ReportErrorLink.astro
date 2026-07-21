@@ -1,0 +1,26 @@
+---
+import { parseSiteConfig } from "../config/site.js";
+import { createCorrectionIssueUrl } from "../lib/report-error.js";
+
+interface Props {
+  readonly entityId: string;
+  readonly pagePath: `/${string}/`;
+  readonly title: string;
+}
+
+const { entityId, pagePath, title } = Astro.props;
+const config = parseSiteConfig({
+  PUBLIC_REPOSITORY_URL: import.meta.env.PUBLIC_REPOSITORY_URL,
+  PUBLIC_SITE_URL: import.meta.env.PUBLIC_SITE_URL,
+});
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this URL in template markup.
+const issueUrl = createCorrectionIssueUrl(config, {
+  id: entityId,
+  pagePath,
+  title,
+});
+---
+
+<a class="button button-secondary" data-report-error href={issueUrl} rel="external noreferrer">
+  报告资料错误
+</a>

@@ -1,0 +1,78 @@
+---
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="方法与范围｜不明白知识库" description="不明白知识库的收录、核验与纠错说明">
+  <header class="collection-header">
+    <p class="eyebrow">方法与范围</p>
+    <h1>资料如何进入这个知识库</h1>
+    <p>页面只呈现当前可公开、可追溯的目录记录。缺少证据的内容不会因看似合理而被补写。</p>
+  </header>
+
+  <section class="methodology-section" aria-labelledby="inclusion-heading">
+    <h2 id="inclusion-heading">收录标准</h2>
+    <p>节目来自官方 RSS、节目页或官方文字稿。作品只有在官方来源明确列为嘉宾推荐或其他<span class="cjk-phrase">正式推荐栏目</span>，并且推荐关系通过核验时<span class="cjk-phrase">才会公开</span>。</p>
+    <p>节目中顺带提及的书、电影或人物不是正式推荐，不会因为被提到而进入公开作品目录。</p>
+  </section>
+
+  <section class="methodology-section" aria-labelledby="verification-heading">
+    <h2 id="verification-heading">核验状态</h2>
+    <p>“已核验”表示关键字段和推荐关系有来源支持；“部分核验”表示推荐关系成立，但书目、创作者或版本资料仍可能不完整。</p>
+    <p>未达到公开标准的资料不会出现在公开搜索、<span class="cjk-phrase">人物页</span>、主题页或作品列表中。站点只把可追溯的事实作为公开依据。</p>
+  </section>
+
+  <section class="methodology-section" aria-labelledby="translation-heading">
+    <h2 id="translation-heading">翻译质量证据</h2>
+    <p>作品总评分不等同于翻译质量。译本、译者或译评必须有可靠来源才会显示为已核验；缺少可靠来源时，页面明确标示“未核实”。</p>
+    <p>不同译者、出版社或地区版本分别保存，不把多个版本的字段混合成一个看似完整的条目。</p>
+  </section>
+
+  <section class="methodology-section" aria-labelledby="metadata-heading">
+    <h2 id="metadata-heading">外部元数据候选</h2>
+    <p>Open Library、TMDB、Wikidata 和 Wikimedia Commons 只提供待核对的候选资料，不会直接改写目录事实。Open Library 封面仅从官方封面服务热链接；Commons 图片必须保留文件页自己的许可与署名。</p>
+    <div class="tmdb-attribution">
+      <a
+        href="https://www.themoviedb.org/"
+        aria-label="The Movie Database (TMDB)"
+        rel="external"
+      >
+        <img
+          src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_long_2-9665a76b1ae401a510ec1e0ca40ddcb3b0cfe45f1d51b77a308fea0845885648.svg"
+          alt="The Movie Database (TMDB) logo"
+          width="180"
+          loading="lazy"
+          decoding="async"
+        />
+      </a>
+      <p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+    </div>
+    <p><a href="/about/credits/">查看完整的数据来源、图片许可和服务致谢</a>。</p>
+  </section>
+
+  <section class="methodology-section" aria-labelledby="correction-heading">
+    <h2 id="correction-heading">纠错入口</h2>
+    <p>每个公开详情页都有“报告资料错误”链接，打开预填的 GitHub Issue。查询参数只包含实体 ID、公开标题和公开页面 URL。</p>
+    <p><a href="/report-error/">查看纠错流程</a>。纠错需要指出具体字段并提供可核验来源；修订通过拉取请求完成并保留修改历史。</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .tmdb-attribution {
+    display: grid;
+    gap: 0.75rem;
+    justify-items: start;
+    margin-top: 1rem;
+  }
+
+  .tmdb-attribution img {
+    display: block;
+    height: auto;
+    max-width: 11.25rem;
+    width: 100%;
+  }
+
+  .tmdb-attribution p {
+    margin: 0;
+  }
+</style>

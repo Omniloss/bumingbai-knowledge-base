@@ -1,0 +1,53 @@
+---
+import type { Work, WorkRelation } from "../domain/schemas/catalog.js";
+
+type RelationRecord = {
+  readonly relation: WorkRelation;
+  readonly target: Work;
+};
+
+interface Props {
+  readonly records: readonly RelationRecord[];
+  readonly variant: "hard" | "similar";
+}
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this map in template markup.
+const relationLabels = {
+  editorial: "编辑关联",
+  same_creator: "同一创作者",
+  same_episode: "同一期推荐",
+  same_series: "同一系列",
+  similar: "相似作品",
+} as const satisfies Record<WorkRelation["kind"], string>;
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates these props in template markup.
+const { records, variant } = Astro.props;
+// biome-ignore lint/correctness/noUnusedVariables: Astro interpolates this derived content in template markup.
+const content =
+  variant === "hard"
+    ? {
+        eyebrow: "明确关系",
+        empty: "暂无已核验关联作品。",
+        heading: "关联作品",
+        order: "3",
+      }
+    : {
+        eyebrow: "存储关系",
+        empty: "暂无已核验相似作品。",
+        heading: "相似作品",
+        order: "4",
+      };
+---
+
+<section class="detail-section" data-section-order={content.order}>
+  <header><p class="eyebrow">{content.eyebrow}</p><h2>{content.heading}</h2></header>
+  <div class="relation-list">
+    {records.length > 0 ? records.map(({ relation, target }) => (
+      <article class="relation-record">
+        <h3><a href={`/works/${target.slug}/`}>{target.title}</a></h3>
+        <p class="record-meta">{relationLabels[relation.kind]}</p>
+        <ul>{relation.reasons.map((reason) => <li>{reason}</li>)}</ul>
+      </article>
+    )) : <p class="detail-empty">{content.empty}</p>}
+  </div>
+</section>

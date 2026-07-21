@@ -1,0 +1,56 @@
+---
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves component imports from template markup.
+import CjkTitle from "../../components/CjkTitle.astro";
+// biome-ignore lint/correctness/noUnusedImports: Astro resolves layout imports from template markup.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { listPublicEpisodes } from "../../lib/catalog.js";
+
+// biome-ignore lint/correctness/noUnusedVariables: Astro iterates this collection in template markup.
+const episodes = (await listPublicEpisodes())
+  .filter(
+    (episode) =>
+      episode.verificationStatus === "verified" ||
+      episode.verificationStatus === "partially_verified",
+  )
+  .toSorted((left, right) => {
+    if (left.number !== right.number) {
+      if (left.number === null) return 1;
+      if (right.number === null) return -1;
+      return right.number - left.number;
+    }
+    const dateOrder =
+      Date.parse(right.publishedAt) - Date.parse(left.publishedAt);
+    return dateOrder || left.slug.localeCompare(right.slug);
+  });
+// biome-ignore lint/correctness/noUnusedVariables: Astro formats dates in template markup.
+const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
+  dateStyle: "long",
+  timeZone: "Asia/Shanghai",
+});
+---
+
+<BaseLayout title="节目索引｜不明白知识库" description="按期号浏览不明白播客公开节目">
+  <header class="collection-header">
+    <p class="eyebrow">节目索引</p>
+    <h1>全部公开节目</h1>
+    <p>按期号倒序整理；无编号的特别节目保留<span class="keep-together">官方身份</span>，不补造期号。</p>
+  </header>
+
+  <div class="record-list" aria-label="公开节目">
+    {episodes.map((episode) => (
+      <article
+        class="catalog-card episode-card"
+        data-episode-card
+        data-publication-status={episode.publicationStatus}
+        data-verification-status={episode.verificationStatus}
+      >
+        <p class="eyebrow">{episode.number === null ? "特别节目" : `第 ${episode.number} 期`}</p>
+        <h2><a href={`/episodes/${episode.slug}/`}><CjkTitle value={episode.title} /></a></h2>
+        <p class="record-meta">
+          <time datetime={episode.publishedAt}>{dateFormatter.format(new Date(episode.publishedAt))}</time>
+          {episode.duration && <span>{episode.duration}</span>}
+        </p>
+      </article>
+    ))}
+  </div>
+</BaseLayout>

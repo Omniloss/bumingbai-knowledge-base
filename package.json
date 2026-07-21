@@ -1,0 +1,53 @@
+{
+  "name": "knowledge-base",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "bun run tools/build-search-index.ts && astro dev",
+    "build": "bun run tools/build-search-index.ts && astro build",
+    "build:public-isolation": "bun run tools/check-public-isolation.ts",
+    "preview": "astro preview",
+    "qa:lighthouse": "node --experimental-strip-types tools/lighthouse-task6.ts",
+    "typecheck": "tsc --noEmit && astro check",
+    "lint": "biome check --vcs-enabled=true --vcs-client-kind=git --vcs-use-ignore-file=true . && markdownlint-cli2 \"**/*.md\" \"#node_modules\"",
+    "test": "pnpm exec vitest run",
+    "ci": "pnpm run typecheck && pnpm run lint && pnpm run test && pnpm run build:public-isolation && pnpm run build && pnpm exec playwright test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.15.1",
+      "onFail": "download"
+    }
+  },
+  "type": "module",
+  "dependencies": {
+    "astro": "^7.0.9",
+    "fast-xml-parser": "^5.10.1",
+    "ky": "2.0.2",
+    "linkedom": "^0.18.13",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.9",
+    "@axe-core/playwright": "^4.12.1",
+    "@biomejs/biome": "^2.5.3",
+    "@playwright/test": "^1.61.1",
+    "@types/node": "24.13.3",
+    "@vscode/windows-process-tree": "0.8.0",
+    "lighthouse": "^13.4.0",
+    "markdownlint-cli2": "^0.23.0",
+    "puppeteer-core": "^25.3.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10",
+    "wrangler": "^4.112.0",
+    "yaml": "^2.9.0"
+  }
+}

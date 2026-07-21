@@ -1,0 +1,200 @@
+import { describe, expect, it } from "vitest";
+import {
+  canPublishRecommendation,
+  validateCatalog,
+} from "../../src/domain/publication.js";
+import {
+  catalog,
+  edition,
+  episode,
+  RSS_SOURCE,
+  recommendation,
+  SOURCE,
+  work,
+} from "./publication-fixture.js";
+
+describe("canPublishRecommendation", () => {
+  it("rejects pending evidence", () => {
+    // Given
+    const evidence = recommendation({
+      verificationStatus: "pending_verification",
+      publicationStatus: "withheld",
+    });
+
+    // When
+    // Then
+    expect(canPublishRecommendation(evidence)).toBe(false);
+  });
+
+  it("accepts verified official evidence", () => {
+    // Given
+    const evidence = recommendation({
+      source: { ...SOURCE, kind: "official_transcript" },
+    });
+
+    // When
+    // Then
+    expect(canPublishRecommendation(evidence)).toBe(true);
+  });
+
+  it.each([
+    ["partial official", { verificationStatus: "partially_verified" }, true],
+    ["withheld", { publicationStatus: "withheld" }, false],
+    ["provider", { source: { ...SOURCE, kind: "provider_api" } }, false],
+    ["verified official RSS", { source: RSS_SOURCE }, true],
+    [
+      "partially verified official RSS",
+      { source: RSS_SOURCE, verificationStatus: "partially_verified" },
+      true,
+    ],
+    [
+      "external reference",
+      { source: { ...SOURCE, kind: "external_reference" } },
+      false,
+    ],
+    ["manual review", { source: { ...SOURCE, kind: "manual_review" } }, false],
+  ])("returns expected eligibility for %s", (_name, overrides, expected) => {
+    expect(canPublishRecommendation(recommendation(overrides))).toBe(expected);
+  });
+});
+
+describe("validateCatalog", () => {
+  it("reports every plan-defined missing reference", () => {
+    // Given
+    const input = catalog({
+      episodes: [episode({ topicIds: ["topic_aaaaaaaaaaaa"] })],
+      works: [
+        work({
+          publicationStatus: "withheld",
+          topicIds: ["topic_bbbbbbbbbbbb"],
+        }),
+      ],
+      editions: [
+        edition({
+          workId: "work_222222222222",
+          translatorIds: ["person_222222222222"],
+        }),
+      ],
+      recommendationEvidence: [
+        recommendation({
+          episodeId: "episode_222222222222",
+          workId: "work_333333333333",
+          publicationStatus: "withheld",
+        }),
+      ],
+    });
+
+    // When
+    const issues = validateCatalog(input);
+
+    // Then
+    expect(
+      issues
+        .filter((issue) => issue.code === "missing_reference")
+        .map((issue) => `${issue.entityId}|${issue.message}`),
+    ).toEqual([
+      "edition_111111111111|Edition.translatorIds references missing Person person_222222222222",
+      "edition_111111111111|Edition.workId references missing Work work_222222222222",
+      "episode_111111111111|Episode.topicIds references missing Topic topic_aaaaaaaaaaaa",
+      "evidence_111111111111|RecommendationEvidence.episodeId references missing Episode episode_222222222222",
+      "evidence_111111111111|RecommendationEvidence.workId references missing Work work_333333333333",
+      "work_111111111111|Work.topicIds references missing Topic topic_bbbbbbbbbbbb",
+    ]);
+  });
+
+  it("reports duplicate IDs, unsupported assessments, and unevidenced public works", () => {
+    // Given
+    const publicWork = work();
+    const duplicateWork = work({
+      id: "work_222222222222",
+      publicationStatus: "withheld",
+    });
+    const input = catalog({
+      works: [publicWork, duplicateWork, duplicateWork],
+      editions: [
+        edition({
+          workId: publicWork.id,
+          translationAssessment: {
+            status: "verified",
+            summary: "译文准确",
+            sources: [],
+          },
+        }),
+      ],
+    });
+
+    // When
+    // Then
+    expect(validateCatalog(input).map((issue) => issue.code)).toEqual([
+      "duplicate_id",
+      "unsupported_translation_assessment",
+      "public_work_without_evidence",
+    ]);
+  });
+
+  it("returns the same multi-issue order for reversed entity arrays", () => {
+    // Given
+    const first = work({ id: "work_aaaaaaaaaaaa" });
+    const second = work({ id: "work_bbbbbbbbbbbb" });
+
+    // When
+    const forward = validateCatalog(catalog({ works: [first, second] }));
+    const reversed = validateCatalog(catalog({ works: [second, first] }));
+
+    // Then
+    expect(reversed).toEqual(forward);
+  });
+
+  it("accepts a public work backed by publishable evidence", () => {
+    const input = catalog({
+      episodes: [episode()],
+      works: [work()],
+      recommendationEvidence: [recommendation()],
+    });
+
+    expect(validateCatalog(input)).toEqual([]);
+  });
+
+  it("accepts a public work backed only by verified official RSS evidence", () => {
+    // Given
+    const input = catalog({
+      episodes: [episode()],
+      works: [work()],
+      recommendationEvidence: [
+        recommendation({
+          source: RSS_SOURCE,
+          verificationStatus: "verified",
+          publicationStatus: "public",
+        }),
+      ],
+    });
+
+    // When
+    const issues = validateCatalog(input);
+
+    // Then
+    expect(issues).toEqual([]);
+  });
+
+  it("accepts a verified translation assessment backed by a source", () => {
+    // Given
+    const input = catalog({
+      works: [work({ publicationStatus: "withheld" })],
+      editions: [
+        edition({
+          translationAssessment: {
+            status: "verified",
+            summary: "译文准确",
+            sources: [SOURCE],
+          },
+        }),
+      ],
+    });
+
+    // When
+    const issues = validateCatalog(input);
+
+    // Then
+    expect(issues).toEqual([]);
+  });
+});

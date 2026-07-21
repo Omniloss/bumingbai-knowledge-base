@@ -1,0 +1,51 @@
+# 不明白播客资料库项目规则
+
+- `work/bumingbai_structured.json` 是网站内容层的当前结构化数据源。
+- `work/bumingbai_structured.json` 必须与外部源逐字节一致；根 `.gitattributes` 对该文件使用 `-text`，更新后须同时核对外部源、工作树和 Git blob 的 SHA-256。
+- `src/domain/schemas/catalog.ts` 中的 `CatalogSchema` 是目录数据进入 TypeScript 层的边界契约；实体和品牌化 ID schema 分别维护在 `entities.ts` 和 `primitives.ts`，读取外部目录数据时必须先解析该契约。
+- `src/domain/id.ts` 统一生成稳定 ID 和 slug；已知实体前缀返回 `primitives.ts` 的品牌化 ID，任意其他前缀仍保持开放并返回普通字符串。
+- `src/lib/catalog.ts` 从模块 URL 向上查找固定 sentinel `data/catalog/meta.json`，使源码、测试和 Astro `dist/.prerender/chunks` 都能定位目录且不依赖调用方 cwd；移动数据目录时必须同步根发现测试。
+- `src/migration/legacy.ts` 是旧 JSON 的单一迁移入口；外部输入只在该边界解析一次，迁移时间由调用方注入，无法确认的创作者、标题或版本信息必须进入 `reviewIssues`。只有官方简介明确标注的推荐证据可以公开；书目字段还必须有已抓取推荐链接的元数据状态，否则对应版本必须暂缓公开并进入审核。
+- `Episode.number` 必须是正整数或明确的 `null`；无编号节目不得补造编号，其节目、推荐关联和证据 ID 必须共同使用官方 URL 与规范化发布时间作为身份，禁止只按 URL 关联。
+- `work/crawl_bumingbai.py` 只负责抓取官方 RSS、节目页和文字稿；`work/structure_bumingbai.py` 负责结构化与证据状态。
+- 不得把节目中顺带提及的作品当作正式推荐。正式推荐以官方“嘉宾推荐”等明确栏目为准。
+- 不得用作品总评分代替翻译质量评价。译本、译者或译评没有可靠来源时必须标记为未核实。
+- 硬关系从目录事实和公开证据确定性派生，同一期不参与相似分数，必须保持双向、稳定 ID 与来源可追溯。
+- `same_episode` 只属于硬关系，并且只能由 `canPublishRecommendation` 接受的证据在公开且已核验或部分核验的节目与两部作品之间生成；向量只能增强已有结构化相似度，不能单独推荐。
+- Workers AI 缺失凭据或临时失败必须回退且不得覆盖旧缓存，401/403 必须作为配置错误；所有外部响应均须经 Zod 解析。
+- 运行 `bun run tools/enrich-catalog.ts` 增量更新外部元数据、图片和作品关系；`--offline` 只读最近成功缓存，`--refresh` 强制刷新，两者不得同时使用。作品与提供方使用规范化 `WorkLookup` 的 SHA-256 指纹和稳定 `no-match` 标记跳过未变化请求，失败时保留旧缓存与旧目录数据。
+- 增强结果必须先通过 `CatalogSchema.parse` 和零条 `validateCatalog` 问题，再用同目录唯一临时文件原子写入四个目标 JSON；任一步失败必须清理临时文件并保留旧文件。
+- 相似关系不得混入 `same_episode` 等硬关系，结构化分数至少为 0.25，每部作品最多保留 6 条；向量只能增强已有非向量理由，Workers AI 向量只存缓存，不进入公开目录。
+- 新增同步或推荐逻辑时保留原始来源 URL、抓取时间和核验状态，使结果可追溯。
+- 同步产生的候选推荐必须写入 `data/review/sync-candidates.json`，保留原始行、来源 URL、官方快照 `retrievedAt` 和稳定 DOM 定位；只接受四个精确栏目名，段落开头的 `strong`/`b` 标题可带一个末尾中英文冒号。候选 `p`/`li` 只按真实 `<br>` 分行，其他 `strong`/`b` 段落标签是边界。解析必须限制不可信 HTML 的长度、节点和深度，审核队列不得被公共目录或搜索构建读取。
+- `src/sync/run-sync.ts` 的审核队列发布必须以纯词法目标键先串行化，再在锁内完成 mkdir、`lstat`/`realpath`、唯一同目录独占临时文件、重验目录身份和 rename；父目录与目标都要拒绝符号链接或真实路径逃逸，失败不得破坏既有队列。Windows 仅对已验证的 `EPERM` rename 使用三次有上限退避，并在每次前重验路径，其他错误必须 fail closed；Node 无可移植的 `openat` 目录句柄保证，最终重验至 rename 间仍不能对抗拥有本地目录改名权限的攻击者，必须尝试清理。
+- `pnpm run build:public-isolation` 与审核队列写入共享有界跨进程排他锁；锁使用按规范化目标路径哈希的 IPv4 loopback 端口租约，进程退出时由操作系统释放，不得恢复需要删除陈旧文件的锁实现。获取租约前后都必须检查截止时间，任何已接受的 loopback 连接必须立即销毁，释放也必须有界。哈希冲突只允许导致额外串行化或有界超时，不得导致并发写入。
+- 隔离门必须在锁内验证 `root/data/review/queue` 链、用同目录临时文件和重验后的 rename 注入及精确恢复原字节。它必须以 fatal UTF-8 解码和 JSON 数组校验拒绝损坏队列，以 `lstat`、打开后身份复核和分块字节扫描检查 `dist` 内所有普通文件及独立 `public/search-index.json`。构建期间规范队列只能包含非公开哨兵，不得复制原候选；确认进程树已终止后，任何构建、扫描或验证失败都必须恢复原字节。若进程清理无法确认，必须保留哨兵队列并把原字节隔离到经 `realpath` 确认位于项目根目录之外的系统临时目录，同时在错误对象中返回恢复路径，不得恢复到可能仍被后代读取的规范路径。规范队列恢复失败与临时恢复副本清理失败必须使用不同错误语义；恢复副本设置失败后的清理若也失败，必须报告未修改规范队列并返回可能保留的恢复路径。
+- Windows x64 构建进程树必须由 `@vscode/windows-process-tree` 在构建期间连续采样，并以首次观测时间和 PID 创建时间复核后终止；已从完整快照消失、名称改变或父 PID 改变的进程必须永久退役为祖先。历史父进程收养新子进程前必须复核创建时间，无法确认的子进程不得加入终止图；若存活 PID 的创建时间晚于首次观测时间，必须拒绝终止并触发队列隔离，不得杀死重用 PID 的新进程或其后代。不得退回到构建退出或超时后才用 WMI 重建父子关系。该原生包只使用预编译 x64 二进制且禁止运行安装脚本，其他 Windows 架构必须在加载前明确拒绝。构建成功、失败和超时都必须清理仍存活的已跟踪后代，跟踪器在清理异常时也必须停止。
+- `src/sync/official-client.ts` 只通过注入的 fetch 读取官方 RSS 和 WordPress API；测试必须使用固定离线 fixture。RSS RFC 日期与 WordPress GMT 日期必须在 Zod 外部边界以显式 Gregorian 日历、时间和时区组件验证，RSS 星期还须与其写出的源日历日期一致，不能把 `Date.parse` 当作有效性判定。错误只能报告 URL 和 HTTP 状态。RSS 与 WordPress 冲突必须保留双方原值为高风险 `SyncChange`，不得静默覆盖。
+- 官方快照写入 `data/raw/official/{retrievedAt}-{hash}.json`，`retrievedAt` 必须先通过 `IsoDateSchema`，并确认 resolve 后的临时和最终路径仍在 `root/data/raw/official` 内；文件名时间戳中的冒号替换为连字符，且必须以同目录临时文件后 rename 原子发布。
+- Open Library、TMDB、Wikidata 和 Commons 提供方只返回候选，不得改写目录事实；外部响应必须经 Zod 解析并通过注入 fetch 的固定 fixture 测试。Wikidata 图片必须同时具备与媒介类型相容的 P31 和可与目录精确匹配的额外身份信号，当前采用 P577 年份；证据不足时只保留提供方记录与审核问题。Open Library 封面只热链接，TMDB 必须用搜索结果 poster path 匹配官方图片端点尺寸，Commons 图片缺少来源页、许可、作者、credit 或尺寸时必须省略。
+- 提供方图片尺寸只能来自官方尺寸接口，不得推测或编造；Open Library 与 TMDB 图片保持 `hotlink_only`，Commons 必须逐文件保存尺寸、来源页、许可和署名，只有识别出的自由或公版许可可标记 `mirror_allowed`，本任务不上传 R2。
+- `src/images/policy.ts` 只定义纯图像选择策略：首图按合资格的原版 hero、原版、译版、区域版顺序选择，同级按面积降序和稳定 ID 字典序决定；资格以最长边阈值判断。只有 `mirror_allowed` 图片可派生 WebP 或 AVIF，`hotlink_only` 必须直接使用提供方尺寸。
+- 生成封面标题最多四行，拉丁词优先保持完整，并用确定性宽度估算选择字号与换行；不得用 SVG `textLength` 或 `lengthAdjust` 强制拉伸短标题或短尾行。
+- 公开方法页必须保留官方 TMDB 标志及原文声明 `This product uses the TMDB API but is not endorsed or certified by TMDB.`，TMDB token 只能通过运行时注入且不得记录。
+- 重复 Work 或 Edition 合并必须保留完整候选及原始置信度：先筛最高置信组，再按稳定键选值；复核描述必须覆盖导致冲突的完整载荷，同 ISBN 最高组冲突时所有关联 Edition 都须暂缓发布，结果不得依赖输入顺序。
+- 项目采用测试先行。数据解析、增量同步、作品关联和前端关键路径都必须有对应测试。
+- 项目工具链统一使用 pnpm、Bun、`biome.jsonc`、`tsc --noEmit`、`astro check` 和 markdownlint；`pnpm run typecheck` 必须同时通过 TypeScript 与 Astro 诊断，测试通过 `pnpm exec vitest` 运行。
+- `pnpm run dev` 和 `pnpm run build` 都会先用 Bun 生成仅含公开且已核验或部分核验实体的 `public/search-index.json`，再启动 Astro 开发服务器或构建站点；该文件是构建产物，不参与 Biome 格式化或 Git 跟踪。
+- `work/` 原始输入与 `data/catalog/`、`data/review/` 生成 JSON 不由 Biome 改写，数据正确性由 Zod、迁移测试和 `tools/validate-data.ts` 校验。
+- Windows 上运行 `pnpm run ci` 依次完成类型检查、lint、单元测试、静态构建和 desktop/mobile Playwright；`script/ci` 只能经绝对路径 Git Bash 调用，严禁在 PowerShell 中裸执行无扩展名的 `script/*`。Lighthouse 仍须按下一条命令单独对生产 preview 验收。
+- 运行 `pnpm run dev` 启动 Astro 本地站点，运行 `pnpm run build` 生成静态站点，运行 `pnpm run preview -- --host 127.0.0.1` 验收生产构建；PowerShell 不得直接执行无扩展名的 `script/server` 或 `script/build`。
+- 浏览器验收使用 `pnpm exec playwright test`，desktop 和 mobile 项目都必须通过；Lighthouse 只对生产 preview 运行 `pnpm run qa:lighthouse -- <URL>`，该命令以 Node 24 的类型剥离模式运行严格 TypeScript runner，通过 Puppeteer 的 CDP pipe 启动 Chrome Stable，并用 Lighthouse Node API 各跑三次移动端和桌面端；24 个原始分类分数必须全部达到 100。Windows 上不得改回 Bun，Bun 1.3 的子进程兼容层无法可靠完成 Chrome CDP pipe 启动并会遗留进程树。
+- `pnpm-workspace.yaml` 将 Lighthouse 的 Sentry 传递依赖锁到已使用 OpenTelemetry 2.x 的版本，以避开 Lighthouse 默认 Sentry 9 依赖链的已知安全告警；调整该 override 后必须同时通过完整 `pnpm audit` 和六次 Lighthouse 原始满分验收。
+- 页面只能读取 `CatalogRepository`，不得直接读取或绕过 `data/catalog/` schema；公开筛选项必须由当前可公开集合推导，pending、rejected 和无匹配值不得出现在公开筛选控件中。
+- 运行 `bun run tools/migrate-legacy.ts work/bumingbai_structured.json data/catalog` 重新生成规范化目录。
+- `data/catalog/` 是公开站点输入；`data/review/issues.json` 只用于审核，不得作为公开候选事实来源。
+- 首页、节目索引和作品索引只能消费 `CatalogRepository` 的公开实体；作品筛选保留全量服务端渲染卡片，以 `media`、`status` 查询参数和渐进增强脚本切换可见性，无 JavaScript 时不得隐藏目录。
+- 节目和作品详情页只能通过 `CatalogRepository` 连接公开实体与可发布推荐证据；作品详情固定保留图像、推荐证据、版本、强关联、相似作品和来源六个有序区段，缺失数据必须显示诚实空状态，书籍版本信息不得套用到非书作品。
+- 只有“官方文字稿说话人标签”“官方节目简介明确说明”“节目标题明确列名或角色”三类 `guest_evidence` 可生成公开 Person；包含“未逐一列名”或“未在标题或简介中明确列名”的占位文本必须保留到审核问题，不得拆分或发布为 Person。
+- 每次对项目结构、数据契约、脚本命令或关键限制作出有意义的修改后，同步修订本文件。
+- Task 3 scope gate: official raw snapshots and whitelisted normalized episode fields may update public catalogs; every recommendation candidate queue change, entity addition or deletion, source or ID change, and non-whitelisted field requires review. `script/sync` never publishes recommendation evidence, commits, pushes, or opens a pull request.
+- `.github/workflows/sync.yml` 每 6 小时同步一次并只通过 `tools/open-sync-pr.ts` 更新 `automation/episode-sync` 或 `automation/review-queue`；低风险 PR 仅设置 GitHub auto-merge，高风险 PR 必须人工审核，任何自动化都不得直接推送默认分支。Actions 使用已核实的 `actions/checkout@v6`、`actions/setup-node@v6`、`pnpm/action-setup@v6` 和 `oven-sh/setup-bun@v2`，pnpm 版本必须与项目工具链一致。
+- Cloudflare Workers 仅使用 `wrangler.jsonc` 发布 `dist/` 静态资产；`.github/workflows/deploy.yml` 只在 `main` 推送后运行，部署前必须通过完整检查和 Wrangler dry-run，账号 ID 与 API token 只能来自 GitHub Secrets。
+- 同步或部署失败时按 `docs/operations.md` 恢复，禁止用不完整数据覆盖线上版本；公开纠错链接只允许预填实体 ID、公开标题和公开页面 URL。

@@ -1,0 +1,202 @@
+<section class="search-box" aria-labelledby="catalog-search-heading">
+  <p class="eyebrow">统一检索</p>
+  <h2 id="catalog-search-heading">搜索资料库</h2>
+  <p>输入至少两个字符，搜索公开节目、人物、<span class="cjk-phrase">作品和主题</span>。</p>
+  <label for="catalog-search">搜索节目、人物和作品</label>
+  <input
+    aria-autocomplete="list"
+    aria-controls="catalog-search-results"
+    aria-expanded="false"
+    aria-haspopup="listbox"
+    autocomplete="off"
+    id="catalog-search"
+    name="catalog-search"
+    placeholder="例如：说吧，记忆"
+    role="combobox"
+    type="search"
+  />
+  <div
+    aria-label="搜索结果"
+    class="search-results search-result-list"
+    id="catalog-search-results"
+    role="listbox"
+  ></div>
+  <div aria-live="polite" class="search-message" data-search-message></div>
+</section>
+
+<script>
+  import { segmentCjkTitle } from "../lib/cjk-title.js";
+  import {
+    type SearchIndex,
+    type SearchKind,
+    rankSearchRecords,
+  } from "../lib/search.js";
+  import {
+    loadSearchIndex,
+    SearchIndexLoadError,
+  } from "../lib/search-client.js";
+
+  const KIND_LABELS = {
+    episode: "节目",
+    work: "作品",
+    person: "人物",
+    topic: "主题",
+  } as const satisfies Record<SearchKind, string>;
+  const SEARCH_KINDS = ["episode", "work", "person", "topic"] as const;
+
+  const input = document.querySelector("#catalog-search");
+  const resultsContainer = document.querySelector("#catalog-search-results");
+  const messageContainer = document.querySelector("[data-search-message]");
+
+  if (
+    input instanceof HTMLInputElement &&
+    resultsContainer instanceof HTMLDivElement &&
+    messageContainer instanceof HTMLDivElement
+  ) {
+    let indexPromise: Promise<SearchIndex> | undefined;
+    let resultLinks: HTMLAnchorElement[] = [];
+    let activeIndex = -1;
+
+    const loadIndex = async (): Promise<SearchIndex> => {
+      const currentPromise = indexPromise ?? loadSearchIndex();
+      indexPromise = currentPromise;
+      try {
+        return await currentPromise;
+      } catch (error) {
+        if (indexPromise === currentPromise) indexPromise = undefined;
+        throw error;
+      }
+    };
+
+    const clearResults = () => {
+      resultsContainer.replaceChildren();
+      messageContainer.replaceChildren();
+      resultLinks = [];
+      activeIndex = -1;
+      input.setAttribute("aria-expanded", "false");
+      input.removeAttribute("aria-activedescendant");
+    };
+
+    const setActiveResult = (nextIndex: number) => {
+      const nextLink = resultLinks[nextIndex];
+      if (!nextLink) return;
+
+      activeIndex = nextIndex;
+      for (const [index, link] of resultLinks.entries()) {
+        link.setAttribute("aria-selected", `${index === activeIndex}`);
+      }
+      input.setAttribute("aria-activedescendant", nextLink.id);
+    };
+
+    const renderMessage = (className: string, message: string) => {
+      clearResults();
+      const paragraph = document.createElement("p");
+      paragraph.className = className;
+      paragraph.textContent = message;
+      messageContainer.append(paragraph);
+    };
+
+    const renderResults = (records: SearchIndex) => {
+      clearResults();
+      if (records.length === 0) {
+        renderMessage("search-empty", "没有找到匹配的公开资料。");
+        return;
+      }
+
+      let resultIndex = 0;
+
+      for (const kind of SEARCH_KINDS) {
+        const groupRecords = records.filter((record) => record.kind === kind);
+        if (groupRecords.length === 0) continue;
+
+        const group = document.createElement("div");
+        group.className = "search-result-group";
+        group.setAttribute("aria-label", KIND_LABELS[kind]);
+        group.setAttribute("role", "group");
+        const heading = document.createElement("h3");
+        heading.textContent = KIND_LABELS[kind];
+        heading.setAttribute("role", "presentation");
+        group.append(heading);
+
+        const list = document.createElement("ul");
+        list.setAttribute("role", "presentation");
+        for (const record of groupRecords) {
+          const item = document.createElement("li");
+          item.setAttribute("role", "presentation");
+          const link = document.createElement("a");
+          link.href = record.url;
+          link.id = `search-result-${resultIndex}`;
+          link.setAttribute("role", "option");
+          link.setAttribute("aria-selected", "false");
+          for (const segment of segmentCjkTitle(record.title)) {
+            const titleSegment = document.createElement("span");
+            titleSegment.textContent = segment.value;
+            if (segment.keepTogether) titleSegment.className = "title-segment";
+            link.append(titleSegment);
+          }
+          item.append(link);
+          list.append(item);
+          resultLinks.push(link);
+          resultIndex += 1;
+        }
+        group.append(list);
+        resultsContainer.append(group);
+      }
+
+      input.setAttribute("aria-expanded", "true");
+    };
+
+    const updateResults = async () => {
+      const query = input.value.trim();
+      if ([...query].length < 2) {
+        clearResults();
+        return;
+      }
+
+      let records: SearchIndex;
+      try {
+        records = await loadIndex();
+      } catch (error) {
+        if (error instanceof SearchIndexLoadError) {
+          if (query === input.value.trim()) {
+            renderMessage("search-error", "搜索暂不可用，请稍后重试。");
+          }
+          return;
+        }
+        throw error;
+      }
+      if (query !== input.value.trim()) return;
+      renderResults(rankSearchRecords(records, query));
+    };
+
+    input.addEventListener("input", () => {
+      void updateResults();
+    });
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        input.value = "";
+        clearResults();
+        return;
+      }
+      if (resultLinks.length === 0) return;
+
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        const offset = event.key === "ArrowDown" ? 1 : -1;
+        const nextIndex =
+          activeIndex === -1
+            ? offset === 1
+              ? 0
+              : resultLinks.length - 1
+            : (activeIndex + offset + resultLinks.length) % resultLinks.length;
+        setActiveResult(nextIndex);
+        return;
+      }
+
+      if (event.key === "Enter" && activeIndex !== -1) {
+        const activeLink = resultLinks[activeIndex];
+        if (activeLink) window.location.assign(activeLink.href);
+      }
+    });
+  }
+</script>

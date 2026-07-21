@@ -127,6 +127,70 @@ describe("synchronizeCatalog", () => {
     );
   });
 
+  it("does not overwrite curated episodes without a previous official snapshot", () => {
+    const newEpisode = snapshot({
+      number: 2,
+      title: "episode two",
+      officialUrl: "https://bumingbai.net/episodes/2/",
+      guestNames: [],
+    });
+    const result = synchronizeCatalog({
+      catalog: { episodes: [existingEpisode], people: [knownPerson] },
+      currentSnapshot: [snapshot(), newEpisode],
+    });
+
+    expect(result.episodes.find((episode) => episode.number === 1)).toEqual(
+      existingEpisode,
+    );
+    expect(result.lowRiskChanges).toEqual([]);
+    expect(
+      result.episodes.find((episode) => episode.number === 2),
+    ).toMatchObject({
+      number: 2,
+      title: "episode two",
+    });
+  });
+
+  it("preserves curated fields that diverged from the previous official snapshot", () => {
+    const result = synchronizeCatalog({
+      catalog: { episodes: [existingEpisode], people: [knownPerson] },
+      previousSnapshot: [
+        snapshot({
+          title: "official old title",
+          duration: "00:10:00",
+          officialUrl: "https://bumingbai.net/episodes/official-1/",
+          transcriptUrl: "https://bumingbai.net/transcripts/1/",
+          guestNames: [],
+        }),
+      ],
+      currentSnapshot: [
+        snapshot({
+          title: "official new title",
+          duration: "00:30:00",
+          officialUrl: "https://bumingbai.net/episodes/official-2/",
+          transcriptUrl: "https://bumingbai.net/transcripts/3/",
+          guestNames: ["new guest"],
+        }),
+      ],
+    });
+
+    expect(result.episodes[0]).toMatchObject({
+      title: existingEpisode.title,
+      duration: "00:30:00",
+      officialUrl: existingEpisode.officialUrl,
+      transcriptUrl: "https://bumingbai.net/transcripts/3/",
+      guestIds: existingEpisode.guestIds,
+    });
+    expect(result.highRiskChanges).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ field: "title", risk: "high" }),
+        expect.objectContaining({ field: "officialUrl", risk: "high" }),
+        expect.objectContaining({ field: "guestNames", risk: "high" }),
+      ]),
+    );
+    expect(result.people).toEqual([knownPerson]);
+  });
+
   it("materializes new episodes with migration-compatible identity and high risk", () => {
     const current = snapshot({
       number: 223,
@@ -185,7 +249,13 @@ describe("synchronizeCatalog", () => {
     delete current.transcriptUrl;
     const result = synchronizeCatalog({
       catalog: { episodes: [existingEpisode], people: [knownPerson] },
-      previousSnapshot: [snapshot({ guestNames: [knownPerson.name] })],
+      previousSnapshot: [
+        snapshot({
+          duration: "00:10:00",
+          transcriptUrl: "https://bumingbai.net/transcripts/1/",
+          guestNames: [knownPerson.name],
+        }),
+      ],
       currentSnapshot: [current],
     });
 

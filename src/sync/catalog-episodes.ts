@@ -96,18 +96,21 @@ export function updateEpisode(
   lowRiskChanges: SyncChange[],
   highRiskChanges: SyncChange[],
 ): { episode: Episode; addedPeople: Person[] } {
+  if (previous === undefined) return { episode: existing, addedPeople: [] };
   const number = current.number;
-  const previousGuestNames =
-    previous?.guestNames ??
-    valuesForExistingGuests(existing.guestIds, peopleById);
+  const existingGuestNames = valuesForExistingGuests(
+    existing.guestIds,
+    peopleById,
+  );
+  const previousGuestNames = previous.guestNames;
   const currentGuestNames = current.guestNames;
-  const guestChange = !sameValue(previousGuestNames, currentGuestNames);
   const guestConflict = isConflicted(conflicts, number, "guestNames");
   const guestResult = guestConflict
     ? { ids: [...existing.guestIds], added: [] }
     : guestIdsFor(currentGuestNames, peopleById, current);
   let clearDuration = false;
   let clearTranscriptUrl = false;
+  let appliedGuestUpdate = false;
   const updates: {
     title?: string;
     publishedAt?: string;
@@ -122,8 +125,8 @@ export function updateEpisode(
     const before =
       field === "guestNames"
         ? previousGuestNames
-        : previous === undefined
-          ? fieldValue(existing, field)
+        : field === "publishedAt"
+          ? normalizedDate(previous.publishedAt)
           : previous[field];
     const after =
       field === "publishedAt"
@@ -132,6 +135,12 @@ export function updateEpisode(
           ? currentGuestNames
           : current[field];
     if (sameValue(before, after)) continue;
+    const catalogValue =
+      field === "guestNames" ? existingGuestNames : fieldValue(existing, field);
+    if (!sameValue(catalogValue, before)) {
+      highRiskChanges.push(change(number, field, catalogValue, after, "high"));
+      continue;
+    }
     const risk =
       field === "guestNames" && guestResult.added.length > 0 ? "high" : "low";
     (risk === "low" ? lowRiskChanges : highRiskChanges).push(
@@ -158,12 +167,12 @@ export function updateEpisode(
         break;
       case "guestNames":
         updates.guestIds = guestResult.ids;
+        appliedGuestUpdate = true;
         break;
     }
   }
 
-  if (guestChange && !guestConflict) updates.guestIds = guestResult.ids;
-  for (const person of guestResult.added) {
+  for (const person of appliedGuestUpdate ? guestResult.added : []) {
     highRiskChanges.push(
       change(number, "person", undefined, person.id, "high"),
     );
@@ -176,7 +185,7 @@ export function updateEpisode(
   if (clearTranscriptUrl) delete rawEpisode.transcriptUrl;
   return {
     episode: EpisodeSchema.parse(rawEpisode),
-    addedPeople: guestResult.added,
+    addedPeople: appliedGuestUpdate ? guestResult.added : [],
   };
 }
 

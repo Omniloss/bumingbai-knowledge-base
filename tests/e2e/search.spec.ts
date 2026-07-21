@@ -89,7 +89,7 @@ test("search waits for two characters, groups records, and supports ArrowUp and 
   await secondCharacterRequest;
 
   // Then
-  expect(requestCount).toBe(1);
+  await expect.poll(() => requestCount).toBe(1);
   await expect(
     page.locator(".search-result-group h3", { hasText: "节目" }),
   ).toBeVisible();

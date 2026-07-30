@@ -5493,5 +5493,43 @@
     "officialUrl": "https://shows.acast.com/bumingbai/episodes/680043b047809c35bd7ad0e1",
     "guestIds": [],
     "topicIds": []
+  },
+  {
+    "id": "episode_0e6523810856",
+    "slug": "ep-225",
+    "verificationStatus": "partially_verified",
+    "publicationStatus": "public",
+    "sources": [
+      {
+        "kind": "official_episode",
+        "url": "https://bumingbai.net/2026/07/20/ep-225-lvxing/",
+        "retrievedAt": "2026-07-30T09:07:19.910Z"
+      }
+    ],
+    "number": 225,
+    "title": "EP-225 不明白下午茶｜我们的旅行日志：在别处看见自己",
+    "publishedAt": "2026-07-19T16:40:00.000Z",
+    "officialUrl": "https://bumingbai.net/2026/07/20/ep-225-lvxing/",
+    "guestIds": [],
+    "topicIds": []
+  },
+  {
+    "id": "episode_84a5092e4a5b",
+    "slug": "ep-224",
+    "verificationStatus": "partially_verified",
+    "publicationStatus": "public",
+    "sources": [
+      {
+        "kind": "official_episode",
+        "url": "https://bumingbai.net/2026/07/17/ep-224/",
+        "retrievedAt": "2026-07-30T09:07:19.910Z"
+      }
+    ],
+    "number": 224,
+    "title": "EP-224 黄亚生：中国政府为何系统性压低工人工资？",
+    "publishedAt": "2026-07-17T12:59:08.000Z",
+    "officialUrl": "https://bumingbai.net/2026/07/17/ep-224/",
+    "guestIds": [],
+    "topicIds": []
   }
 ]

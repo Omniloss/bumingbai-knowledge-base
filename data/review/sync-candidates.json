@@ -1,1 +1,1392 @@
-[]
+[
+  {
+    "episodeNumber": 220,
+    "rawText": "北岛、李陀《七十年代》",
+    "sourceUrl": "https://bumingbai.net/2026/06/19/ep-220-xcg/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 220,
+    "rawText": "杨继绳《天地翻覆—中国文化大革命史》",
+    "sourceUrl": "https://bumingbai.net/2026/06/19/ep-220-xcg/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 220,
+    "rawText": "王友琴《文革受难者关于迫害、监禁和杀戮的寻访实录》",
+    "sourceUrl": "https://bumingbai.net/2026/06/19/ep-220-xcg/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 216,
+    "rawText": "https://a.co/d/02zZO6xH",
+    "sourceUrl": "https://bumingbai.net/2026/05/31/ep-216-wenge03/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 216,
+    "rawText": "https://a.co/d/08yhLea9",
+    "sourceUrl": "https://bumingbai.net/2026/05/31/ep-216-wenge03/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 216,
+    "rawText": "https://dokumen.pub/9881751586-9789881751584.html",
+    "sourceUrl": "https://bumingbai.net/2026/05/31/ep-216-wenge03/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(6)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 216,
+    "rawText": "启之《内蒙古文革实录》",
+    "sourceUrl": "https://bumingbai.net/2026/05/31/ep-216-wenge03/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(5)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 216,
+    "rawText": "孙怒涛：《历史拒绝遗忘: 清华十年文革回忆反思集（上、下）》",
+    "sourceUrl": "https://bumingbai.net/2026/05/31/ep-216-wenge03/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 216,
+    "rawText": "杨继绳《天地翻覆—中国文化大革命史》",
+    "sourceUrl": "https://bumingbai.net/2026/05/31/ep-216-wenge03/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 213,
+    "rawText": "Gessen Masha《The Future is History: How Totalitarianism Reclaimed Russia》",
+    "sourceUrl": "https://bumingbai.net/2026/05/21/ep-213-dakekang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(9)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 213,
+    "rawText": "Julia Cameron《The Artist’s Way》",
+    "sourceUrl": "https://bumingbai.net/2026/05/21/ep-213-dakekang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(9)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 213,
+    "rawText": "https://a.co/d/0fwf6p6E",
+    "sourceUrl": "https://bumingbai.net/2026/05/21/ep-213-dakekang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(9)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 213,
+    "rawText": "https://book.douban.com/subject/1878116/",
+    "sourceUrl": "https://bumingbai.net/2026/05/21/ep-213-dakekang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(9)::line(6)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 213,
+    "rawText": "https://book.douban.com/subject/3597113/",
+    "sourceUrl": "https://bumingbai.net/2026/05/21/ep-213-dakekang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(9)::line(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 213,
+    "rawText": "《The Autobiography of Malcolm X》",
+    "sourceUrl": "https://bumingbai.net/2026/05/21/ep-213-dakekang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(9)::line(5)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 187,
+    "rawText": "Mastodon：@bumingbaipod",
+    "sourceUrl": "https://bumingbai.net/2025/12/26/ep-187-yifuxian/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(22)::line(5)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 187,
+    "rawText": "Telegram：@bmbpod",
+    "sourceUrl": "https://bumingbai.net/2025/12/26/ep-187-yifuxian/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(22)::line(6)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 187,
+    "rawText": "官网：bumingbai.net",
+    "sourceUrl": "https://bumingbai.net/2025/12/26/ep-187-yifuxian/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(22)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 187,
+    "rawText": "捐赠链接：https://bit.ly/bmb-donate",
+    "sourceUrl": "https://bumingbai.net/2025/12/26/ep-187-yifuxian/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(22)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 187,
+    "rawText": "推特：@bumingbaipod",
+    "sourceUrl": "https://bumingbai.net/2025/12/26/ep-187-yifuxian/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(22)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 187,
+    "rawText": "新望 马国川主编《改革四十年经济学文选》",
+    "sourceUrl": "https://bumingbai.net/2025/12/26/ep-187-yifuxian/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(19)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 187,
+    "rawText": "易富贤 《大国空巢》",
+    "sourceUrl": "https://bumingbai.net/2025/12/26/ep-187-yifuxian/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(21)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 187,
+    "rawText": "梁中堂 《左冲右突 ⸺陈慕华、胡耀邦、赵紫阳与计划生育》",
+    "sourceUrl": "https://bumingbai.net/2025/12/26/ep-187-yifuxian/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(20)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 187,
+    "rawText": "蓝天：@bumingbai.net",
+    "sourceUrl": "https://bumingbai.net/2025/12/26/ep-187-yifuxian/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(22)::line(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 162,
+    "rawText": "亚历山大·奥尔洛夫《斯大林肃反秘史》",
+    "sourceUrl": "https://bumingbai.net/2025/08/02/ep-162-wgg/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 162,
+    "rawText": "罗伊·麦德韦杰夫《让历史来审判：斯大林主义的起源及其后果》",
+    "sourceUrl": "https://bumingbai.net/2025/08/02/ep-162-wgg/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 162,
+    "rawText": "阿夫托尔哈诺夫《斯大林死之谜》",
+    "sourceUrl": "https://bumingbai.net/2025/08/02/ep-162-wgg/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 132,
+    "rawText": "《某种物质》科拉莉·法尔雅《树大招风》许学文、欧文杰、黄伟杰《背靠背，脸对脸》黄建新、杨亚洲《新疆——被中共支配的七十年》熊倉潤Jun Kumakura《連結——從石器時代到AI紀元》（尤瓦尔·赫拉利）《疫年纪事》李厚辰",
+    "sourceUrl": "https://bumingbai.net/2025/01/18/ep-132-lihouchen/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 123,
+    "rawText": "1.《人民三部曲》冯客（Frank Dikötter ）",
+    "sourceUrl": "https://bumingbai.net/2024/11/15/ep-123-yumaochun/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 123,
+    "rawText": "2.《老实人》伏尔泰",
+    "sourceUrl": "https://bumingbai.net/2024/11/15/ep-123-yumaochun/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 123,
+    "rawText": "3.《毛泽东选集》",
+    "sourceUrl": "https://bumingbai.net/2024/11/15/ep-123-yumaochun/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 123,
+    "rawText": "4.电影《活着》张艺谋",
+    "sourceUrl": "https://bumingbai.net/2024/11/15/ep-123-yumaochun/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 123,
+    "rawText": "5.电影《流浪者》拉兹·卡普尔（1951）",
+    "sourceUrl": "https://bumingbai.net/2024/11/15/ep-123-yumaochun/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(5)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 123,
+    "rawText": "6.电影《与安德烈晚餐》路易·马勒",
+    "sourceUrl": "https://bumingbai.net/2024/11/15/ep-123-yumaochun/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(6)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 122,
+    "rawText": "1.《Cuba: An American History》（作者：Ada Ferrer ）",
+    "sourceUrl": "https://bumingbai.net/2024/11/08/ep-122-wangnanfu/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 122,
+    "rawText": "2.电影《罗生门》黑泽明",
+    "sourceUrl": "https://bumingbai.net/2024/11/08/ep-122-wangnanfu/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 122,
+    "rawText": "3.电影《梦》黑泽明",
+    "sourceUrl": "https://bumingbai.net/2024/11/08/ep-122-wangnanfu/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 120,
+    "rawText": "：",
+    "sourceUrl": "https://bumingbai.net/2024/10/26/ep-120-luoyufeng/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 116,
+    "rawText": "1.哈耶克《通往奴役之路》",
+    "sourceUrl": "https://bumingbai.net/2024/10/12/ep-116-caixia/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(8)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 116,
+    "rawText": "2.米塞斯《社会主义：经济学与社会学的分析》",
+    "sourceUrl": "https://bumingbai.net/2024/10/12/ep-116-caixia/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(9)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 116,
+    "rawText": "3.哈耶克《致命的自负》",
+    "sourceUrl": "https://bumingbai.net/2024/10/12/ep-116-caixia/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(10)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 116,
+    "rawText": "官网：bumingbai.net",
+    "sourceUrl": "https://bumingbai.net/2024/10/12/ep-116-caixia/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(11)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 116,
+    "rawText": "捐赠链接：https://bit.ly/bmb-donate",
+    "sourceUrl": "https://bumingbai.net/2024/10/12/ep-116-caixia/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(11)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 116,
+    "rawText": "推特：@bumingbaipod",
+    "sourceUrl": "https://bumingbai.net/2024/10/12/ep-116-caixia/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(11)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 112,
+    "rawText": "1. 电影《气球》(2019) 万玛才旦 导",
+    "sourceUrl": "https://bumingbai.net/2024/09/14/tibet-education-1/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 112,
+    "rawText": "2. 作者唯色，X账号",
+    "sourceUrl": "https://bumingbai.net/2024/09/14/tibet-education-1/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 112,
+    "rawText": "3. 《吃佛》(2020) 芭芭拉·德米克 著",
+    "sourceUrl": "https://bumingbai.net/2024/09/14/tibet-education-1/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 112,
+    "rawText": "4. 《缅甸岁月》(1934) 乔治·奥威尔 著",
+    "sourceUrl": "https://bumingbai.net/2024/09/14/tibet-education-1/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 106,
+    "rawText": "1. 《Spiderweb Capitalism》 (2022) Kimberly Kay Hoang 著 暂无中文版",
+    "sourceUrl": "https://bumingbai.net/2024/08/03/mike-forsythe/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 106,
+    "rawText": "2. 《阿里巴巴》(2016) 邓肯·克拉克 著",
+    "sourceUrl": "https://bumingbai.net/2024/08/03/mike-forsythe/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 106,
+    "rawText": "3. 《红色赌盘》(2021) 沈栋 著",
+    "sourceUrl": "https://bumingbai.net/2024/08/03/mike-forsythe/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 106,
+    "rawText": "相关单集：EP-042：沈栋：红色赌盘——中国权力高层的共谋者",
+    "sourceUrl": "https://bumingbai.net/2024/08/03/mike-forsythe/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 105,
+    "rawText": "1. 《政治学》(1936) 哈罗德·D.拉斯韦尔 著 （蔡老师在录制后补充）",
+    "sourceUrl": "https://bumingbai.net/2024/07/26/ep-105-cai-xia/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 105,
+    "rawText": "2. 《国家为什么会失败》(2012) 德隆·阿西莫格鲁  / 詹姆斯·A·罗宾逊  著",
+    "sourceUrl": "https://bumingbai.net/2024/07/26/ep-105-cai-xia/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 105,
+    "rawText": "3. 《通往奴役之路》(1944) 弗里德里希·哈耶克 著",
+    "sourceUrl": "https://bumingbai.net/2024/07/26/ep-105-cai-xia/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 105,
+    "rawText": "同样推荐了这本书的单集：EP-007 陈志武：风险如何塑造人类文明史",
+    "sourceUrl": "https://bumingbai.net/2024/07/26/ep-105-cai-xia/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(5)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 105,
+    "rawText": "：",
+    "sourceUrl": "https://bumingbai.net/2024/07/26/ep-105-cai-xia/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 103,
+    "rawText": "《Collapse: The Fall of the Soviet Union》 Vladislav M. Zubok 著",
+    "sourceUrl": "https://bumingbai.net/2024/07/05/ep-103-pei-minxin/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > ol:nth-of-type(1) > li:nth-of-type(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 103,
+    "rawText": "《The New Cold Wars》 David Sanger 著",
+    "sourceUrl": "https://bumingbai.net/2024/07/05/ep-103-pei-minxin/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > ol:nth-of-type(1) > li:nth-of-type(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 103,
+    "rawText": "《冷战》 John Lewis Gaddis 著",
+    "sourceUrl": "https://bumingbai.net/2024/07/05/ep-103-pei-minxin/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > ol:nth-of-type(1) > li:nth-of-type(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 103,
+    "rawText": "官网：bumingbai.net",
+    "sourceUrl": "https://bumingbai.net/2024/07/05/ep-103-pei-minxin/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 103,
+    "rawText": "捐赠链接：https://bit.ly/bmb-donate",
+    "sourceUrl": "https://bumingbai.net/2024/07/05/ep-103-pei-minxin/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 103,
+    "rawText": "推特：@bumingbaipod",
+    "sourceUrl": "https://bumingbai.net/2024/07/05/ep-103-pei-minxin/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 102,
+    "rawText": "1. 《你真勇敢》(2024) 许微其 著 暂未出版",
+    "sourceUrl": "https://bumingbai.net/2024/06/30/vicky-xu/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 102,
+    "rawText": "2. 《永久记录：美国政府监控全世界网络信息的真相》(2019) 爱德华·斯诺登 著",
+    "sourceUrl": "https://bumingbai.net/2024/06/30/vicky-xu/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 102,
+    "rawText": "3. 《你当像鸟飞往你的山》(2018)  塔拉·韦斯特弗 著",
+    "sourceUrl": "https://bumingbai.net/2024/06/30/vicky-xu/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 101,
+    "rawText": "1. 《戊戌变法史事考》(2005) 茅海建 著",
+    "sourceUrl": "https://bumingbai.net/2024/06/22/ep-101-jung-chang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 101,
+    "rawText": "2. 《康有为变法奏章辑考》(2008) 孔祥吉 著",
+    "sourceUrl": "https://bumingbai.net/2024/06/22/ep-101-jung-chang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 101,
+    "rawText": "3. 《晚清史事》(2007) 杨天石 著",
+    "sourceUrl": "https://bumingbai.net/2024/06/22/ep-101-jung-chang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 97,
+    "rawText": "1.《美国与中国》(1979) 费正清 著",
+    "sourceUrl": "https://bumingbai.net/2024/05/25/ep-097-ding-xueliang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(9)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 97,
+    "rawText": "2.《李慎之与美国所》(2020) 李慎之等 著",
+    "sourceUrl": "https://bumingbai.net/2024/05/25/ep-097-ding-xueliang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(9)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 97,
+    "rawText": "3.《毛泽东最后的革命》(2006) 马若德 / 沈迈克 著",
+    "sourceUrl": "https://bumingbai.net/2024/05/25/ep-097-ding-xueliang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(9)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 97,
+    "rawText": "官网：bumingbai.net",
+    "sourceUrl": "https://bumingbai.net/2024/05/25/ep-097-ding-xueliang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(9)::line(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 97,
+    "rawText": "捐赠链接：https://bit.ly/bmb-donate",
+    "sourceUrl": "https://bumingbai.net/2024/05/25/ep-097-ding-xueliang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(9)::line(6)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 97,
+    "rawText": "推特：@bumingbaipod",
+    "sourceUrl": "https://bumingbai.net/2024/05/25/ep-097-ding-xueliang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(9)::line(5)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 96,
+    "rawText": "1.《修女艾达》(2013) 帕维乌·帕夫利科夫斯基 导",
+    "sourceUrl": "https://bumingbai.net/2024/05/19/ep-096-yan-geling/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 96,
+    "rawText": "2. 《红楼梦》(18世纪) 曹雪芹 著",
+    "sourceUrl": "https://bumingbai.net/2024/05/19/ep-096-yan-geling/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 96,
+    "rawText": "3. 《百年孤独》(1967) 加西亚·马尔克斯 著",
+    "sourceUrl": "https://bumingbai.net/2024/05/19/ep-096-yan-geling/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 96,
+    "rawText": "4. 《1984》(1949) 乔治·奥威尔 著",
+    "sourceUrl": "https://bumingbai.net/2024/05/19/ep-096-yan-geling/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 95,
+    "rawText": "1. Netflix剧集《兄弟之道》(2024)",
+    "sourceUrl": "https://bumingbai.net/2024/05/04/ep-095-scott-kennedy/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 95,
+    "rawText": "2. 《Sparks: China’s Underground Historians and their Battle for the Future》(2023) 张彦(Ian Johnson) 著",
+    "sourceUrl": "https://bumingbai.net/2024/05/04/ep-095-scott-kennedy/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 95,
+    "rawText": "3. 《小小恶信件》(2023) 西娅·夏罗克 导",
+    "sourceUrl": "https://bumingbai.net/2024/05/04/ep-095-scott-kennedy/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 95,
+    "rawText": "暂无中文版，张彦在《不明白播客》EP67介绍了这本书",
+    "sourceUrl": "https://bumingbai.net/2024/05/04/ep-095-scott-kennedy/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 94,
+    "rawText": "1. Netflix 纪录片《监视资本主义：智能陷阱》(2020)",
+    "sourceUrl": "https://bumingbai.net/2024/04/28/ep-094-mr-c/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 94,
+    "rawText": "2. 《深度数位大扫除：3分饱连线方案，在喧嚣世界过专注人生。》(2019) 卡尔·纽坡特 著",
+    "sourceUrl": "https://bumingbai.net/2024/04/28/ep-094-mr-c/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 94,
+    "rawText": "3. 《精英的傲慢：好的社会该如何定义成功？》(2020) 迈克尔·桑德尔 著",
+    "sourceUrl": "https://bumingbai.net/2024/04/28/ep-094-mr-c/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 94,
+    "rawText": "4. 《蜡笔小新：爆盛！功夫男孩〜拉面大乱〜》(2018) 高桥涉 导",
+    "sourceUrl": "https://bumingbai.net/2024/04/28/ep-094-mr-c/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(6)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 94,
+    "rawText": "英语版：Digital Minimalism: Choosing a Focused Life in a Noisy World, by Cal Newport",
+    "sourceUrl": "https://bumingbai.net/2024/04/28/ep-094-mr-c/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 94,
+    "rawText": "英语版：The Tyranny of Merit: What’s Become of the Common Good, by Michael J. Sandel",
+    "sourceUrl": "https://bumingbai.net/2024/04/28/ep-094-mr-c/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(5)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 93,
+    "rawText": "得到APP《刘苏里·名家大课》",
+    "sourceUrl": "https://bumingbai.net/2024/04/13/ep-093-aunt-gao/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(8)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 92,
+    "rawText": "《踏迹寻中：四十年华南田野之旅》(2016) 萧凤霞 著, 豆瓣",
+    "sourceUrl": "https://bumingbai.net/2024/04/07/ep-092-zhang-jieping/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(4)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 92,
+    "rawText": "英语版：Tracing China: A Forty-Year Ethnographic Journey, F. Helen Siu 著",
+    "sourceUrl": "https://bumingbai.net/2024/04/07/ep-092-zhang-jieping/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(4)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 91,
+    "rawText": "1. 《The Rise and Fall of the EAST: How Exams Autocracy, Stability, and Technology Brought China Success, and Why They Might Lead to Its Decline》(2023) 黄亚生 著",
+    "sourceUrl": "https://bumingbai.net/2024/03/30/ep-091-pei-minxin/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 91,
+    "rawText": "2. 《兄弟》(2005) 余华 著",
+    "sourceUrl": "https://bumingbai.net/2024/03/30/ep-091-pei-minxin/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 91,
+    "rawText": "3. 《墓碑：中国六十年代大饥荒纪实》(2008) 杨继绳 著",
+    "sourceUrl": "https://bumingbai.net/2024/03/30/ep-091-pei-minxin/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(5)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 91,
+    "rawText": "EP-046 黄亚生：科举制度如何影响中国的未来",
+    "sourceUrl": "https://bumingbai.net/2024/03/30/ep-091-pei-minxin/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 91,
+    "rawText": "黄亚生教授此前在《不明白播客》讲过这本新书：",
+    "sourceUrl": "https://bumingbai.net/2024/03/30/ep-091-pei-minxin/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 90,
+    "rawText": "《凯恩斯大战哈耶克》 尼古拉斯·韦普肖特 著",
+    "sourceUrl": "https://bumingbai.net/2024/03/24/ep-090-wang-xiaoshuai/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > ul:nth-of-type(1) > li:nth-of-type(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 90,
+    "rawText": "《国镇》 野夫 著",
+    "sourceUrl": "https://bumingbai.net/2024/03/24/ep-090-wang-xiaoshuai/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > ul:nth-of-type(1) > li:nth-of-type(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 90,
+    "rawText": "《知识分子的鸦片》 雷蒙·阿隆 著",
+    "sourceUrl": "https://bumingbai.net/2024/03/24/ep-090-wang-xiaoshuai/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > ul:nth-of-type(1) > li:nth-of-type(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 90,
+    "rawText": "官网：bumingbai.net",
+    "sourceUrl": "https://bumingbai.net/2024/03/24/ep-090-wang-xiaoshuai/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(4)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 90,
+    "rawText": "捐赠链接：https://bit.ly/bmb-donate",
+    "sourceUrl": "https://bumingbai.net/2024/03/24/ep-090-wang-xiaoshuai/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(4)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 90,
+    "rawText": "推特：@bumingbaipod",
+    "sourceUrl": "https://bumingbai.net/2024/03/24/ep-090-wang-xiaoshuai/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(4)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 63,
+    "rawText": "1. 《解放的悲剧——1945-1957年的共党革命史》 冯客（Frank Dikotter） 著",
+    "sourceUrl": "https://bumingbai.net/2023/09/16/ep-063-anti-corruption-in-medical-sector/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(3)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 63,
+    "rawText": "2. 《毛泽东的大饥荒：1958-1962年的中国浩劫史》冯客 著",
+    "sourceUrl": "https://bumingbai.net/2023/09/16/ep-063-anti-corruption-in-medical-sector/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(3)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 63,
+    "rawText": "3. 《大江大海一九四九》 龙应台 著",
+    "sourceUrl": "https://bumingbai.net/2023/09/16/ep-063-anti-corruption-in-medical-sector/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(3)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 32,
+    "rawText": "1. 《辛德勒的名单》 史蒂文·斯皮尔伯格 导演",
+    "sourceUrl": "https://bumingbai.net/2023/01/07/ep-032-wang-zhian/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 32,
+    "rawText": "2. 《定西孤儿院纪事》 杨显惠 著",
+    "sourceUrl": "https://bumingbai.net/2023/01/07/ep-032-wang-zhian/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 25,
+    "rawText": "1. 《中国国家治理的制度逻辑》 周雪光 著 （PDF电子版）",
+    "sourceUrl": "https://bumingbai.net/2022/11/12/ep-025-pei-minxin/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 25,
+    "rawText": "2. 《Midnight’s Furies: The Deadly Legacy of India’s Partition》 Nisid Hajari 著",
+    "sourceUrl": "https://bumingbai.net/2022/11/12/ep-025-pei-minxin/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 25,
+    "rawText": "3. 《同情者》 The Sympathizer 阮清越 著",
+    "sourceUrl": "https://bumingbai.net/2022/11/12/ep-025-pei-minxin/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 19,
+    "recommenderLabel": "江雪",
+    "rawText": "1. 《通往奴役之路》 哈耶克 著",
+    "sourceUrl": "https://bumingbai.net/2022/10/02/ep-019-jiang-xue-zhang-jieping/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 17,
+    "rawText": "1. 《大流感》 约翰·M·巴里 著",
+    "sourceUrl": "https://bumingbai.net/2022/09/18/ep-017-jin-dongyan/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 16,
+    "rawText": "1. 《二手时间》 S. A. 阿列克谢耶维奇 著",
+    "sourceUrl": "https://bumingbai.net/2022/09/10/ep-016-xu-chenggang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 16,
+    "rawText": "2. 《通往奴役之路》 哈耶克 著",
+    "sourceUrl": "https://bumingbai.net/2022/09/10/ep-016-xu-chenggang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 16,
+    "rawText": "3. 《法律、立法与自由》 哈耶克 著",
+    "sourceUrl": "https://bumingbai.net/2022/09/10/ep-016-xu-chenggang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 14,
+    "rawText": "1. 《汉服归来》 杨娜 著",
+    "sourceUrl": "https://bumingbai.net/2022/08/26/ep-014-cui-jingwen/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 14,
+    "rawText": "2. 《The Great Han: Race, Nationalism, and Tradition in China Today》 凯大熊（Kevin Carrico）著",
+    "sourceUrl": "https://bumingbai.net/2022/08/26/ep-014-cui-jingwen/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 14,
+    "rawText": "3. 《羌在汉藏之间》 王明珂 著",
+    "sourceUrl": "https://bumingbai.net/2022/08/26/ep-014-cui-jingwen/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 13,
+    "rawText": "1. 《光荣之路》 斯坦利·库布里克 导演",
+    "sourceUrl": "https://bumingbai.net/2022/08/20/ep-013-paul-huang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 13,
+    "rawText": "2. 《The Room Where it Happened》 John Bolton 著",
+    "sourceUrl": "https://bumingbai.net/2022/08/20/ep-013-paul-huang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 13,
+    "rawText": "3. 《红星照耀太平洋》 吉原恒淑  著",
+    "sourceUrl": "https://bumingbai.net/2022/08/20/ep-013-paul-huang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 12,
+    "rawText": "1. 《世界简史》杰弗里·布莱内 著",
+    "sourceUrl": "https://bumingbai.net/2022/08/12/ep-012-ge-zhaoguang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 12,
+    "rawText": "2. 《活着》 张艺谋 导演",
+    "sourceUrl": "https://bumingbai.net/2022/08/12/ep-012-ge-zhaoguang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 12,
+    "rawText": "3. 《文明》 肯尼斯·克拉克 讲述",
+    "sourceUrl": "https://bumingbai.net/2022/08/12/ep-012-ge-zhaoguang/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 11,
+    "recommenderLabel": "陈莉雅",
+    "rawText": "1. 《悲情城市》 侯孝贤 导演",
+    "sourceUrl": "https://bumingbai.net/2022/08/06/ep-011-taiwanese-on-pelosi-visit/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 11,
+    "recommenderLabel": "陈莉雅",
+    "rawText": "2. 《一一》 杨德昌 导演",
+    "sourceUrl": "https://bumingbai.net/2022/08/06/ep-011-taiwanese-on-pelosi-visit/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 11,
+    "recommenderLabel": "陈莉雅",
+    "rawText": "3. 《台北人》 白先勇 著",
+    "sourceUrl": "https://bumingbai.net/2022/08/06/ep-011-taiwanese-on-pelosi-visit/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 10,
+    "rawText": "1. 亿万 (Billions)",
+    "sourceUrl": "https://bumingbai.net/2022/07/29/ep-010-ye-qianrong/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 10,
+    "rawText": "2. 南方女王 (Queen of the South)",
+    "sourceUrl": "https://bumingbai.net/2022/07/29/ep-010-ye-qianrong/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 10,
+    "rawText": "3. 黑金圣地 (Ozark)",
+    "sourceUrl": "https://bumingbai.net/2022/07/29/ep-010-ye-qianrong/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 10,
+    "rawText": "4. 末日孤舰 ( The Last Ship)",
+    "sourceUrl": "https://bumingbai.net/2022/07/29/ep-010-ye-qianrong/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 9,
+    "rawText": "1. 《弱者的武器》Weapons of The Weak, James Scott 著",
+    "sourceUrl": "https://bumingbai.net/2022/07/22/ep-009-lvqiu-luwei/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 9,
+    "rawText": "2. The Whole World Is Watching, Todd Gitlin 著",
+    "sourceUrl": "https://bumingbai.net/2022/07/22/ep-009-lvqiu-luwei/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 9,
+    "rawText": "3. Journalism: Why It Matters, Michael Schudson 著",
+    "sourceUrl": "https://bumingbai.net/2022/07/22/ep-009-lvqiu-luwei/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 8,
+    "rawText": "1.《可以避免的战争：美国与习近平领导下的中国之间灾难性冲突的危险》（The Avoidable War: The Dangers of a Catastrophic Conflict between the US and Xi Jinping’s China ） 陆克文 （Kevin Rudd）著",
+    "sourceUrl": "https://bumingbai.net/2022/07/15/ep-008-liu-yawei/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 8,
+    "rawText": "2. 批判性阅读：《长期博弈：中国取代美国的大战略》 （The Long Game: China’s Grand Strategy to Displace American Order）杜如松 (Rush Doshi) 著",
+    "sourceUrl": "https://bumingbai.net/2022/07/15/ep-008-liu-yawei/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 8,
+    "rawText": "3. 电视剧《人世间》原著 梁晓声",
+    "sourceUrl": "https://bumingbai.net/2022/07/15/ep-008-liu-yawei/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(6)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 7,
+    "rawText": "《人性中的善良天使》 史蒂芬·平克 著",
+    "sourceUrl": "https://bumingbai.net/2022/07/08/ep-007-chen-zhiwu/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 7,
+    "rawText": "《人类之旅》（The Journey of Humanity: The Origins of Wealth and Inequality）奥德·加洛尔 著",
+    "sourceUrl": "https://bumingbai.net/2022/07/08/ep-007-chen-zhiwu/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 7,
+    "rawText": "《通往奴役之路》哈耶克 著",
+    "sourceUrl": "https://bumingbai.net/2022/07/08/ep-007-chen-zhiwu/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 6,
+    "recommenderLabel": "白鱼",
+    "rawText": "《不只是厌女》凯特·曼恩 著",
+    "sourceUrl": "https://bumingbai.net/2022/07/01/ep-006-bai-yu-and-lai-fu/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 6,
+    "recommenderLabel": "白鱼",
+    "rawText": "《女神自助餐》刘芷妤 著",
+    "sourceUrl": "https://bumingbai.net/2022/07/01/ep-006-bai-yu-and-lai-fu/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 6,
+    "recommenderLabel": "白鱼",
+    "rawText": "《饥饿》罗克珊·盖伊 著",
+    "sourceUrl": "https://bumingbai.net/2022/07/01/ep-006-bai-yu-and-lai-fu/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 5,
+    "rawText": "《以自由看待发展》 阿马蒂亚·森 著",
+    "sourceUrl": "https://bumingbai.net/2022/06/24/ep-005-he-yuan-on-feminism/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 5,
+    "rawText": "故事FM特辑《我在日本黑帮当老大》（小宇宙链接）",
+    "sourceUrl": "https://bumingbai.net/2022/06/24/ep-005-he-yuan-on-feminism/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(1)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 5,
+    "rawText": "电影《女性参政论者》Suffragette",
+    "sourceUrl": "https://bumingbai.net/2022/06/24/ep-005-he-yuan-on-feminism/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(7)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 4,
+    "recommenderLabel": "杨樱",
+    "rawText": "《人各有异》 E.B.怀特 著",
+    "sourceUrl": "https://bumingbai.net/2022/06/17/ep-004-yi-xianfeng-yang-ying/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(8)::line(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 4,
+    "recommenderLabel": "杨樱",
+    "rawText": "《休战》 普里莫·莱维 著",
+    "sourceUrl": "https://bumingbai.net/2022/06/17/ep-004-yi-xianfeng-yang-ying/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(8)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 4,
+    "recommenderLabel": "杨樱",
+    "rawText": "《客居己乡》 哲尔吉·康拉德 著",
+    "sourceUrl": "https://bumingbai.net/2022/06/17/ep-004-yi-xianfeng-yang-ying/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(8)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 3,
+    "recommenderLabel": "星星",
+    "rawText": "1.《画地为牢》（Prisons We Choose to Live Inside） Doris Lessing 著",
+    "sourceUrl": "https://bumingbai.net/2022/06/10/ep-003-the-last-generation/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(2)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 3,
+    "recommenderLabel": "星星",
+    "rawText": "2.《犹在镜中》英格玛·伯格曼 电影",
+    "sourceUrl": "https://bumingbai.net/2022/06/10/ep-003-the-last-generation/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(3)",
+    "risk": "high",
+    "status": "pending_verification"
+  },
+  {
+    "episodeNumber": 3,
+    "recommenderLabel": "星星",
+    "rawText": "3.《斯通纳》（Stoner）John Williams 著",
+    "sourceUrl": "https://bumingbai.net/2022/06/10/ep-003-the-last-generation/",
+    "retrievedAt": "2026-07-30T09:07:19.910Z",
+    "locator": "html > body > p:nth-of-type(5)::line(4)",
+    "risk": "high",
+    "status": "pending_verification"
+  }
+]
